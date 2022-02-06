@@ -1,0 +1,38 @@
+h { bg=#333
+  v { select=v pad=.1em
+    h { bg=#222 alX=center alY=center "item 1" }
+    h { bg=#222 alX=center alY=center "item 2" }
+    h { bg=#222 alX=center alY=center "item 3" }
+    h { bg=#222 alX=center alY=center "item 4" }
+    h {
+      text { select=text
+       "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.
+        Animi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.
+        Blanditiis sapiente sed et aut molestiae alias suscipit. Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.
+        Aut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.
+        Dolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
+      }
+    }
+  }
+  hsep{x=0em y=0em}
+  v {
+    h { select=h pad=.1em
+      h { bg=#222 alX=center alY=center "item 1" }
+      h { bg=#222 alX=center alY=center "item 2" }
+      h { bg=#222 alX=center alY=center "item 3" }
+      h { bg=#222 alX=center alY=center "item 4" }
+    }
+    v {
+      text { select=text
+       "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.
+        Animi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.
+        Blanditiis sapiente sed et aut molestiae alias suscipit. Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.
+        Aut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.
+        Dolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
+      }
+      h { alY=bottom
+        text { id=info "" }
+      }
+    }
+  }
+}

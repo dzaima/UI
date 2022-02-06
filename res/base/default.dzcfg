@@ -1,0 +1,132 @@
+// https://github.com/skiftOS/skift/blob/main/sysroot/Files/Themes/skift-dark.json
+
+str.color = #D2D2D2 // your regular text color
+str.colorDisabled = #888888
+
+icon.color = #CCC
+
+bg.back   = #18181B
+bg.middle = #27272A
+bg.header = #242427
+bg.bg1  = #1C1C1F // alternate row colors
+bg.bg2  = bg.back // ↑
+bg.sel  = #214283 // selected text color
+bg.selU = #404040 // selected text color while unfocused
+
+scroll.barCol   = #333 // background color of scrollbar
+scroll.thumbCol = #666 // main color
+scroll.barSize  = 1em  // width
+scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
+
+
+tree.bg1 = bg.bg1
+tree.bg2 = bg.bg2
+
+table.bg1 = bg.bg1
+table.bg2 = bg.bg2
+table.bgH = bg.header
+
+hsep.color = #424244
+hsep.x = .2em
+hsep.y = .3em
+hsep.w = .05em
+vsep.x = hsep.y
+vsep.y = hsep.x
+vsep.h = hsep.w
+vsep.color = hsep.color
+
+btn {
+  style = round // options: round, rect
+  
+  rect.bg = #444449
+  rect.borderRadius = .15em
+  rect.borderL = #4b4b4f
+  rect.borderD = #000000
+  
+  round.bgOff = #0000
+  round.bgHover = #3C3C3E
+  round.bgOn = #4F4F50
+  round.radius = .2em
+  
+  padX = .3em
+  padY = .1em
+}
+
+codearea.lnCol = str.colorDisabled
+codearea.lnBg = #0000
+
+textarea {
+  bgSel = bg.sel
+  bgSelU = bg.selU
+  keys {
+    keepFirst = { "escape" } // keep only first cursor, or cancel selection
+    keepLast = { "shift+escape" } // keep only last cursor, or cancel selection, going to original position
+    copy = { "ctrl+c" }
+    paste = { "ctrl+v" }
+    cut = { "ctrl+x" }
+    undo = { "ctrl+z" }
+    redo = { "ctrl+y" "ctrl+shift+z" }
+    selectAll = { "ctrl+a" }
+  }
+}
+codearea {
+  wrapPairs = "()[]{}\"\"''``"
+  keys {
+    deleteLineBack = { "alt+backspace" }
+    deleteLineNext = { "alt+delete" }
+    cursorDown = { "alt+shift+down" }
+    cursorUp = { "alt+shift+up" }
+    indentInc = { "tab" }
+    indentDec = { "shift+tab" }
+    selectNext = { "ctrl+d" }
+    selectLines = { "ctrl+l" }
+    duplicateSelection = { "ctrl+shift+d" }
+    align = { "ctrl+shift+a" }
+  }
+}
+
+textfield.bg = bg.middle
+textfield.padX = .2em
+textfield.padY = .2em
+textfield.radius = .2em
+
+devtools {
+  ui = v {
+    h { h=min bg=bg.header pad=0.2em
+      btn { style=rect "pick" id=pick }
+      btn { style=rect "inline" id=hlInline }
+      btn { style=rect "dbgRedraw" id=dbgRedraw }
+    }
+    
+    scroll { tempOverlap=true bg=bg.back
+      tree {
+        id=main
+      }
+    }
+    
+    h {
+      h=1em bg=bg.middle
+      scroll { x=hidden y=off id=pathScroll
+        pad { x=1em id=path family="DejaVu Sans Mono" "" }
+      }
+    }
+    
+    scroll { tempOverlap=true bg=bg.back
+      h {
+        pad { all=.5em
+          v { id=infoC family="DejaVu Sans Mono" }
+        }
+        hsep{ x=0px y=0px }
+        table { id=infoT clip=true }
+      }
+    }
+    
+    pad { x=1em bg=bg.middle
+      h {
+        h=1em
+        h { id=infoL }
+        h { id=infoR alX=right }
+      }
+    }
+  }
+}

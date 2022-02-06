@@ -1,0 +1,55 @@
+v {
+  bg=#222
+  pad { l=.5em y=.1em
+    bg=#333
+    h {
+      pad=1em
+      h=1.2em
+      alY=center
+      "File" "Edit" "View" "Build" "Run" "Preferences" "Help"
+    }
+  }
+  h {
+    v {
+      h { h=1px bg=#252525 }
+      vl { bg=#333
+        hl { alY=center
+          pad=1em
+          v { pad { y=.2em u=.1em "Project" } h{h=.1em} }
+        }
+      }
+      weight=.3
+      bg=#2A2A2A
+      text {
+        "Lorem " "ipsum " "dolor " "sit " "amet, " "consectetur " "adipiscing " "elit, " "sed " "do " "eiusmod " "tempor " "incididunt " "ut " "labore " "et " "dolore " "magna " "aliqua. "
+        "Ut " "enim " "ad " "minim " "veniam, " "quis " "nostrud " "exercitation " "ullamco " "laboris " "nisi " "ut " "aliquip " "ex " "ea " "commodo " "consequat. "
+        "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. "
+      }
+    }
+    v {
+      h { h=1px bg=#252525 }
+      vl { bg=#333
+        hl {
+          v{w=1px bg=#252525}v{bg=#444 pad { x=1em y=.2em u=.1em "EditNode.java"         }h{h=.1em bg=#48f}}
+          v{w=1px bg=#252525}v{        pad { x=1em y=.2em u=.1em "ScrollNode.java"       }h{h=.1em        }}
+          v{w=1px bg=#252525}v{        pad { x=1em y=.2em u=.1em "this is a placeholder" }h{h=.1em        }}
+        }
+      }
+      scroll {
+        h {
+          codearea { id=code
+            lnBg=#252525
+            family="DejaVu Sans Mono"
+//            family="BQN386 Unicode"
+          }
+        }
+      }
+    }
+  }
+  h {
+    bg=#333
+    h=1em
+    "bottom text"
+    h { "right hand side" alX=right }
+  }
+}

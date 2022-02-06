@@ -1,0 +1,85 @@
+package dzaima.ui.gui;
+
+import dzaima.ui.gui.jwm.JWMWindow;
+import dzaima.ui.gui.lwjgl.LwjglWindow;
+import dzaima.utils.*;
+import io.github.humbleui.jwm.App;
+import io.github.humbleui.skija.impl.Library;
+import org.lwjgl.glfw.GLFW;
+
+public class Windows {
+  public static int MAX_WINDOWS = 10;
+  
+  final Vec<Window> ws = new Vec<>();
+  
+  public enum Manager { LWJGL, JWM }
+  private static Manager mgr = Manager.LWJGL;
+  private static boolean mgrFrozen;
+  public static void setManager(Manager m) {
+    if (mgrFrozen) throw new RuntimeException("Couldn't change manager because it's already in use");
+    mgr = m;
+  }
+  public static Manager getManager() {
+    mgrFrozen = true;
+    return mgr;
+  }
+  
+  public static Rect primaryDisplay() {
+    switch (getManager()) { default: throw new IllegalStateException();
+      case LWJGL:
+        return LwjglWindow.primaryDisplay();
+      case JWM:
+        return JWMWindow.primaryDisplay();
+    }
+  }
+  public static Rect defaultWindowRect() {
+    Rect d = primaryDisplay();
+    return d.centered(d.w()/2, d.h()*9/10);
+  }
+  
+  public static WindowImpl makeWindowImpl(Window w, WindowInit init) {
+    if ("false".equals(System.getProperty("skija.staticLoad"))) Library.load();
+    switch (getManager()) {
+      case JWM: return new JWMWindow(w, init);
+      case LWJGL: return new LwjglWindow(w, init);
+      default: throw new IllegalStateException();
+    }
+  }
+  
+  public void waitFor() {
+    switch (getManager()) {
+      case JWM: {
+        App.start();
+        break;
+      }
+      case LWJGL: {
+        while (ws.sz > 0) {
+          Tools.sleep(1000/120);
+          for (Window c : ws) if (!c.impl.running()) ws.remove(c);
+          GLFW.glfwPollEvents();
+        }
+        for (Window c : ws) c.shouldStop.set(true);
+        finalWait: while (true) {
+          GLFW.glfwPollEvents();
+          Tools.sleep(1000/120);
+          for (Window c : ws) if (c.impl.running()) continue finalWait;
+          break;
+        }
+        break;
+      }
+    }
+    WindowImpl.cleanup();
+  }
+  
+  public void start(Window w) {
+    synchronized (ws) {
+      if (ws.sz>=MAX_WINDOWS) throw new RuntimeException("Refusing to create more than Windows.MAX_WINDOWS (= "+MAX_WINDOWS+") windows");
+      ws.add(w);
+    }
+    w.impl.start(this);
+  }
+  public void stopped(Window w) {
+    ws.remove(w);
+    if (getManager()==Manager.JWM && ws.size()==0) App.terminate();
+  }
+}

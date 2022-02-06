@@ -1,0 +1,90 @@
+h {
+  scroll { x=off tempOverlap=true
+    weight=.3
+    w=10em:20em
+    bg=#26272A
+    v {
+      pad=.9em
+      vl {
+        pad { all=.5em x=.5em
+          h {
+            vl { text { text { tsz=1.05em "dzaima" } " " text { tsz=1.05em color=#666 "SE" family="DejaVu Sans Mono" } } }
+            pad { l=1em "v" }
+          }
+        }
+        pad { all=.5em x=1em h { "The Nineteenth Byte" } }
+        pad { all=.5em x=1em h { "The APL Orchard" } bg=#373C44 }
+        pad { all=.5em x=1em h { "the k tree" } }
+      }
+      vsep{x=.5em}
+      vl {
+        pad { all=.5em x=.5em
+          h {
+            vl { text { text { tsz=1.05em "dzaimaMx" } " " text { tsz=1.05em color=#666 "localhost:8008" family="DejaVu Sans Mono" } } }
+            pad { l=1em "v" }
+          }
+        }
+        pad { all=.5em x=1em h { "testroom" } }
+        pad { all=.5em x=1em h { "myRoom" } }
+        pad { all=.5em x=1em h { "sandboxBridge" } }
+      }
+      vsep{x=.5em}
+      vl {
+        pad { all=.5em x=.5em
+          h {
+            vl { text { text { tsz=1.05em "dzaima" } " " text { tsz=1.05em color=#666 "matrix.org" family="DejaVu Sans Mono" } } }
+            pad { l=1em "v" }
+          }
+        }
+        pad { all=.5em x=1em h { "APL" } }
+        pad { all=.5em x=1em h { "blank room test" } }
+        pad { all=.5em x=1em h { "test" } }
+        pad { all=.5em x=1em h { "#apl" } }
+        pad { all=.5em x=1em h { "Empty room" } }
+      }
+      vsep{x=.5em}
+      vl {
+        pad { all=.5em x=.5em
+          h {
+            vl { text { text { tsz=1.05em "dzaima" } " " text { tsz=1.05em color=#666 "TopAnswers" family="DejaVu Sans Mono" } } }
+            pad { l=1em "v" }
+          }
+        }
+        pad { all=.5em x=1em text { "SIMD language discussion" } }
+        pad { all=.5em x=1em text { "APL Chat" } }
+        pad { all=.5em x=1em text { "EBQN Design & Implementation" } }
+      }
+    }
+  }
+  v {
+    h { h=3.3em alY=center
+      pad { l=4em
+        "The APL Orchard" tsz=1.3em family="Arial"
+      }
+      bg=#191A1A
+    }
+    scroll { x=off
+      bg=#383838
+      h {
+        pad { x=.3em u=5em d=.3em
+          vl { pad=.3em id=msgs
+            
+          }
+        }
+        h { w=0em:5em weight=.05 }
+        id=bc
+      }
+    }
+    pad { all=.5em l=2em bg=#222
+      h { h=min pad=.5em
+        scroll { h=5.2em w=10em:40em bg=#383838
+          pad { all=.3em
+            codearea { family="Arial" numbering=false } // DejaVu Sans Mono
+          }
+        }
+        btn { style=rect "send" padX=.5em padY=.3em }
+        btn { style=rect "upload" padX=.5em padY=.3em }
+      }
+    }
+  }
+}

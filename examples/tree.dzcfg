@@ -1,0 +1,160 @@
+h { bg=#111
+  pad { all=.5em
+    v { w=min h=min bg=#333
+      tree {
+        tn { "src"
+          tn { "dzaima"
+            tn { "utils" open=false
+              tn { openable=false "ByteVec.java" }
+              tn { openable=false "ChrVec.java" }
+              tn { openable=false "Rect.java" }
+              tn { openable=false "IntVec.java" }
+              tn { openable=false "XY.java" }
+              tn { openable=false "JSON.java" }
+              tn { openable=false "Tools.java" }
+              tn { openable=false "Vec.java" }
+              tn { openable=false "Time.java" }
+            }
+            tn { "ui"
+              tn { "node" open=false
+                tn { "prop" open=false
+                  tn { openable=false "NumProp.java" }
+                  tn { openable=false "ColProp.java" }
+                  tn { openable=false "GrProp.java" }
+                  tn { openable=false "RangeProp.java" }
+                  tn { openable=false "Prop.java" }
+                  tn { openable=false "PropI.java" }
+                  tn { openable=false "LenProp.java" }
+                  tn { openable=false "ObjProp.java" }
+                  tn { openable=false "EnumProp.java" }
+                  tn { openable=false "StrProp.java" }
+                  tn { openable=false "CfgProp.java" }
+                }
+                tn { openable=false "Solve.java" }
+                tn { "ctx" open=false
+                  tn { openable=false "BaseCtx.java" }
+                  tn { openable=false "Ctx.java" }
+                }
+                tn { "types" open=false
+                  tn { openable=false "ScrollNode.java" }
+                  tn { openable=false "StringNode.java" }
+                  tn { openable=false "TextNode.java" }
+                  tn { openable=false "PadCNode.java" }
+                  tn { openable=false "VSepNode.java" }
+                  tn { openable=false "VlNode.java" }
+                  tn { openable=false "BtnNode.java" }
+                  tn { openable=false "InlineNode.java" }
+                  tn { openable=false "OverlapNode.java" }
+                  tn { openable=false "ImgNode.java" }
+                  tn { openable=false "SvgIconNode.java" }
+                  tn { openable=false "FrameNode.java" }
+                  tn { "editable"
+                    tn { openable=false "Pointer.java" }
+                    tn { openable=false "TextFieldNode.java" }
+                    tn { openable=false "TextAreaNode.java" }
+                    tn { "code" open=false
+                      tn { openable=false "LangState.java" }
+                      tn { openable=false "Langs.java" }
+                      tn { openable=false "TextLang.java" }
+                      tn { openable=false "JavaLang.java" }
+                      tn { openable=false "APLLang.java" }
+                      tn { openable=false "Language.java" }
+                      tn { openable=false "CodeFieldNode.java" }
+                      tn { openable=false "CodeAreaNode.java" }
+                      tn { openable=false "BQNLang.java" }
+                      tn { openable=false "SingeliLang.java" }
+                      tn { openable=false "CLang.java" }
+                      tn { openable=false "Lang.java" }
+                    }
+                    tn { openable=false "Cursor.java" }
+                    tn { openable=false "EditNode.java" }
+                  }
+                  tn { openable=false "VNode.java" }
+                  tn { openable=false "WrapNode.java" }
+                  tn { openable=false "HSepNode.java" }
+                  tn { openable=false "HideNode.java" }
+                  tn { openable=false "HlNode.java" }
+                  tn { openable=false "PadNode.java" }
+                  tn { openable=false "HNode.java" }
+                  tn { "table"
+                    tn { openable=false "THNode.java" }
+                    tn { openable=false "TRTNode.java" }
+                    tn { openable=false "TableNode.java" }
+                    tn { openable=false "TRNode.java" }
+                  }
+                  tn { "tree"
+                    tn { openable=false "ATreeNode.java" }
+                    tn { openable=false "TreeNode.java" }
+                    tn { openable=false "TNNode.java" }
+                  }
+                }
+                tn { openable=false "Node.java" }
+              }
+              tn { "eval" open=false
+                tn { openable=false "PNodeGroup.java" }
+                tn { openable=false "Prs.java" }
+                tn { openable=false "PNode.java" }
+                tn { openable=false "PrsField.java" }
+                tn { openable=false "Token.java" }
+                tn { openable=false "PNodeStr.java" }
+                tn { openable=false "Tokenizer.java" }
+              }
+              tn { "apps" open=false
+                tn { openable=false "ExMain.java" }
+                tn { "fmgr"
+                  tn { openable=false "FMgr.java" }
+                  tn { openable=false "FRef.java" }
+                  tn { openable=false "FOp.java" }
+                }
+                tn { "devtools"
+                  tn { openable=false "Devtools.java" }
+                  tn { openable=false "DTTNNode.java" }
+                }
+              }
+              tn { "gui" open=false
+                tn { openable=false "Typeface.java" }
+                tn { openable=false "Window.java" }
+                tn { openable=false "Menu.java" }
+                tn { "io"
+                  tn { openable=false "KeyAction.java" }
+                  tn { openable=false "Click.java" }
+                  tn { openable=false "KeyVal.java" }
+                  tn { openable=false "Key.java" }
+                }
+                tn { openable=false "NodeWindow.java" }
+                tn { openable=false "Font.java" }
+                tn { "select"
+                  tn { openable=false "Position.java" }
+                }
+                tn { openable=false "Graphics.java" }
+                tn { openable=false "OffscreenGraphics.java" }
+                tn { openable=false "WindowImpl.java" }
+                tn { "theme"
+                  tn { openable=false "CfgTree.java" }
+                  tn { openable=false "GConfig.java" }
+                  tn { openable=false "Cfg.java" }
+                }
+                tn { "lwjgl"
+                  tn { openable=false "LwjglWindow.java" }
+                }
+                tn { openable=false "Windows.java" }
+                tn { "jwm"
+                  tn { openable=false "SkijaLayerGL.java" }
+                  tn { openable=false "JWMWindow.java" }
+                  tn { openable=false "JWMEventHandler.java" }
+                }
+                tn { "undo"
+                  tn { openable=false "UndoFrame.java" }
+                  tn { openable=false "UndoManager.java" }
+                  tn { openable=false "Undo.java" }
+                  tn { openable=false "UndoR.java" }
+                }
+                tn { openable=false "WindowInit.java" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

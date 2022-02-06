@@ -1,0 +1,61 @@
+h { bg=#222
+  h {
+    bg=#111111
+    h=250px
+    alX=left
+    v {
+      bg=#332222
+      "one"
+      "two"
+      "three"
+      w=120px:140px
+    }
+    " "
+    v {
+      bg=#223322
+      h=min
+      tsz=2em
+      "four"
+      "five"
+    }
+    " "
+    v {
+      bg=#222233
+      alX=right
+      alY=bottom
+      "right"
+      "bottom"
+      "aligned"
+      "text"
+    }
+    " "
+    v {
+      bg=#332233
+      alX=right
+      tsz=20px
+//      "a lot of padding for right-alignment"
+      weight=3
+      h { bg=#333333
+        h{ " " v {   "a"   "bb" } " " bg=#443333 } " " h{ " " v { "ccc" "dddd" } " " bg=#334433 } h{" " weight=100}
+      }
+      v { h { bg=#333333 w=min
+        h{ " " v {   "a"   "bb" } " " bg=#443333 } " " h{ " " v { "ccc" "dddd" } " " bg=#334433 }
+      }}
+      v { bg=#333333 alX=right h {
+        w=min
+        h{ " " v {   "a"   "bb" } " " bg=#443333 } " " h{ " " v { "ccc" "dddd" } " " bg=#334433 }
+      }}
+      h { bg=#333333
+        w=min
+        h{ " " v {   "a"   "bb" } " " bg=#443333 } " " h{ " " v { "ccc" "dddd" } " " bg=#334433 }
+      }
+    }
+  }
+  
+  v {
+    w=min
+    tsz=2em
+    family="DejaVu Sans Mono"
+    "Lorem ipsum dolor sit amet"
+  }
+}
