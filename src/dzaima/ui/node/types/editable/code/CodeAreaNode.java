@@ -48,8 +48,12 @@ public class CodeAreaNode extends EditNode {
   public void updLang() {
     langInst = lang.inst(f);
     modFrom(0, 0);
-    for (int i = 0; i < lns.sz; i++) Arrays.fill(lns.get(i).st.arr, (byte) 0);
-    for (Line c : lns) c.clearPara();
+    for (int i = 0; i < lns.sz; i++) {
+      Line l = lns.get(i);
+      Arrays.fill(l.st.arr, (byte) 0);
+      l.clearPara();
+      ((CodeLine) l).end = null;
+    }
     mProp();
   }
   

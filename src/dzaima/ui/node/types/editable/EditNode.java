@@ -24,6 +24,7 @@ public class EditNode extends Node {
   
   public int bgSel, bgSelU;
   public int drawOffX, drawOffY;
+  public int tsz;
   public boolean cursorWhenUnfocused;
   public EditNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline) { this(ctx, ks, vs, multiline, new UndoManager(ctx.gc)); }
   public EditNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline, UndoManager um) { // in case you want a more global undo/redo
@@ -50,6 +51,10 @@ public class EditNode extends Node {
   
   
   public void propsUpd() { super.propsUpd();
+    int ptsz = tsz;
+    tsz = gc.len(this, "tsz", "textarea.tsz");
+    if (tsz!=ptsz && f!=null) setFamily(f.tf.name);
+    
     defTStyle.setFontSize(f.sz);
     defTStyle.setTypeface(f.tf.tf);
     defTStyle.setFontFamily(f.tf.name);
@@ -65,7 +70,7 @@ public class EditNode extends Node {
     return f;
   }
   public void setFamily(String family) {
-    f = Typeface.of(family).sizeMode(gc.em, 0);
+    f = Typeface.of(family).sizeMode(tsz, 0);
   }
   
   public /*open*/ Line createLine(char[] p, int y) { return new Line(p, y); }

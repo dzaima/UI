@@ -68,12 +68,12 @@ public class ScrollNode extends FrameNode {
   
   public int fillW() {
     if (xMode==HIDDEN) return 0;
-    if (xMode==OFF) return (yMode==OFF|yMode==HIDDEN?0:gc.em) + ch().minW();
+    if (xMode==OFF) return (yMode==OFF|yMode==HIDDEN?0:barSize) + ch().minW();
     return gc.em*3;
   }
   public int fillH(int w) {
     if (yMode==HIDDEN) return 0;
-    if (yMode==OFF) return (xMode==OFF|xMode==HIDDEN?0:gc.em) + ch().minH(xMode==OFF? w : Tools.BIG);
+    if (yMode==OFF) return (xMode==OFF|xMode==HIDDEN?0:barSize) + ch().minH(xMode==OFF? w : Tools.BIG);
     return gc.em*3;
   }
   public Node getBest(int x, int y) {

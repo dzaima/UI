@@ -56,6 +56,7 @@ codearea.lnCol = str.colorDisabled
 codearea.lnBg = #0000
 
 textarea {
+  tsz = 1em
   bgSel = bg.sel
   bgSelU = bg.selU
   keys {
