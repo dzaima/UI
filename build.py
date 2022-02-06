@@ -29,7 +29,7 @@ def git_lib(path, git):
   if os.path.exists(path): return path
   path2 = path+"Clone"
   print("using "+path2+" submodule; link custom path to "+path+" to override")
-  subprocess.check_call(["git","submodule","init",path2])
+  subprocess.check_call(["git","submodule","update","--init",path2])
   return path2
 
 def shstr(s):
