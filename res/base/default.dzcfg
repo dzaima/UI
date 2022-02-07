@@ -115,7 +115,10 @@ devtools {
     scroll { tempOverlap=true bg=bg.back
       h {
         pad { all=.5em
-          v { id=infoC family="DejaVu Sans Mono" }
+          v {
+            v { id=infoC family="DejaVu Sans Mono" }
+            dtgraph { id=graph }
+          }
         }
         hsep{ x=0px y=0px }
         table { id=infoT clip=true }
@@ -129,5 +132,15 @@ devtools {
         h { id=infoR alX=right }
       }
     }
+  }
+  
+  graph {
+    lineCol = #40808080
+    
+    eventCol = #A0ff8080
+    tickCol  = #A080ff80
+    drawCol  = #A08080ff
+    flushCol = #4080A080
+    frameCol = #408080A0
   }
 }

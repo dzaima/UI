@@ -148,4 +148,4 @@ def build_ui(res = "UI.jar"):
 
 if __name__ == "__main__":
   cp = build_ui()
-  make_run("run", ':'.join(cp)+":UI.jar", "dzaima.ui.apps.ExMain")
+  make_run("run", ':'.join(cp)+":UI.jar", "dzaima.ui.apps.ExMain", "-ea")

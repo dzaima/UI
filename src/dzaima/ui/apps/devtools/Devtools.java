@@ -5,7 +5,7 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
-import dzaima.ui.node.ctx.Ctx;
+import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.types.*;
 import dzaima.utils.*;
 
@@ -20,16 +20,21 @@ public class Devtools extends NodeWindow {
   public final NodeWindow insp;
   public boolean pick;
   public boolean hlInline = true;
+  DTGraphNode graph;
   
   public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, NodeWindow insp, Rect r) {
     super(gc, pctx, g, new WindowInit("Devtools", r));
+    graph = (DTGraphNode) base.ctx.id("graph");
+    graph.t = this;
     openDevtools++;
     this.insp = insp;
   }
   
   public static Devtools create(NodeWindow w) {
     GConfig gc = GConfig.newConfig();
-    Devtools dt = new Devtools(gc, Ctx.newCtx(), gc.getProp("devtools.ui").gr(), w, Windows.defaultWindowRect());
+    BaseCtx ctx = Ctx.newCtx();
+    ctx.put("dtgraph", DTGraphNode::new);
+    Devtools dt = new Devtools(gc, ctx, gc.getProp("devtools.ui").gr(), w, Windows.defaultWindowRect());
     w.tools = dt;
     return dt;
   }
@@ -136,6 +141,8 @@ public class Devtools extends NodeWindow {
       any = true;
     }
     if (any) refresh();
+    
+    // graph.mRedraw();
   }
   
   
@@ -197,15 +204,13 @@ public class Devtools extends NodeWindow {
     iR.clearCh();
     iR.add(new StringNode(iR.ctx, String.format("%s %.2f FPS", Windows.getManager(), 1e9/getTime("frame"))));
   
-    long all = getTime("all");
     Node iC = base.ctx.id("infoC");
     iC.clearCh();
     iC.add(new StringNode(iC.ctx, String.format("event %6.3fms", getTime("event")/1e6)));
     iC.add(new StringNode(iC.ctx, String.format(" tick %6.3fms", getTime("tick" )/1e6)));
     iC.add(new StringNode(iC.ctx, String.format(" draw %6.3fms", getTime("draw" )/1e6)));
     iC.add(new StringNode(iC.ctx, String.format("flush %6.3fms", getTime("flush")/1e6)));
-    iC.add(new StringNode(iC.ctx, String.format("  all %6.3fms", all/1e6)));
-    iC.add(new StringNode(iC.ctx, String.format(" wait %6.3fms", (getTime("frame")-all)/1e6)));
+    iC.add(new StringNode(iC.ctx, String.format(" wait %6.3fms", (getTime("frame")-getTime("all"))/1e6)));
     if (lastError!=null) iC.add(new StringNode(iC.ctx, lastError));
     
     
@@ -296,9 +301,9 @@ public class Devtools extends NodeWindow {
   
   
   public long getTime(String s) {
-    RB l = times.get(s);
+    RotBuf l = times.get(s);
     if (l==null) return 0;
-    return l.sum / RB.AMOUNT;
+    return l.sum / RotBuf.SUM_LEN;
   }
   
   long prevFrameTime = -1;
@@ -309,30 +314,18 @@ public class Devtools extends NodeWindow {
     prevTime = sns;
   }
   
-  HashMap<String, RB> times = new HashMap<>();
+  HashMap<String, RotBuf> times = new HashMap<>();
   public void time(String name) {
     prevTime = time(name, prevTime);
   }
   public long time(String name, long sns) {
     long ens = System.nanoTime();
-    RB b = times.get(name);
-    if (b==null) times.put(name, b = new RB());
-    b.add(ens-sns);
+    timeDirect(name, ens-sns);
     return ens;
   }
-  
-  public static class RB {
-    public static int AMOUNT = 60;
-    public long sum;
-    
-    private final long[] ls = new long[AMOUNT];
-    private int i = 0;
-    
-    public void add(long n) {
-      if (i >= ls.length) i = 0;
-      sum+= n-ls[i];
-      ls[i] = n;
-      i++;
-    }
+  public void timeDirect(String name, long ns) {
+    RotBuf b = times.get(name);
+    if (b==null) times.put(name, b = new RotBuf());
+    b.add(ns);
   }
 }
