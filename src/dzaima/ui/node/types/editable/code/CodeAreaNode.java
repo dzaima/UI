@@ -183,14 +183,15 @@ public class CodeAreaNode extends EditNode {
     sortCursors();
   }
   
-  public boolean action2(String name) {
+  public int action(Key key, KeyAction a) {
+    String name = gc.keymap(key, a, "codearea");
     switch (name) {
       case "cursorDown": {
         um.pushU("add cursor");
         Cursor n = addCursor(cs.sz, cs.peek());
         n.down(0);
         um.pop();
-        return true;
+        return 1;
       }
       case "cursorUp": {
         um.pushU("add cursor");
@@ -198,7 +199,7 @@ public class CodeAreaNode extends EditNode {
         n.up(0);
         sortCursors();
         um.pop();
-        return true;
+        return 1;
       }
       
       case "indentInc":
@@ -207,7 +208,7 @@ public class CodeAreaNode extends EditNode {
           insert(0, y, langInst.indent(1));
         }
         um.pop();
-        return true;
+        return 1;
       
       case "indentDec":
         um.pushQ("change indent");
@@ -215,13 +216,13 @@ public class CodeAreaNode extends EditNode {
           if (ln(y).leadingWs()>=langInst.indentLen) remove(0, y, langInst.indentLen, y);
         }
         um.pop();
-        return true;
+        return 1;
       
       case "selectLines":
         um.pushU("make cursor per selected line");
         cursorPerLine();
         um.pop();
-        return true;
+        return 1;
       
       case "selectNext": {
         um.pushU("select more");
@@ -259,7 +260,7 @@ public class CodeAreaNode extends EditNode {
           }
         }
         um.pop();
-        return true;
+        return 1;
       }
       case "duplicateSelection": {
         um.pushQ("duplicate selection");
@@ -269,7 +270,7 @@ public class CodeAreaNode extends EditNode {
           replaceByCursor(c, s);
         }
         um.pop();
-        return true;
+        return 1;
       }
       
       case "deleteLineBack": case "deleteLineNext": {
@@ -289,7 +290,7 @@ public class CodeAreaNode extends EditNode {
           }
         }
         um.pop();
-        return true;
+        return 1;
       }
       
       case "align": {
@@ -317,9 +318,9 @@ public class CodeAreaNode extends EditNode {
           }
         }
         um.pop();
-        return true;
+        return 1;
       }
-      default: return false;
+      default: return super.action(key, a);
     }
   }
   
@@ -353,13 +354,11 @@ public class CodeAreaNode extends EditNode {
   }
   
   
-  public boolean keyF(Key key, int scancode, KeyAction a) {
-    if (action2(gc.keymap(key, a, "codearea"))) return true;
-    
-    if (a.typed && key.k_home()) { // home to after leading ws
+  public boolean keyF2(Key key, int scancode, KeyAction a) {
+    if (a.typed && key.k_home() && (key.plain() || key.onlyShift())) { // home to after leading ws
       boolean margin = true;
       for (Cursor c : cs) margin&= ln(c.ey).leadingWs()==c.ex;
-      if (margin || key.hasCtrl()) return super.keyF(key, scancode, a);
+      if (margin) return super.keyF2(key, scancode, a);
       um.pushU("move cursor");
       for (Cursor c : cs) {
         c.mv(key.hasShift(), ln(c.ey).leadingWs(), c.ey);
@@ -369,6 +368,6 @@ public class CodeAreaNode extends EditNode {
       um.pop();
       return true;
     }
-    return super.keyF(key, scancode, a);
+    return super.keyF2(key, scancode, a);
   }
 }

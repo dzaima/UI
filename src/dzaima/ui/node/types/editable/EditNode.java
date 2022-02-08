@@ -510,8 +510,8 @@ public class EditNode extends Node {
   }
   
   
-  public int action(String name) { // 0-unused; 1-used; 2-won't use
-    switch (name) {
+  public int action(Key key, KeyAction a) { // 0-unused; 1-used; 2-won't use
+    switch (gc.keymap(key, a, "textarea")) {
       case "copy": copy(); return 1;
       case "paste": um.pushQ("paste"); paste(); um.pop(); return 1;
       case "cut":
@@ -542,10 +542,13 @@ public class EditNode extends Node {
     }
   }
   
-  public boolean keyF(Key key, int scancode, KeyAction a) { // TODO keymap
-    
-    int ar = action(gc.keymap(key, a, "textarea"));
+  public final boolean keyF(Key key, int scancode, KeyAction a) {
+    int ar = action(key, a);
     if (ar!=0) return ar==1;
+    return keyF2(key, scancode, a);
+  }
+  
+  public boolean keyF2(Key key, int scancode, KeyAction a) { // TODO keymap
     if (a.release) return false;
     
     if (key.k_enter()) {
