@@ -48,7 +48,7 @@ public class JWMWindow extends WindowImpl {
         jwmw.setMouseCursor(MouseCursor.ARROW);
         break;
       case HAND:
-        jwmw.setMouseCursor(MouseCursor.CROSSHAIR);
+        jwmw.setMouseCursor(MouseCursor.POINTING_HAND);
         break;
       case IBEAM:
         jwmw.setMouseCursor(MouseCursor.IBEAM);
