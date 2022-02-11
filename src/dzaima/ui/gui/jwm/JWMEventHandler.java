@@ -44,7 +44,6 @@ public class JWMEventHandler implements Consumer<Event> {
       ww.w = e.getContentWidth();
       ww.h = e.getContentHeight();
       w.w.updateSize.set(true);
-      paint();
     } else if (ev instanceof EventMouseScroll) {
       EventMouseScroll e = (EventMouseScroll) ev;
       w.enqueue(() -> ww.scroll(e.getDeltaX()/15f, e.getDeltaY()/15f, e.isModifierDown(KeyModifier.SHIFT)));
