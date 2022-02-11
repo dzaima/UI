@@ -27,7 +27,7 @@ public class DTGraphNode extends Node {
     void s(Devtools t, int sw) {
       b = t.times.get(name);
       if (b==null) b = tmpBuf;
-      p = Math.floorMod(b.i - sw, RotBuf.BUF_LEN);
+      p = Math.floorMod(b.i - sw + (isFr? 0 : -1), RotBuf.BUF_LEN);
     }
     long next() {
       long v = b.ls[p];
