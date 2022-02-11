@@ -100,12 +100,12 @@ public class JWMEventHandler implements Consumer<Event> {
         ww.typed(p);
         i+= Character.charCount(p);
       }
-    // } else if (ev instanceof EventWindowFocusIn) {
-    //   w.w.focused();
-    // } else if (ev instanceof EventWindowFocusOut) {
-    //   w.w.unfocused();
-    // } else if (ev instanceof EventWindowClose) {
-    //   // ignore
+    } else if (ev instanceof EventWindowFocusIn) {
+      w.w.focused();
+    } else if (ev instanceof EventWindowFocusOut) {
+      w.w.unfocused();
+    } else if (ev instanceof EventWindowClose) {
+      // ignore
     } else {
       System.out.println("Got event "+ev.getClass().getSimpleName()+":");
       System.out.println(ev);
