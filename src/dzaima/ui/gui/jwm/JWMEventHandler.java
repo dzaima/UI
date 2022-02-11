@@ -40,9 +40,9 @@ public class JWMEventHandler implements Consumer<Event> {
       }
     } else if (ev instanceof EventWindowResize) {
       EventWindowResize e = (EventWindowResize) ev;
-      layer.resize(e.getContentWidth(), e.getContentHeight());
       ww.w = e.getContentWidth();
       ww.h = e.getContentHeight();
+      layer.resize(ww.w, ww.h);
       w.w.updateSize.set(true);
     } else if (ev instanceof EventMouseScroll) {
       EventMouseScroll e = (EventMouseScroll) ev;

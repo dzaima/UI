@@ -149,6 +149,9 @@ public class JWMWindow extends WindowImpl {
     queue.add(r);
   }
   
+  public boolean needsDraw() {
+    return eh.layer.uninitialized;
+  }
   public void startDraw(boolean needed) {
     if (needed) eh.layer.beforePaint();
   }

@@ -10,7 +10,7 @@ public abstract class WindowImpl {
   public final Window w;
   public WindowInit init;
   
-  public static final boolean ALWAYS_REDRAW = false;
+  public static final boolean ALWAYS_REDRAW = false; // must be true if not USE_OFFSCREEN
   public static final boolean USE_OFFSCREEN = true;
   public static boolean DEBUG_REDRAW = false;
   public static boolean ESC_EXIT = true;
@@ -53,6 +53,8 @@ public abstract class WindowImpl {
   public abstract void enqueue(Runnable o);
   public abstract void runEvents();
   
+  
+  public abstract boolean needsDraw();
   public abstract void startDraw(boolean needed);
   public abstract void endDraw(boolean needed);
   public abstract void runResize();

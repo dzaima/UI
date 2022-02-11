@@ -8,14 +8,29 @@ public class SkijaLayerGL extends LayerGL {
   public DirectContext directContext;
   public BackendRenderTarget renderTarget;
   public Surface surface;
+  public boolean uninitialized = true;
   
   public SkijaLayerGL(JWMWindow w) {
     this.w = w;
   }
   
+  
   public void beforePaint() {
     makeCurrent();
     initParts();
+  }
+  
+  public void afterPaint() {
+    surface.flushAndSubmit();
+    swapBuffers();
+    uninitialized = false;
+  }
+  
+  public void skipPaint() {
+    makeCurrent();
+    initParts();
+    surface.flushAndSubmit();
+    swapBuffers();
   }
   
   public void initParts() {
@@ -25,18 +40,6 @@ public class SkijaLayerGL extends LayerGL {
       surface = Surface.makeFromBackendRenderTarget(directContext, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getSRGB(), new SurfaceProps(PixelGeometry.RGB_H));
       w.newCanvas(surface);
     }
-  }
-  
-  public void afterPaint() {
-    surface.flushAndSubmit();
-    swapBuffers();
-  }
-  
-  public void skipPaint() {
-    makeCurrent();
-    initParts();
-    surface.flushAndSubmit();
-    swapBuffers();
   }
   
   public void resize(int width, int height) {
