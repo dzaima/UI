@@ -306,6 +306,9 @@ public class EditNode extends Node {
     isFocused = false;
   }
   
+  public void hoverS() { ctx.win().setCursor(Window.CursorType.IBEAM); }
+  public void hoverE() { ctx.win().setCursor(Window.CursorType.REGULAR); }
+  
   public boolean mouseDown(int x, int y, Click c) { // TODO mobile-friendly
     x-= drawOffX;
     y-= drawOffY;
