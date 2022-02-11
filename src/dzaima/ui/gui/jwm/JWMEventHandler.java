@@ -14,7 +14,6 @@ public class JWMEventHandler implements Consumer<Event> {
   public final JWMWindow w;
   private final dzaima.ui.gui.Window ww;
   public final Window jwmw;
-  public final SkijaLayerGL layer;
   public int wx, wy;
   public boolean running;
   
@@ -22,8 +21,6 @@ public class JWMEventHandler implements Consumer<Event> {
     this.w = w;
     this.ww = w.w;
     this.jwmw = w.jwmw;
-    layer = new SkijaLayerGL(w);
-    layer.attach(jwmw);
     running = true;
   }
   
@@ -33,16 +30,16 @@ public class JWMEventHandler implements Consumer<Event> {
       if (w.visible && paint()) jwmw.requestFrame();
     } else if (ev instanceof EventWindowScreenChange) {
       if (w.visible) {
-        layer.reconfigure();
+        w.layer.reconfigure();
         IRect r = jwmw.getContentRect();
-        layer.resize(r.getWidth(), r.getHeight());
+        w.layer.resize(r.getWidth(), r.getHeight());
         paint();
       }
     } else if (ev instanceof EventWindowResize) {
       EventWindowResize e = (EventWindowResize) ev;
       ww.w = e.getContentWidth();
       ww.h = e.getContentHeight();
-      layer.resize(ww.w, ww.h);
+      w.layer.resize(ww.w, ww.h);
       w.w.updateSize.set(true);
     } else if (ev instanceof EventMouseScroll) {
       EventMouseScroll e = (EventMouseScroll) ev;
@@ -128,10 +125,6 @@ public class JWMEventHandler implements Consumer<Event> {
     } finally {
       dontPaint = false;
     }
-  }
-  
-  public void close() {
-    layer.close();
   }
   
   

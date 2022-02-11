@@ -113,7 +113,7 @@ public abstract class Window {
     nodrawFrames++;
     int toolsRedraw = t!=null? t.redrawInsp() : 0;
     boolean drawNeeded = ALWAYS_REDRAW || shouldRedraw() || resize || toolsRedraw==2;
-    boolean copyNeeded = USE_OFFSCREEN && (drawNeeded || DEBUG_REDRAW || nodrawFrames<5);
+    boolean copyNeeded = USE_OFFSCREEN && (drawNeeded || DEBUG_REDRAW || nodrawFrames<20);
     
     impl.startDraw(drawNeeded || copyNeeded);
     OffscreenGraphics offscreen = impl.offscreen;

@@ -102,6 +102,7 @@ public class JWMWindow extends WindowImpl {
   
   ///////// setup \\\\\\\\\
   private JWMEventHandler eh;
+  public SkijaLayerGL layer;
   void make() {
     assert state.get()==0;
     state.set(1);
@@ -110,6 +111,8 @@ public class JWMWindow extends WindowImpl {
     jwmw = App.makeWindow();
     eh = new JWMEventHandler(this);
     jwmw.setEventListener(eh);
+    layer = new SkijaLayerGL(this);
+    layer.attach(jwmw);
     
     
     setTitle(init.title);
@@ -150,14 +153,14 @@ public class JWMWindow extends WindowImpl {
   }
   
   public boolean needsDraw() {
-    return eh.layer.uninitialized;
+    return layer.uninitialized;
   }
   public void startDraw(boolean needed) {
-    if (needed) eh.layer.beforePaint();
+    if (needed) layer.beforePaint();
   }
   public void endDraw(boolean needed) {
-    if (needed) eh.layer.afterPaint();
-    else eh.layer.skipPaint();
+    if (needed) layer.afterPaint();
+    else layer.skipPaint();
   }
   
   public void runResize() { }
@@ -191,7 +194,7 @@ public class JWMWindow extends WindowImpl {
     endDraw(true);
     
     if (offscreen!=null) offscreen.close();
-    eh.close();
+    layer.close();
     jwmw.close();
     jwmw = null; // make sure nothing accidentally uses it
     
