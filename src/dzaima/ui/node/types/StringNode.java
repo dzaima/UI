@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class StringNode extends InlineNode {
   public final String s;
   public Font f;
-  private int color;
+  private int colFG, colBG;
   
   public StringNode(Ctx ctx, String s) {
     super(ctx, KS_NONE, VS_NONE);
@@ -45,7 +45,8 @@ public class StringNode extends InlineNode {
       }
       String family = gc.strD(p, "family", "Arial");
       int tsz = gc.emD(p, "tsz", 1);
-      color = gc.col(p, "color", "str.color");
+      colFG = gc.col(p, "color", "str.color");
+      colBG = 0;
       int mode = 0;
       if(gc.boolD(p, "bold"   , false)) mode|= Typeface.BOLD;
       if(gc.boolD(p, "italics", false)) mode|= Typeface.ITALICS;
@@ -59,8 +60,8 @@ public class StringNode extends InlineNode {
   
   public static boolean PARAGRAPH_TEXT = true;
   public static void text(Graphics g, String s, StringNode n, float x, float y) {
-    if (PARAGRAPH_TEXT) g.textP(s, n.f, x, y, n.color);
-    else g.text(s, n.f, x, y, n.color);
+    if (PARAGRAPH_TEXT) g.textP(s, n.f, x, y, n.colFG);
+    else g.text(s, n.f, x, y, n.colFG);
   }
   
   public static void text(Graphics g, Word w, StringNode n, float x, float y) {
@@ -68,7 +69,7 @@ public class StringNode extends InlineNode {
       Paragraph r = w.overkill;
       if (r==null) w.overkill = r = w.buildPara(n);
       r.paint(g.canvas, x, y-n.f.asc);
-    } else g.text(w.s, n.f, x, y, n.color);
+    } else g.text(w.s, n.f, x, y, n.colFG);
   }
   
   public void drawC(Graphics g) {
@@ -97,6 +98,34 @@ public class StringNode extends InlineNode {
       for (String c : lns) {
         text(g, c, this, 0, f.ascI+y);
         y+= fh;
+      }
+    }
+  }
+  
+  public void bg(Graphics g, boolean full) {
+    pbg(g, full);
+    if (words!=null && Tools.vs(colBG)) {
+      int fa = f.ascI;
+      int fh = f.hi;
+      if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
+      for (Word c : words) {
+        if (c.type==0) {
+          int x = (int) c.x;
+          int y = c.y;
+          if (c.split == null) {
+            g.rectWH(x, y+c.bl-fa, (int) Math.ceil(c.w), fh, colBG);
+          } else {
+            y-= fa;
+            g.rectWH(x, y, f.width(c.split[0]), fh, colBG);
+            for (int i = 1; i < c.split.length-1; i++) {
+              y+= fh;
+              g.rectWH(0, y, f.width(c.split[i]), fh, colBG);
+            }
+            y+= fh;
+            y = y + c.bl - f.ascI;
+            g.rectWH(0, y, f.width(c.split[c.split.length-1]), fh, colBG);
+          }
+        }
       }
     }
   }
@@ -154,7 +183,8 @@ public class StringNode extends InlineNode {
     }
     sv.ab(a, b);
     
-    color = sv.tcol;
+    colFG = sv.tcol;
+    colBG = sv.tbg;
     if (mut) mRedraw();
   }
   
@@ -179,7 +209,7 @@ public class StringNode extends InlineNode {
   
   public static class Word {
     public float x;
-    public int y; // x of -1 indicates that this space/newline has been cut off due to next word overflowing
+    public int y; // adds in baseline for split word 
     public final byte type; // 0 - text; 1 - whitespace; 2 - newline
     public final String s; // actual text (only for type 0)
     public float w; // width in pixels
@@ -192,7 +222,7 @@ public class StringNode extends InlineNode {
     }
   
     public Paragraph buildPara(StringNode n) {
-      Graphics.tmpStyle.setTextStyle(n.f.textStyle(n.color));
+      Graphics.tmpStyle.setTextStyle(n.f.textStyle(n.colFG));
       ParagraphBuilder b = new ParagraphBuilder(Graphics.tmpStyle, Typeface.fontCol);
       b.addText(s);
       Paragraph r = b.build();
@@ -217,8 +247,7 @@ public class StringNode extends InlineNode {
         v.add(new Word((byte) 2, "\n"));
         pi = i+1;
       } else if (c==' ' || c=='\t') {
-        if (pi!=i) v.add(new Word((byte) 0, s.substring(pi, i)));
-        v.add(new Word((byte) 1, " "));
+        v.add(new Word((byte) 0, s.substring(pi, i+1)));
         pi = i+1;
       }
     }

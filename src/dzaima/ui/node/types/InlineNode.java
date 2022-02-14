@@ -26,7 +26,7 @@ public abstract class InlineNode extends Node {
   public static class InlineSolver {
     public final int w; // total max width allocated for this
     public final boolean resize;
-    public int tcol;
+    public int tcol, tbg;
     public Font f;
     
     public float x; // left of next character's x
@@ -38,6 +38,7 @@ public abstract class InlineNode extends Node {
       this.w = w;
       this.f = gc.defFont;
       this.tcol = gc.cfg.get("str.color").col();
+      this.tbg = 0;
       this.resize = resize;
     }
     

@@ -12,7 +12,9 @@ public class TextNode extends InlineNode {
   }
   
   public void addInline(InlineSolver sv) {
-    int pcol = sv.tcol; Font pf = sv.f;
+    Font pf = sv.f;
+    int pFG = sv.tcol;
+    int pBG = sv.tbg;
     if (p instanceof InlineNode && sv.resize) {
       dx=dy=0;
       w = sv.w;
@@ -20,14 +22,16 @@ public class TextNode extends InlineNode {
     
     sv.f = updFont(sv.f);
     if (hasCol) sv.tcol = col;
-    // if (hasBg) sv.tbg = bgCol;
+    if (hasBg) sv.tbg = bgCol;
     
     if (sv.x==0) sv.a = sv.b = 0; // ignore height of a previous trailing newline if there are things following it; TODO maybe move to InlineNode?
     if(xpad!=0) sv.x = xpad+(int)sv.x; // else, don't round
     for (Node c : ch) sv.add(c);
     if(xpad!=0) sv.x = xpad+(int)sv.x;
     
-    sv.f = pf; sv.tcol = pcol;
+    sv.f = pf;
+    sv.tcol = pFG;
+    sv.tbg = pBG;
   }
   protected void baseline(int asc, int dsc) { }
   
@@ -42,7 +46,6 @@ public class TextNode extends InlineNode {
     tsz = gc.pxD(this, "tsz", -1);
     int cId = id("color"); hasCol = cId>=0; if (hasCol) col   = vs[cId].col();
     int bId = id("bg");    hasBg  = bId>=0; if (hasBg)  bgCol = vs[bId].col();
-    if (id("bgCol")!=-1) System.err.println("warning: using old bgCol property");
     mode = 0;
     if (gc.boolD(this, "italics"  , false)) mode|= Typeface.ITALICS;
     if (gc.boolD(this, "bold"     , false)) mode|= Typeface.BOLD;
@@ -62,18 +65,18 @@ public class TextNode extends InlineNode {
     return ntf.sizeMode(tsz!=-1? tsz : f.sz, f.mode|mode);
   }
   
-  public void bg(Graphics g, boolean full) {
-    if (Tools.st(bgCol)) pbg(g, full);
-    if (Tools.vs(bgCol)) {
-      if (sY1==eY1) {
-        g.rect(sX, sY1, eX, eY2, bgCol);
-      } else {
-        g.rect(sX, sY1, w, sY2, bgCol);
-        if (sY2<eY1) g.rect(0, sY2, w, eY1, bgCol);
-        g.rect(0, eY1, eX, eY2, bgCol);
-      }
-    }
-  }
+  // public void bg(Graphics g, boolean full) {
+  //   if (Tools.st(bgCol)) pbg(g, full);
+  //   if (Tools.vs(bgCol)) {
+  //     if (sY1==eY1) {
+  //       g.rect(sX, sY1, eX, eY2, bgCol);
+  //     } else {
+  //       g.rect(sX, sY1, w, sY2, bgCol);
+  //       if (sY2<eY1) g.rect(0, sY2, w, eY1, bgCol);
+  //       g.rect(0, eY1, eX, eY2, bgCol);
+  //     }
+  //   }
+  // }
   
   public void drawC(Graphics g) {
     if (xpad>0 && hasBg) {

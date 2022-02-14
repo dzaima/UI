@@ -10,8 +10,7 @@ public class Font {
   public final Typeface tf;
   public final io.github.humbleui.skija.Font f;
   public final float asc, dsc, sz, h;
-  public final int ascI, dscI;
-  public final int hi;
+  public final int ascI, dscI, hi;
   public final Float strikeY, strikeH;
   public final Float underlineY, underlineH;
   public float monoWidth;

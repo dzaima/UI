@@ -5,6 +5,13 @@ v { select=text
       v { h=30em
         h { h=200px bg=#232 }
         text {
+          text { bg=#422
+            "multiple  spaces   three    four     five      six       seven "
+            "background background\nbackground background background background background background aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            text { tsz=0.6em "tiny " }
+            text { tsz=2em "big " }
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
           "123 456 678 abc def ghijkl"
           text { color=#f00 " red color" tsz=3em }
           text { color=#888 " tiny" tsz=.6em }
