@@ -170,7 +170,6 @@ public class StringNode extends InlineNode {
           sv.y+= f.hi*(spl.sz-2);
           continue;
         }
-        if (c.type==1) { if(mut)c.x=-1; continue; }
         if (i!=0) sv.ab(a, b);
         baseline(lnS, i, sv.a); lnS = i; sv.nl(); sv.a = a; sv.b = b;
         if (c.type==2) { if(mut)c.x=-1; continue; }
@@ -209,8 +208,8 @@ public class StringNode extends InlineNode {
   
   public static class Word {
     public float x;
-    public int y; // adds in baseline for split word 
-    public final byte type; // 0 - text; 1 - whitespace; 2 - newline
+    public int y; // not split: baseline = y+bl; split: l0 baseline == y; lN baseline == y+bl+f.hi*n
+    public final byte type; // 0 - text; 2 - newline
     public final String s; // actual text (only for type 0)
     public float w; // width in pixels
     public short bl; // baseline position
