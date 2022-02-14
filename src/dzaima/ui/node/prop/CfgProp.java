@@ -31,4 +31,8 @@ public class CfgProp extends Prop {
     this.type = '\0';
     this.v = null;
   }
+  
+  public String toString() {
+    return v==null? "(null)" : v.toString();
+  }
 }

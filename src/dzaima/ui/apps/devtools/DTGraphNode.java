@@ -1,6 +1,7 @@
 package dzaima.ui.apps.devtools;
 
 import dzaima.ui.gui.Graphics;
+import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
@@ -72,5 +73,17 @@ public class DTGraphNode extends Node {
     int l30 = h - (int) (1e9/30*sc); g.line(0, l30, w, l30, lineCol);
     
     g.pop();
+  }
+  
+  
+  public boolean mouseDown(int x, int y, Click c) {
+    ctx.win().focus(this);
+    aTick();
+    return true;
+  }
+  
+  public void tickC() {
+    if (ctx.win().focusNode==this) mRedraw();
+    super.tickC();
   }
 }

@@ -18,6 +18,7 @@ public abstract class Node {
   public       Prop  [] vs;
   public final Vec<Node> ch;
   public short flags = RD_ME|RD_CH|RS_ME|RS_CH|PROPS|ANYCT|MTICK;
+  @SuppressWarnings("PointlessBitwiseExpression") // ugh
   public static final short RD_ME = 1<<0; // redraw this; if present, RD_CH must also be
   public static final short RD_CH = 1<<1; // redraw children
   public static final short RS_ME = 1<<2; // resize this; if present, RS_CH must also be
