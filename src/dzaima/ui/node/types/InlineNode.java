@@ -135,74 +135,69 @@ public abstract class InlineNode extends Node {
   }
   
   public static abstract class SubSelConsumer {
-    public abstract void addString(StringNode nd, String s);
+    public abstract void addString(StringNode nd, int s, int e);
     public abstract void addNode(Node nd);
   }
   
   private static void selFull(Node n, SubSelConsumer ssc) {
-    if (n instanceof StringNode) ssc.addString((StringNode) n, ((StringNode) n).s);
-    if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
+    if (n instanceof StringNode) ssc.addString((StringNode) n, 0, ((StringNode) n).s.length());
+    else if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
     else ssc.addNode(n);
   }
-  private static void selLeft(Node p, Vec<Node> ps, Position.Spec s, SubSelConsumer ssc) {
-    if (ps.sz==0) {
-      StringNode sn = (StringNode) p;
-      if (s.pos==-1) { ssc.addString(sn, "??"); return; } // TODO remove
-      ssc.addString(sn, sn.s.substring(s.pos));
-    } else {
-      Node n = ps.pop();
-      selLeft(n, ps, s, ssc);
-      for (int i = p.ch.indexOf(n)+1; i < p.ch.sz; i++) selFull(p.ch.get(i), ssc);
-    }
-  }
-  private static void selRight(Node p, Vec<Node> ps, Position.Spec s, SubSelConsumer ssc) {
-    if (ps.sz==0) {
-      StringNode sn = (StringNode) p;
-      if (s.pos==-1) { ssc.addString(sn, "??"); return; } // TODO remove
-      ssc.addString(sn, sn.s.substring(0, s.pos));
-    } else {
-      Node n = ps.pop();
-      for (int i = 0, e=p.ch.indexOf(n); i < e; i++) selFull(p.ch.get(i), ssc);
-      selRight(n, ps, s, ssc);
-    }
-  }
-  public static void parseSelection(Selection s, SubSelConsumer ssc) {
-    Node n = s.c;
+  public static void scanSelection(Selection s, SubSelConsumer ssc) {
+    Node gp = s.c;
     
-    Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=n) aC = aP.add(aC).p;
-    Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=n) bC = bP.add(bC).p;
+    Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=gp) aC = aP.add(aC).p;
+    Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=gp) bC = bP.add(bC).p;
   
     while (true) {
       if (aP.sz==0 || bP.sz==0) {
-        assert n instanceof StringNode;
+        assert gp instanceof StringNode;
         int aN = s.aS.pos;
         int bN = s.bS.pos;
         if (aN==-1||bN==-1) return; // TODO remove
-        ssc.addString((StringNode) n, ((StringNode) n).s.substring(Math.min(aN, bN), Math.max(aN, bN)));
+        ssc.addString((StringNode) gp, Math.min(aN, bN), Math.max(aN, bN));
         return;
       }
-      Node aT = aP.pop();
-      Node bT = bP.pop();
+      Node aT = aP.peek();
+      Node bT = bP.peek();
       if (aT == bT) {
-        n = aT;
+        gp = aT;
+        aP.pop();
+        bP.pop();
         continue;
       }
-      int aI = n.ch.indexOf(aT);
-      int bI = n.ch.indexOf(bT);
-      boolean as = aI<bI; int sI = as?aI:bI; Node sT = as?aT:bT; Vec<Node> sP = as?aP:bP; Position.Spec sS = as?s.aS:s.bS;
-      boolean ae = aI>bI; int eI = ae?aI:bI; Node eT = ae?aT:bT; Vec<Node> eP = ae?aP:bP; Position.Spec eS = ae?s.aS:s.bS;
+      int aI = gp.ch.indexOf(aT);
+      int bI = gp.ch.indexOf(bT);
+      boolean as = aI<bI; int sI = as?aI:bI; Vec<Node> sP = as?aP:bP; Position.Spec sS = as?s.aS:s.bS;
+      boolean ae = aI>bI; int eI = ae?aI:bI; Vec<Node> eP = ae?aP:bP; Position.Spec eS = ae?s.aS:s.bS;
       
-      selLeft(sT, sP, sS, ssc);
-      for (int i = sI+1; i < eI; i++) selFull(n.ch.get(i), ssc);
-      selRight(eT, eP, eS, ssc);
+      // starting substring
+      if (sS.pos==-1) { ssc.addString(sS.ln, -1, -1); } // TODO remove
+      else ssc.addString(sS.ln, sS.pos, sS.ln.s.length());
+      // climb up to common node
+      for (int i = 1; i < sP.sz; i++) {
+        Node p=sP.get(i), c=sP.get(i-1);
+        for (int j = p.ch.indexOf(c)+1; j < p.ch.sz; j++) selFull(p.ch.get(j), ssc);
+      }
+      // all basic nodes in the middle
+      for (int i = sI+1; i < eI; i++) selFull(gp.ch.get(i), ssc);
+      // climb down to ending
+      for (int i = eP.sz-1; i >= 1; i--) {
+        Node p=eP.get(i), c=eP.get(i-1);
+        for (int j = 0, e=p.ch.indexOf(c); j < e; j++) selFull(p.ch.get(j), ssc);
+      }
+      // ending substring
+      if (eS.pos==-1) { ssc.addString(eS.ln, -1, -1); return; } // TODO remove
+      ssc.addString(eS.ln, 0, eS.pos);
       
       return;
     }
   }
   public static String getSelection(Selection s) {
     StringBuilder res = new StringBuilder();
-    parseSelection(s, new SubSelConsumer() {
-      public void addString(StringNode nd, String s) { res.append(s); }
+    scanSelection(s, new SubSelConsumer() {
+      public void addString(StringNode nd, int s, int e) { if (s==-1) res.append("??"); else res.append(nd.s, s, e); }
       public void addNode(Node nd) { }
     });
     return res.toString();

@@ -13,6 +13,7 @@ v { select=text
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
           "123 456 678 abc def ghijkl"
+          text{" 1("text{"2("text{"3("text{"4(" "bar" ")4"}")3"}")2"}")1 "}
           text { color=#f00 " red color" tsz=3em }
           text { color=#888 " tiny" tsz=.6em }
           " mnopq rstuv wxyz"
