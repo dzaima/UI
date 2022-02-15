@@ -7,13 +7,13 @@ import java.util.HashMap;
 import static io.github.humbleui.jwm.Key.*;
 
 public enum KeyVal {
-  shift      (SHIFT,       "shift"),
-  ctrl       (CONTROL,     "ctrl"),
-  alt        (ALT,         "alt"),
-  meta       (LINUX_META,  "meta"),
-  mac_command(MAC_COMMAND, "command"),
-  mac_option (MAC_OPTION,  "option"),
-  mac_fn     (MAC_FN,      "function"),
+  shift      (SHIFT,       1, "shift"),
+  ctrl       (CONTROL,     1, "ctrl"),
+  alt        (ALT,         1, "alt"),
+  meta       (LINUX_META,  1, "meta"),
+  mac_command(MAC_COMMAND, 1, "command"),
+  mac_option (MAC_OPTION,  1, "option"),
+  mac_fn     (MAC_FN,      1, "function"),
   
   numLock    (NUM_LOCK,    "numlock"),
   capsLock   (CAPS_LOCK,   "capslock"),
@@ -89,12 +89,20 @@ public enum KeyVal {
   y(Y,"Y"), f25(UNDEFINED,"F25"),
   z(Z,"Z"),
   unknown(UNDEFINED, "unknown key");
+  
   public final Key jwmKey;
   public final String name;
+  public final int flags;
+  
+  public static final int F_MOD = 1;
   
   KeyVal(Key jwmKey, String name) {
+    this(jwmKey, 0, name);
+  }
+  KeyVal(Key jwmKey, int flags, String name) {
     this.jwmKey = jwmKey;
     this.name = name;
+    this.flags = flags;
   }
   
   
@@ -108,5 +116,9 @@ public enum KeyVal {
     KeyVal r = jwmMap.get(jwmKey);
     assert r!=null && jwmKey!=null;
     return r;
+  }
+  
+  public boolean isModifier() {
+    return (flags&F_MOD)!=0;
   }
 }

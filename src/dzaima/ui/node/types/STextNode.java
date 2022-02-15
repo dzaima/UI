@@ -11,6 +11,10 @@ public class STextNode extends TextNode implements Selectable {
   public STextNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
   }
+  public STextNode(Node n) {
+    super(n.ctx, KS_NONE, VS_NONE);
+    add(n);
+  }
   
   public boolean selectS(Selection s) {
     mRedraw();

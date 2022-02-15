@@ -39,9 +39,10 @@ public class Position {
       c = n;
     }
     
-    if (textS!=null && c instanceof StringNode) {
+    str: if (textS!=null && c instanceof StringNode) {
       StringNode strNode = (StringNode) c;
       textS.ln = strNode;
+      if (strNode.words==null) break str;
       // TODO gracefully handle the case when no word matches 
       Font f = strNode.f;
       int fa = f.ascI;

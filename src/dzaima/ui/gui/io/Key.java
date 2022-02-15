@@ -20,24 +20,21 @@ public class Key {
   public static final int P_RIGHT = 1<<4;
   public static final int P_KP    = 1<<5;
   public static final int M_MOD = M_CTRL|M_SHIFT|M_ALT|M_SUP;
+  
+  public boolean onKeypad () { return (mod&P_KP)!=0; }
+  public boolean onRight  () { return (mod&P_RIGHT)!=0; }
+  public boolean isModifier() { return val.isModifier(); }
+  
+  public boolean plain() { return (mod&M_MOD) == 0; }
+  public boolean only(int mask) { return (mod&M_MOD) == mask; }
   public boolean onlyCtrl () { return (mod&M_MOD) == M_CTRL ; } public boolean hasCtrl () { return (mod&M_CTRL )!=0; }
   public boolean onlyShift() { return (mod&M_MOD) == M_SHIFT; } public boolean hasShift() { return (mod&M_SHIFT)!=0; }
   public boolean onlyAlt  () { return (mod&M_MOD) == M_ALT  ; } public boolean hasAlt  () { return (mod&M_ALT  )!=0; }
   public boolean onlySuper() { return (mod&M_MOD) == M_SUP  ; } public boolean hasSuper() { return (mod&M_SUP  )!=0; }
-  public boolean only(int mask) { return (mod&M_MOD) == mask; }
-  public boolean plain() { return (mod&M_MOD) == 0; }
-  public boolean onKeypad () { return (mod&P_KP)!=0; }
-  public boolean onRight  () { return (mod&P_RIGHT)!=0; }
   
-  public static boolean ctrl(int mod) {
-    return (mod&M_CTRL)!=0;
-  }
-  public static boolean shift(int mod) {
-    return (mod&M_SHIFT)!=0;
-  }
-  public static boolean alt(int mod) {
-    return (mod&M_ALT)!=0;
-  }
+  public static boolean ctrl (int mod) { return (mod&M_CTRL )!=0; }
+  public static boolean shift(int mod) { return (mod&M_SHIFT)!=0; }
+  public static boolean alt  (int mod) { return (mod&M_ALT  )!=0; }
   
   public static boolean only(int mod, int want) {
     return want == ( want & mod)
@@ -47,7 +44,6 @@ public class Key {
   public static boolean none(int mod) {
     return (mod&M_MOD) == 0;
   }
-  
   
   
   public boolean k_shift      () { return val==KeyVal.shift;       }
