@@ -3,6 +3,7 @@
 str.color = #D2D2D2 // your regular text color
 str.colorDisabled = #888888
 text.bgSel = #df264C99
+stext.keys.copy = { "ctrl+c" }
 
 icon.color = #CCC
 

@@ -71,14 +71,19 @@ public class NodeWindow extends Window {
       selection = nsel;
     }
   }
+  public void endSelection() {
+    if (selection!=null) selection.end();
+    selection = null;
+    selStart = null;
+  }
   public XY selectionRange(StringNode n) {
     if ((n.flags&StringNode.FL_SEL)==0) return null;
     return selectionRange2(n);
   }
   private XY selectionRange2(StringNode n) {
     if (selection==null) return null;
-    Position.Spec sS = selection.sS; boolean sB = sS.ln == n;
-    Position.Spec eS = selection.eS; boolean eB = eS.ln == n;
+    PosPart sS = selection.sS; boolean sB = sS.ln == n;
+    PosPart eS = selection.eS; boolean eB = eS.ln == n;
     if (sB && eB) return new XY(sS.pos, eS.pos);
     if (sB) return new XY(sS.pos, n.s.length());
     if (eB) return new XY(0, eS.pos);

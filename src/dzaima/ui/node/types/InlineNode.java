@@ -145,7 +145,7 @@ public abstract class InlineNode extends Node {
     else ssc.addNode(n);
   }
   public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
-    Node gp = s.c;
+    Node gp = (Node) s.c;
     
     Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=gp) aC = aP.add(aC).p;
     Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=gp) bC = bP.add(bC).p;
@@ -169,8 +169,8 @@ public abstract class InlineNode extends Node {
       }
       int aI = gp.ch.indexOf(aT);
       int bI = gp.ch.indexOf(bT);
-      boolean as = aI<bI; int sI = as?aI:bI; Vec<Node> sP = as?aP:bP; Position.Spec sS = as?s.aS:s.bS;
-      boolean ae = aI>bI; int eI = ae?aI:bI; Vec<Node> eP = ae?aP:bP; Position.Spec eS = ae?s.aS:s.bS;
+      boolean as = aI<bI; int sI = as?aI:bI; Vec<Node> sP = as?aP:bP; PosPart sS = as?s.aS:s.bS;
+      boolean ae = aI>bI; int eI = ae?aI:bI; Vec<Node> eP = ae?aP:bP; PosPart eS = ae?s.aS:s.bS;
       
       // starting substring
       if (sS.pos==-1) { ssc.addString(sS.ln, -1, -1); } // TODO remove

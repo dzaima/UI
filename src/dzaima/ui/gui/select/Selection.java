@@ -1,16 +1,13 @@
 package dzaima.ui.gui.select;
 
-import dzaima.ui.node.Node;
-import dzaima.ui.node.types.*;
-
 public class Selection {
   public final int depth;
   public final Position a, b;
-  public final Position.Spec aS, bS;
-  public final Node c;
-  public Position.Spec sS, eS;
+  public final PosPart aS, bS;
+  public final Selectable c;
+  public PosPart sS, eS;
   
-  public Selection(int depth, Position a, Position b, Position.Spec aS, Position.Spec bS) {
+  public Selection(int depth, Position a, Position b, PosPart aS, PosPart bS) {
     this.depth = depth;
     this.a = a;
     this.b = b;
@@ -20,29 +17,13 @@ public class Selection {
     assert aS.sn == bS.sn;
   }
   
-  public void end() {
-    c.mRedraw();
-    if (c instanceof InlineNode) {
-      InlineNode.scanSelection(this, new InlineNode.SubSelConsumer() {
-        public void addString(StringNode nd, int s, int e) {
-          nd.flags&= ~StringNode.FLS_SEL;
-        }
-        public void addNode(Node nd) { }
-      });
-    }
+  public void start() {
+    boolean rev = c.selectS(this);
+    if (rev) { sS=bS; eS=aS; }
+    else     { sS=aS; eS=bS; }
   }
   
-  public void start() {
-    c.mRedraw();
-    if (c instanceof InlineNode) {
-      boolean rev = InlineNode.scanSelection(this, new InlineNode.SubSelConsumer() {
-        public void addString(StringNode nd, int s, int e) {
-          nd.flags|= StringNode.FL_SEL;
-        }
-        public void addNode(Node nd) { }
-      });
-      if (rev) { sS=bS; eS=aS; }
-      else     { sS=aS; eS=bS; }
-    }
+  public void end() {
+    c.selectE(this);
   }
 }

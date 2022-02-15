@@ -8,56 +8,30 @@ import io.github.humbleui.skija.paragraph.Paragraph;
 
 public class Position {
   public final Node n;
-  public final Vec<Spec> ss;
-  protected Position(Node n, Vec<Spec> ss) {
+  public final Vec<PosPart> ss;
+  protected Position(Node n, Vec<PosPart> ss) {
     this.n = n;
     this.ss = ss;
   }
   
   
-  
-  public static class Spec {
-    public final int depth;
-    public final Node sn;
-    public int pos;
-    public StringNode ln; // leaf node for string
-    
-    public Spec(int depth, Node sn, int pos) {
-      this.depth = depth;
-      this.pos = pos; // potentially overwritten later
-      this.sn = sn;
-    }
-    
-    public boolean equals(Object o) {
-      if (!(o instanceof Spec)) return false;
-      Spec c = (Spec) o;
-      return pos==c.pos && sn==c.sn && ln==c.ln;
-    }
-  }
-  
-  public static Position getPosition(NodeWindow nw, int fx, int fy) {
-    Vec<Spec> ss = new Vec<>();
+  public static Position getPosition(Node c, int fx, int fy) {
+    Vec<PosPart> ss = new Vec<>();
     int depth = 0;
-    Spec textS = null;
+    PosPart textS = null;
     
-    Node c = nw.base;
     while (true) {
       Node n = c.findCh(fx, fy);
       if (n==null) break;
       fx-= n.dx;
       fy-= n.dy;
       
-      int tyi = c.id("select");
-      if (tyi!=-1) {
-        String ty = c.vs[tyi].val();
-        switch (ty) {
-          case "v": ss.add(new Spec(depth, c, fy < n.h/2? 0 : 1)); break;
-          case "h": ss.add(new Spec(depth, c, fx < n.w/2? 0 : 1)); break;
-          case "text":
-            textS = new Spec(depth, c, -1); // keep the latest one
-            break;
-          default:
-            throw new IllegalStateException("invalid 'select' field value '" + ty + "'");
+      if (c instanceof Selectable && ((Selectable) c).selectable()) {
+        Selectable s = (Selectable) c;
+        switch (s.selType()) { default: throw new IllegalStateException();
+          case "v": ss.add(new PosPart(depth, s, fy < n.h/2? 0 : 1)); break;
+          case "h": ss.add(new PosPart(depth, s, fx < n.w/2? 0 : 1)); break;
+          case "text": textS = new PosPart(depth, s, -1); break; // keep the latest one
         }
       }
       
@@ -129,13 +103,13 @@ public class Position {
   
   public static Selection select(Position a, Position b) {
     int bD = -1;
-    Spec aB = null;
-    Spec bB = null;
+    PosPart aB = null;
+    PosPart bB = null;
     int ai = 0;
     int bi = 0;
     while (ai!=a.ss.sz && bi!=b.ss.sz) {
-      Spec ac = a.ss.get(ai);
-      Spec bc = b.ss.get(bi);
+      PosPart ac = a.ss.get(ai);
+      PosPart bc = b.ss.get(bi);
       if (ac.sn==bc.sn) {
         bD = ac.depth;
         aB = ac;

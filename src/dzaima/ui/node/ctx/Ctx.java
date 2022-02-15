@@ -118,6 +118,7 @@ public abstract class Ctx {
   public static BaseCtx newCtx() {
     HashMap<String, Ctx.NodeGen> map = new HashMap<>();
     map.put("text", TextNode::new);
+    map.put("stext", STextNode::new);
     map.put("h", HNode::new);
     map.put("v", VNode::new);
     map.put("hl", HlNode::new);
