@@ -2,6 +2,7 @@ package dzaima.ui.node.types;
 
 import dzaima.ui.gui.Font;
 import dzaima.ui.gui.config.GConfig;
+import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
@@ -131,5 +132,79 @@ public abstract class InlineNode extends Node {
       b.add(n);
       return b;
     }
+  }
+  
+  public static abstract class SubSelConsumer {
+    public abstract void addString(StringNode nd, String s);
+    public abstract void addNode(Node nd);
+  }
+  
+  private static void selFull(Node n, SubSelConsumer ssc) {
+    if (n instanceof StringNode) ssc.addString((StringNode) n, ((StringNode) n).s);
+    if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
+    else ssc.addNode(n);
+  }
+  private static void selLeft(Node p, Vec<Node> ps, Position.Spec s, SubSelConsumer ssc) {
+    if (ps.sz==0) {
+      StringNode sn = (StringNode) p;
+      if (s.pos==-1) { ssc.addString(sn, "??"); return; } // TODO remove
+      ssc.addString(sn, sn.s.substring(s.pos));
+    } else {
+      Node n = ps.pop();
+      selLeft(n, ps, s, ssc);
+      for (int i = p.ch.indexOf(n)+1; i < p.ch.sz; i++) selFull(p.ch.get(i), ssc);
+    }
+  }
+  private static void selRight(Node p, Vec<Node> ps, Position.Spec s, SubSelConsumer ssc) {
+    if (ps.sz==0) {
+      StringNode sn = (StringNode) p;
+      if (s.pos==-1) { ssc.addString(sn, "??"); return; } // TODO remove
+      ssc.addString(sn, sn.s.substring(0, s.pos));
+    } else {
+      Node n = ps.pop();
+      for (int i = 0, e=p.ch.indexOf(n); i < e; i++) selFull(p.ch.get(i), ssc);
+      selRight(n, ps, s, ssc);
+    }
+  }
+  public static void parseSelection(Selection s, SubSelConsumer ssc) {
+    Node n = s.c;
+    
+    Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=n) aC = aP.add(aC).p;
+    Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=n) bC = bP.add(bC).p;
+  
+    while (true) {
+      if (aP.sz==0 || bP.sz==0) {
+        assert n instanceof StringNode;
+        int aN = s.aS.pos;
+        int bN = s.bS.pos;
+        if (aN==-1||bN==-1) return; // TODO remove
+        ssc.addString((StringNode) n, ((StringNode) n).s.substring(Math.min(aN, bN), Math.max(aN, bN)));
+        return;
+      }
+      Node aT = aP.pop();
+      Node bT = bP.pop();
+      if (aT == bT) {
+        n = aT;
+        continue;
+      }
+      int aI = n.ch.indexOf(aT);
+      int bI = n.ch.indexOf(bT);
+      boolean as = aI<bI; int sI = as?aI:bI; Node sT = as?aT:bT; Vec<Node> sP = as?aP:bP; Position.Spec sS = as?s.aS:s.bS;
+      boolean ae = aI>bI; int eI = ae?aI:bI; Node eT = ae?aT:bT; Vec<Node> eP = ae?aP:bP; Position.Spec eS = ae?s.aS:s.bS;
+      
+      selLeft(sT, sP, sS, ssc);
+      for (int i = sI+1; i < eI; i++) selFull(n.ch.get(i), ssc);
+      selRight(eT, eP, eS, ssc);
+      
+      return;
+    }
+  }
+  public static String getSelection(Selection s) {
+    StringBuilder res = new StringBuilder();
+    parseSelection(s, new SubSelConsumer() {
+      public void addString(StringNode nd, String s) { res.append(s); }
+      public void addNode(Node nd) { }
+    });
+    return res.toString();
   }
 }

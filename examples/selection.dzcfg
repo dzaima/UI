@@ -6,11 +6,10 @@ h { bg=#333
     h { bg=#222 alX=center alY=center "item 4" }
     h {
       text { select=text
-       "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.
-        Animi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.
-        Blanditiis sapiente sed et aut molestiae alias suscipit. Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.
-        Aut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.
-        Dolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
+       "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.\nAnimi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.\nBlanditiis sapiente sed et aut molestiae alias suscipit.\n"
+        text { "nested text" text { color=#f88 " red text " } "back to regular\n" }
+        "Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.\nAut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.\nDolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
+        "overflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflow"
       }
     }
   }
@@ -23,15 +22,9 @@ h { bg=#333
       h { bg=#222 alX=center alY=center "item 4" }
     }
     v {
-      text { select=text
-       "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.
-        Animi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.
-        Blanditiis sapiente sed et aut molestiae alias suscipit. Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.
-        Aut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.
-        Dolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
-      }
+      text { select=text id=insertText }
       h { alY=bottom
-        text { id=info "" }
+        text { id=selectInfo "" }
       }
     }
   }

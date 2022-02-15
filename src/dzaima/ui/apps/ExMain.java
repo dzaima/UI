@@ -5,11 +5,12 @@ import dzaima.ui.apps.fmgr.FMgr;
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.*;
-import dzaima.ui.gui.select.Position;
+import dzaima.ui.gui.select.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.types.StringNode;
+import dzaima.ui.node.prop.*;
+import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
 
@@ -67,24 +68,6 @@ public class ExMain extends NodeWindow {
     System.exit(0); // so syncs won't keep waiting
   }
   
-  public void tick() {
-    super.tick();
-    Node info = base.ctx.id("info");
-    if (info!=null) {
-      StringBuilder s = new StringBuilder();
-      Position p = Position.getPosition(this, mx, my);
-      s.append("n = ").append(Devtools.name(p.n, false)).append('\n');
-      for (Position.Spec sp : p.ss) {
-        s.append("  spec ").append(sp.depth);
-        s.append(":");
-        if (sp.word!=null) s.append(" word ").append(sp.word.s);
-        s.append(" pos ").append(sp.pos);
-        s.append('\n');
-      }
-      info.replace(0, new StringNode(base.ctx, s.toString()));
-    }
-  }
-  
   public boolean key(Key key, int scancode, KeyAction a) {
     if (a.press) {
       if (key.k_f12()) {
@@ -105,4 +88,53 @@ public class ExMain extends NodeWindow {
     }
     return super.key(key, scancode, a);
   }
+  
+  
+  Selection sel;
+  
+  // code for selection example
+  Position startPos;
+  public void tick() {
+    super.tick();
+    Node info = base.ctx.id("selectInfo");
+    if (info!=null) {
+      Node t = base.ctx.id("insertText");
+      if (t.ch.sz==0) {
+        PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/text.dzcfg")));
+        t.add(ctx.makeHere(((PNodeGroup) ((PNodeGroup) ((PNodeGroup) g.ch.get(0)).ch.get(1)).ch.get(0)).ch.get(1)));
+      }
+      
+      StringBuilder s = new StringBuilder();
+      Position p = Position.getPosition(this, mx, my);
+      Selection nsel = startPos==null? null : Position.select(startPos, p);
+      
+      if ((nsel==null?null:nsel.c) != (sel==null?null:sel.c)) {
+        // if (sel!=null) sel.c.selectE();
+        // if (nsel!=null) nsel.c.selectS(nsel);
+      }
+      sel = nsel;
+      if (sel!=null && sel.c instanceof InlineNode) s.append("selection: ").append(InlineNode.getSelection(sel)).append('\n');
+      
+      if (startPos!=null && nsel!=null) s.append("common depth: ").append(nsel.depth).append('\n');
+      
+      s.append("n = ").append(Devtools.name(p.n, false)).append('\n');
+      for (Position.Spec sp : p.ss) {
+        s.append("  spec ").append(sp.depth);
+        s.append(":");
+        s.append(" pos ").append(sp.pos);
+        s.append('\n');
+      }
+      info.replace(0, new StringNode(base.ctx, s.toString()));
+    }
+  }
+  
+  public void mouseDown(int x, int y, Click cl) {
+    Node info = base.ctx.id("selectInfo");
+    if (info!=null) {
+      startPos = Position.getPosition(this, x, y);
+      return;
+    }
+    super.mouseDown(x, y, cl);
+  }
+  
 }

@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class StringNode extends InlineNode {
   public final String s;
   public Font f;
-  private int colFG, colBG;
+  public int colFG, colBG;
   
   public StringNode(Ctx ctx, String s) {
     super(ctx, KS_NONE, VS_NONE);
@@ -87,8 +87,8 @@ public class StringNode extends InlineNode {
               y+= fh;
               text(g, c.split[i], this, 0, y);
             }
-            y+= fh;
-            text(g, c.split[c.split.length-1], this, 0, y+c.bl-f.ascI);
+            y+= fh + c.bl - f.ascI;
+            text(g, c.split[c.split.length-1], this, 0, y);
           }
         }
       }
@@ -121,8 +121,7 @@ public class StringNode extends InlineNode {
               y+= fh;
               g.rectWH(0, y, f.width(c.split[i]), fh, colBG);
             }
-            y+= fh;
-            y = y + c.bl - f.ascI;
+            y+= fh + c.bl - fa;
             g.rectWH(0, y, f.width(c.split[c.split.length-1]), fh, colBG);
           }
         }
@@ -221,18 +220,22 @@ public class StringNode extends InlineNode {
     }
   
     public Paragraph buildPara(StringNode n) {
-      Graphics.tmpStyle.setTextStyle(n.f.textStyle(n.colFG));
-      ParagraphBuilder b = new ParagraphBuilder(Graphics.tmpStyle, Typeface.fontCol);
-      b.addText(s);
-      Paragraph r = b.build();
-      r.layout(Float.POSITIVE_INFINITY);
-      b.close();
-      return r;
+      return n.buildPara(s);
     }
   
     public void setFont(Font f) {
       w = type==2? Tools.BIG : f.widthf(s);
     }
+  }
+  
+  public Paragraph buildPara(String s) {
+    Graphics.tmpStyle.setTextStyle(f.textStyle(colFG));
+    ParagraphBuilder b = new ParagraphBuilder(Graphics.tmpStyle, Typeface.fontCol);
+    b.addText(s);
+    Paragraph r = b.build();
+    r.layout(Float.POSITIVE_INFINITY);
+    b.close();
+    return r;
   }
   
   public static Word[] words(String s) { // each string will either have no whitespace or be all spaces, or be a single newline
