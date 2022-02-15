@@ -13,7 +13,8 @@ public class Click {
   public boolean down;
   
   public int mod; // modifiers as per Key.M_*
-  public int sx, sy; // start x/y
+  public int gx, gy; // start global x/y
+  public int lx, ly; // start local x/y
   public int dx, dy; // delta x/y travelled since start
   public int cdx, cdy; // current movement at the time of a callback
   public long msStart; // time of start
@@ -27,8 +28,8 @@ public class Click {
   
   boolean startedThisTick = false; 
   public void start(int x, int y) {
-    sx = x; dx = 0;
-    sy = y; dy = 0;
+    gx = x; dx = 0;
+    gy = y; dy = 0;
     msStart = System.currentTimeMillis();
     listen = null;
     didDouble = false;
@@ -63,7 +64,6 @@ public class Click {
   
   private Node prevNotify;
   private Node listen;
-  public int lx, ly; // position of listened object
   
   public void notify(Node node, int lx, int ly) {
     assert listen==null;
@@ -72,6 +72,11 @@ public class Click {
     prevNotify = node;
     this.lx = lx;
     this.ly = ly;
+  }
+  public void redirect() { // call before calling another mouseDown in mouseTick, aka redirecting the click to another node
+    Node c = listen;
+    listen = null;
+    
   }
   
   public float len() {

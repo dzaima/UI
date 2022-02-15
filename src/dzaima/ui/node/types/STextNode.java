@@ -40,11 +40,15 @@ public class STextNode extends TextNode implements Selectable {
     return "text";
   }
   
-  public boolean mouseDown(int x, int y, Click c) {
+  public void forceStart(int x, int y, Click c) {
     c.notify(this, x, y);
     NodeWindow w = ctx.win();
     w.startSelection(Position.getPosition(this, x, y));
     w.focus(this);
+  }
+  public boolean mouseDown(int x, int y, Click c) {
+    if (super.mouseDown(x, y, c)) return true;
+    forceStart(x, y, c);
     return true;
   }
   
@@ -64,7 +68,7 @@ public class STextNode extends TextNode implements Selectable {
     switch (gc.keymap(key, a, "stext")) {
       case "copy":
         NodeWindow w = ctx.win();
-        w.copyString(InlineNode.getSelection(w.selection));
+        if (w.selection!=null) w.copyString(InlineNode.getSelection(w.selection));
         return true;
     }
     return false;

@@ -465,6 +465,7 @@ public class EditNode extends Node {
   }
   
   public void pasteText(String s) {
+    if (s==null) return;
     String[] lns = Tools.split(s, '\n');
     if (lns.length==cs.sz || cs.sz>1 && lns.length==cs.sz+1 && lns[lns.length-1].isEmpty()) {
       for (int i = 0; i < cs.sz; i++) {
