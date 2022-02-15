@@ -26,7 +26,7 @@ h {
         }
         pad { all=.5em x=1em h { "testroom" } }
         pad { all=.5em x=1em h { "myRoom" } }
-        pad { all=.5em x=1em h { "sandboxBridge" } }
+        pad { all=.5em x=1em h { "bridge" } }
       }
       vsep{x=.5em}
       vl {
@@ -36,11 +36,11 @@ h {
             pad { l=1em "v" }
           }
         }
+        pad { all=.5em x=1em h { "Array Languages" } }
         pad { all=.5em x=1em h { "APL" } }
-        pad { all=.5em x=1em h { "blank room test" } }
+        pad { all=.5em x=1em h { "BQN" } }
         pad { all=.5em x=1em h { "test" } }
         pad { all=.5em x=1em h { "#apl" } }
-        pad { all=.5em x=1em h { "Empty room" } }
       }
       vsep{x=.5em}
       vl {
@@ -52,7 +52,6 @@ h {
         }
         pad { all=.5em x=1em text { "SIMD language discussion" } }
         pad { all=.5em x=1em text { "APL Chat" } }
-        pad { all=.5em x=1em text { "EBQN Design & Implementation" } }
       }
     }
   }

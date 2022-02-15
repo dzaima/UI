@@ -1,9 +1,9 @@
 v { bg=#333
   vl {
-    h { "hello" hsep{x=0em y=0em color=#F0F} text{"hello"} hsep{x=0em y=0em color=#F0F} }
-    h { "⍶⍹⍺+⍵" hsep{x=0em y=0em color=#F0F} text{"⍶⍹⍺+⍵"} hsep{x=0em y=0em color=#F0F} }
-    h { "𝔽𝔾𝕨+𝕩" hsep{x=0em y=0em color=#F0F} text{"𝔽𝔾𝕨+𝕩"} hsep{x=0em y=0em color=#F0F} }
-    h { "world" hsep{x=0em y=0em color=#F0F} text{"world"} hsep{x=0em y=0em color=#F0F} }
+    h { "hello" hsep{x=0em y=0em color=#F0F} stext{"hello"} hsep{x=0em y=0em color=#F0F} }
+    h { "⍶⍹⍺+⍵" hsep{x=0em y=0em color=#F0F} stext{"⍶⍹⍺+⍵"} hsep{x=0em y=0em color=#F0F} }
+    h { "𝔽𝔾𝕨+𝕩" hsep{x=0em y=0em color=#F0F} stext{"𝔽𝔾𝕨+𝕩"} hsep{x=0em y=0em color=#F0F} }
+    h { "world" hsep{x=0em y=0em color=#F0F} stext{"world"} hsep{x=0em y=0em color=#F0F} }
     
     "⍺⍵⍶⍹⎕"
     "↖𝕨𝕩𝕗𝕘˜¨˘⁼⌜´˝¯∞"

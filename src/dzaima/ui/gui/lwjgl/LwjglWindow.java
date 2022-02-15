@@ -300,9 +300,11 @@ public class LwjglWindow extends WindowImpl {
   
   public long C_REGULAR;
   public long C_HAND;
+  public long C_IBEAM;
   private void initCursors() {
     C_REGULAR = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     C_HAND = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+    C_IBEAM = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
   }
   
   
@@ -324,7 +326,8 @@ public class LwjglWindow extends WindowImpl {
   public void setCursor(Window.CursorType c) {
     switch (c) {
       case REGULAR: GLFW.glfwSetCursor(windowPtr, C_REGULAR); break;
-      case HAND   : GLFW.glfwSetCursor(windowPtr, C_HAND   ); break;
+      case IBEAM:   GLFW.glfwSetCursor(windowPtr, C_IBEAM  ); break;
+      case HAND:    GLFW.glfwSetCursor(windowPtr, C_HAND   ); break;
     }
   }
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { openFileStatic(filter, initial, onResult); }
