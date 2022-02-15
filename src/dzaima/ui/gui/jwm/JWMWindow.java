@@ -23,10 +23,6 @@ public class JWMWindow extends WindowImpl {
     super(w, init);
   }
   
-  static {
-    App.init();
-  }
-  
   public void setTitle(String s) {
     if (!s.equals(title)) {
       title = s;

@@ -7,6 +7,8 @@ import io.github.humbleui.jwm.App;
 import io.github.humbleui.skija.impl.Library;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.function.Consumer;
+
 public class Windows {
   public static int MAX_WINDOWS = 10;
   
@@ -46,23 +48,28 @@ public class Windows {
     }
   }
   
-  public void waitFor() {
+  public static void start(Consumer<Windows> fn) {
+    Windows w = new Windows();
     switch (getManager()) {
       case JWM: {
+        // App.start(() -> fn.accept(w));
+        App.init();
+        fn.accept(w);
         App.start();
         break;
       }
       case LWJGL: {
-        while (ws.sz > 0) {
+        fn.accept(w);
+        while (w.ws.sz > 0) {
           Tools.sleep(1000/120);
-          for (Window c : ws) if (!c.impl.running()) ws.remove(c);
+          for (Window c : w.ws) if (!c.impl.running()) w.ws.remove(c);
           GLFW.glfwPollEvents();
         }
-        for (Window c : ws) c.shouldStop.set(true);
+        for (Window c : w.ws) c.shouldStop.set(true);
         finalWait: while (true) {
           GLFW.glfwPollEvents();
           Tools.sleep(1000/120);
-          for (Window c : ws) if (c.impl.running()) continue finalWait;
+          for (Window c : w.ws) if (c.impl.running()) continue finalWait;
           break;
         }
         break;

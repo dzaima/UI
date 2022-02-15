@@ -23,15 +23,12 @@ public class ExMain extends NodeWindow {
     super(gc, pctx, g, new WindowInit(title));
   }
   
-  public static void main(String[] args) {
-    Windows.setManager(Windows.Manager.LWJGL);
-    
-    Windows mgr = new Windows();
+  public static void run(Windows mgr) {
     GConfig gc = GConfig.newConfig();
     Ctx ctx = Ctx.newCtx();
-    
+  
     // NodeWindow w = FMgr.create(gc, Paths.get("."));
-    
+  
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/layouts.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/tree.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/text.dzcfg")));
@@ -40,15 +37,15 @@ public class ExMain extends NodeWindow {
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
     ExMain w = new ExMain(gc, ctx, g, "example window");
-    
+  
     // ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
     // CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
     // ed.setLang(w.gc.langs().fromName("java"));
     // int s = ed.um.pushIgnore();
     // ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
     // ed.um.popIgnore(s);
-    
-    
+  
+  
     if (dtc == 0) {
       mgr.start(w);
     } else {
@@ -63,9 +60,11 @@ public class ExMain extends NodeWindow {
         mgr.start(d2);
       }
     }
-    mgr.waitFor();
-    Tools.sleep(1000);
-    System.exit(0); // so syncs won't keep waiting
+  }
+  
+  public static void main(String[] args) {
+    Windows.setManager(Windows.Manager.LWJGL);
+    Windows.start(ExMain::run);
   }
   
   public boolean key(Key key, int scancode, KeyAction a) {
