@@ -4,9 +4,11 @@ import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.config.GConfig;
+import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.utils.Vec;
+import dzaima.ui.node.types.StringNode;
+import dzaima.utils.*;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -48,6 +50,39 @@ public class NodeWindow extends Window {
   public Node focusNode() {
     if (focusNode!=null && !focusNode.visible) focusNode = null;
     return focusNode;
+  }
+  
+  public Selection selection;
+  private Position selStart;
+  public void startSelection(Position p) {
+    if (selection!=null) {
+      selection.end();
+      selection = null;
+    }
+    selStart = p;
+  }
+  public void continueSelection(Position p) {
+    if (selStart==null) return;
+    Selection psel = selection;
+    Selection nsel = Position.select(selStart, p);
+    if (psel==null || nsel==null || psel.c!=nsel.c || !psel.aS.equals(nsel.aS) || !psel.bS.equals(nsel.bS)) {
+      if (psel!=null) psel.end();
+      if (nsel!=null) nsel.start();
+      selection = nsel;
+    }
+  }
+  public XY selectionRange(StringNode n) {
+    if ((n.flags&StringNode.FL_SEL)==0) return null;
+    return selectionRange2(n);
+  }
+  private XY selectionRange2(StringNode n) {
+    if (selection==null) return null;
+    Position.Spec sS = selection.sS; boolean sB = sS.ln == n;
+    Position.Spec eS = selection.eS; boolean eB = eS.ln == n;
+    if (sB && eB) return new XY(sS.pos, eS.pos);
+    if (sB) return new XY(sS.pos, n.s.length());
+    if (eB) return new XY(0, eS.pos);
+    return new XY(0, n.s.length());
   }
   
   public void setup() {

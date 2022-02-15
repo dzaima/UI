@@ -90,10 +90,7 @@ public class ExMain extends NodeWindow {
   }
   
   
-  Selection sel;
-  
   // code for selection example
-  Position startPos;
   public void tick() {
     super.tick();
     Node info = base.ctx.id("selectInfo");
@@ -106,16 +103,14 @@ public class ExMain extends NodeWindow {
       
       StringBuilder s = new StringBuilder();
       Position p = Position.getPosition(this, mx, my);
-      Selection nsel = startPos==null? null : Position.select(startPos, p);
-      
-      if ((nsel==null?null:nsel.c) != (sel==null?null:sel.c)) {
-        // if (sel!=null) sel.c.selectE();
-        // if (nsel!=null) nsel.c.selectS(nsel);
+      if (btns[Click.LEFT].down) {
+        continueSelection(p);
       }
-      sel = nsel;
-      if (sel!=null && sel.c instanceof InlineNode) s.append("selection: ").append(InlineNode.getSelection(sel)).append('\n');
       
-      if (startPos!=null && nsel!=null) s.append("common depth: ").append(nsel.depth).append('\n');
+      if (selection!=null) {
+        if (selection.c instanceof InlineNode) s.append("selection: ").append(InlineNode.getSelection(selection)).append('\n');
+        s.append("common depth: ").append(selection.depth).append('\n');
+      }
       
       s.append("n = ").append(Devtools.name(p.n, false)).append('\n');
       for (Position.Spec sp : p.ss) {
@@ -131,10 +126,10 @@ public class ExMain extends NodeWindow {
   public void mouseDown(int x, int y, Click cl) {
     Node info = base.ctx.id("selectInfo");
     if (info!=null) {
-      startPos = Position.getPosition(this, x, y);
+      Position startPos = Position.getPosition(this, x, y);
+      startSelection(startPos);
       return;
     }
     super.mouseDown(x, y, cl);
   }
-  
 }

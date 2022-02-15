@@ -26,7 +26,9 @@ public abstract class Node {
   public static final short PROPS = 1<<4; // whether props have been modified
   public static final short ATICK = 1<<5; // whether this always needs tick
   public static final short MTICK = 1<<6; // whether this needs tick on the next frame
-  public static final short ANYCT = 1<<7; // whethet any child has PROPS/ATICK/MTICK
+  public static final short ANYCT = 1<<7; // whether any child has PROPS/ATICK/MTICK
+  public static final short F_C1 = 1<<14;
+  public static final short F_C2 = (short) (1<<15);
   
   public Node p;
   public boolean visible = false;

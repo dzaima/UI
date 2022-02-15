@@ -144,7 +144,7 @@ public abstract class InlineNode extends Node {
     else if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
     else ssc.addNode(n);
   }
-  public static void scanSelection(Selection s, SubSelConsumer ssc) {
+  public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
     Node gp = s.c;
     
     Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=gp) aC = aP.add(aC).p;
@@ -155,9 +155,9 @@ public abstract class InlineNode extends Node {
         assert gp instanceof StringNode;
         int aN = s.aS.pos;
         int bN = s.bS.pos;
-        if (aN==-1||bN==-1) return; // TODO remove
+        if (aN==-1||bN==-1) return false; // TODO remove
         ssc.addString((StringNode) gp, Math.min(aN, bN), Math.max(aN, bN));
-        return;
+        return aN>bN;
       }
       Node aT = aP.peek();
       Node bT = bP.peek();
@@ -188,10 +188,10 @@ public abstract class InlineNode extends Node {
         for (int j = 0, e=p.ch.indexOf(c); j < e; j++) selFull(p.ch.get(j), ssc);
       }
       // ending substring
-      if (eS.pos==-1) { ssc.addString(eS.ln, -1, -1); return; } // TODO remove
-      ssc.addString(eS.ln, 0, eS.pos);
+      if (eS.pos==-1) { ssc.addString(eS.ln, -1, -1); } // TODO remove
+      else ssc.addString(eS.ln, 0, eS.pos);
       
-      return;
+      return ae;
     }
   }
   public static String getSelection(Selection s) {

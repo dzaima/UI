@@ -12,6 +12,8 @@ public class StringNode extends InlineNode {
   public final String s;
   public Font f;
   public int colFG, colBG;
+  public static final short FL_SEL = F_C1;
+  public static final short FLS_SEL = FL_SEL;
   
   public StringNode(Ctx ctx, String s) {
     super(ctx, KS_NONE, VS_NONE);
@@ -82,13 +84,14 @@ public class StringNode extends InlineNode {
             text(g, c, this, c.x, c.y+c.bl);
           } else {
             int y = c.y;
-            text(g, c.split[0], this, c.x, y);
-            for (int i = 1; i < c.split.length-1; i++) {
+            int i = 0;
+            text(g, c.split[i++], this, c.x, y);
+            while (i < c.split.length-1) {
               y+= fh;
-              text(g, c.split[i], this, 0, y);
+              text(g, c.split[i++], this, 0, y);
             }
             y+= fh + c.bl - f.ascI;
-            text(g, c.split[c.split.length-1], this, 0, y);
+            text(g, c.split[i], this, 0, y);
           }
         }
       }
@@ -104,29 +107,43 @@ public class StringNode extends InlineNode {
   
   public void bg(Graphics g, boolean full) {
     pbg(g, full);
-    if (words!=null && Tools.vs(colBG)) {
+    XY sel = ctx.win().selectionRange(this);
+    int ss = sel==null? -1 : sel.x;
+    int se = sel==null? -1 : sel.y;
+    if (words!=null && (Tools.vs(colBG) || sel!=null)) {
       int fa = f.ascI;
       int fh = f.hi;
       if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
+      int cs = 0;
       for (Word c : words) {
-        if (c.type==0) {
-          int x = (int) c.x;
-          int y = c.y;
-          if (c.split == null) {
-            g.rectWH(x, y+c.bl-fa, (int) Math.ceil(c.w), fh, colBG);
-          } else {
-            y-= fa;
-            g.rectWH(x, y, f.width(c.split[0]), fh, colBG);
-            for (int i = 1; i < c.split.length-1; i++) {
-              y+= fh;
-              g.rectWH(0, y, f.width(c.split[i]), fh, colBG);
-            }
-            y+= fh + c.bl - fa;
-            g.rectWH(0, y, f.width(c.split[c.split.length-1]), fh, colBG);
+        if (c.type!=0) continue;
+        int x = (int) c.x;
+        int y = c.y;
+        if (c.split == null) {
+          cs = bgRect(g, ss, se, cs, x, y+c.bl-fa, c.s, (int) Math.ceil(c.w), fh);
+        } else {
+          y-= fa;
+          int i = 0;
+          cs = bgRect(g, ss, se, cs, x, y, c.split[i], f.width(c.split[i]), fh); i++;
+          while (i < c.split.length-1) {
+            y+= fh;
+            cs = bgRect(g, ss, se, cs, 0, y, c.split[i], f.width(c.split[i]), fh); i++;
           }
+          y+= fh + c.bl - fa;
+          cs = bgRect(g, ss, se, cs, 0, y, c.split[i], f.width(c.split[i]), fh);
         }
       }
     }
+  }
+  private int bgRect(Graphics g, int ss, int se, int cs, int x, int y, String s, int w, int h) {
+    int ce = cs+s.length();
+    g.rectWH(x, y, w, h, colBG);
+    if (!(cs>se || ce<ss)) {
+      int os = f.width(s.substring(0, Math.max(0, ss-cs)));
+      int oe = f.width(s.substring(0, Math.min(s.length(), se-cs)));
+      g.rect(x+os, y, x+oe, y+h, gc.getProp("text.bgSel").col());
+    }
+    return ce;
   }
   
   public int minW(     ) { return sz.x; }

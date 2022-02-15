@@ -27,6 +27,12 @@ public class Position {
       this.pos = pos; // potentially overwritten later
       this.sn = sn;
     }
+    
+    public boolean equals(Object o) {
+      if (!(o instanceof Spec)) return false;
+      Spec c = (Spec) o;
+      return pos==c.pos && sn==c.sn && ln==c.ln;
+    }
   }
   
   public static Position getPosition(NodeWindow nw, int fx, int fy) {
