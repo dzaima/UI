@@ -52,10 +52,10 @@ public class Windows {
     Windows w = new Windows();
     switch (getManager()) {
       case JWM: {
-        // App.start(() -> fn.accept(w));
-        App.init();
-        fn.accept(w);
-        App.start();
+        App.start(() -> fn.accept(w));
+        // App.init();
+        // fn.accept(w);
+        // App.start();
         break;
       }
       case LWJGL: {
