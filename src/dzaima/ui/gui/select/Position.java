@@ -53,7 +53,6 @@ public class Position {
       if (c instanceof StringNode) {
         StringNode str = (StringNode) c;
         Font f = str.f;
-        int fa = f.ascI;
         int fh = f.hi;
         int sum = 0;
         for (int wp = 0; wp < str.words.length; wp++) {
@@ -104,10 +103,8 @@ public class Position {
   
   private static int wPos(int fx, int fy, StringNode nd, StringNode.Word c, int spl, int x, int sy, int w, int fh) {
     int ey = sy+fh;
-    if (sy+fh/2<nd.sY2) {
-      sy = nd.sY1;
-      ey = nd.sY2;
-    }
+    if (sy<nd.sY2)       { sy = nd.sY1; ey = nd.sY2; }
+    else if (sy>=nd.eY1) { sy = nd.eY1; ey = nd.eY2; }
     if (fx>=x && fy>=sy && fx<x+w && fy<ey) {
       if (spl<0) {
         if (c.overkill==null) c.overkill = c.buildPara(nd);
