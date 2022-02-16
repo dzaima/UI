@@ -282,15 +282,14 @@ public class StringNode extends InlineNode {
   public static Word[] words(String s) { // each string will either have no whitespace or be all spaces, or be a single newline
     Vec<Word> v = new Vec<>();
     int pi = 0;
-    for (int i = 0; i < s.length(); i++) {
-      char c = s.charAt(i);
+    int i = 0;
+    while (i < s.length()) {
+      char c = s.charAt(i++);
       if (c=='\n' | c=='\r') {
-        v.add(new Word(s.substring(pi, i), Word.F_LN)); // TODO either include newline, or add it in in scanSelection
-        i++;
         if (c=='\r' && i<s.length() && s.charAt(i)=='\n') i++;
+        v.add(new Word(s.substring(pi, i), Word.F_LN)); // TODO either include newline, or add it in in scanSelection
         pi = i;
       } else if (c==' ' || c=='\t') {
-        i++;
         v.add(new Word(s.substring(pi, i), 0));
         pi = i;
       }

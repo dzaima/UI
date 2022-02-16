@@ -117,10 +117,14 @@ public abstract class InlineNode extends Node {
   }
   
   
-  public static class LineEnd extends InlineNode {
-    public LineEnd(Ctx ctx) { super(ctx, KS_NONE, VS_NONE); }
+  public static class LineEnd extends InlineNode implements StringifiableNode {
+    private final boolean returnNewline;
+    public LineEnd(Ctx ctx, boolean returnNewline) { super(ctx, KS_NONE, VS_NONE); this.returnNewline = returnNewline; }
     protected void addInline(InlineSolver sv) { sv.x = sv.w; }
     protected void baseline(int asc, int dsc) { }
+    public String asString() {
+      return returnNewline? "\n" : "";
+    }
   }
   
   public static class FullBlock extends InlineNode {
@@ -147,8 +151,8 @@ public abstract class InlineNode extends Node {
   
   private static void selFull(Node n, SubSelConsumer ssc) {
     if (n instanceof StringNode) ssc.addString((StringNode) n, 0, ((StringNode) n).s.length());
-    else if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
-    else ssc.addNode(n);
+    ssc.addNode(n);
+    if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
   }
   public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
     Node gp = (Node) s.c;
@@ -203,7 +207,7 @@ public abstract class InlineNode extends Node {
     StringBuilder res = new StringBuilder();
     scanSelection(s, new SubSelConsumer() {
       public void addString(StringNode nd, int s, int e) { res.append(nd.s, s, e); }
-      public void addNode(Node nd) { }
+      public void addNode(Node nd) { if (nd instanceof StringifiableNode) res.append(((StringifiableNode) nd).asString()); }
     });
     return res.toString();
   }

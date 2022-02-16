@@ -13,7 +13,7 @@ h { bg=#333
           vl { w=min alX=right "vertical" "list" }
           "back to regular\n"
         }
-        "Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.\nAut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.\nDolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
+        "Cumque recusandae nobis adipisci quis dolorum magnam alias. Perspiciatis ea laboriosam illum saepe quasi aperiam voluptatem.\nAut voluptatum sunt aut qui similique qui. Quaerat excepturi ea alias. Corporis accusamus laboriosam vitae. Pariatur laboriosam magnam soluta esse amet.\n\nDolores sapiente autem sapiente. Ut exercitationem est ex voluptatem. Maiores dolor assumenda perferendis."
         "overflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflowoverflow"
       }
     }
