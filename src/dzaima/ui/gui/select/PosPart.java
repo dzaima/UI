@@ -1,12 +1,12 @@
 package dzaima.ui.gui.select;
 
-import dzaima.ui.node.types.StringNode;
+import dzaima.ui.node.Node;
 
 public class PosPart {
   public final int depth;
-  public final Selectable sn;
-  public int pos;
-  public StringNode ln; // leaf node for string
+  public final Selectable sn; // selection root
+  public Node ln; // selected node
+  public int pos; // position within selected node
   
   public PosPart(int depth, Selectable sn, int pos) {
     this.depth = depth;

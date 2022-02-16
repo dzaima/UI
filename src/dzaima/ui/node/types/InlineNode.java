@@ -152,11 +152,10 @@ public abstract class InlineNode extends Node {
   
     while (true) {
       if (aP.sz==0 || bP.sz==0) {
-        assert gp instanceof StringNode;
         int aN = s.aS.pos;
         int bN = s.bS.pos;
-        if (aN==-1||bN==-1) return false; // TODO remove
-        ssc.addString((StringNode) gp, Math.min(aN, bN), Math.max(aN, bN));
+        if (gp instanceof StringNode) ssc.addString((StringNode) gp, Math.min(aN, bN), Math.max(aN, bN));
+        else if (aN!=bN) ssc.addNode(gp);
         return aN>bN;
       }
       Node aT = aP.peek();
@@ -173,8 +172,8 @@ public abstract class InlineNode extends Node {
       boolean ae = aI>bI; int eI = ae?aI:bI; Vec<Node> eP = ae?aP:bP; PosPart eS = ae?s.aS:s.bS;
       
       // starting substring
-      if (sS.pos==-1) { ssc.addString(sS.ln, -1, -1); } // TODO remove
-      else ssc.addString(sS.ln, sS.pos, sS.ln.s.length());
+      if (sS.ln instanceof StringNode) ssc.addString((StringNode) sS.ln, sS.pos, ((StringNode) sS.ln).s.length());
+      else if (sS.pos==0) ssc.addNode(sS.ln);
       // climb up to common node
       for (int i = 1; i < sP.sz; i++) {
         Node p=sP.get(i), c=sP.get(i-1);
@@ -188,8 +187,8 @@ public abstract class InlineNode extends Node {
         for (int j = 0, e=p.ch.indexOf(c); j < e; j++) selFull(p.ch.get(j), ssc);
       }
       // ending substring
-      if (eS.pos==-1) { ssc.addString(eS.ln, -1, -1); } // TODO remove
-      else ssc.addString(eS.ln, 0, eS.pos);
+      if (eS.ln instanceof StringNode) ssc.addString((StringNode) eS.ln, 0, eS.pos);
+      else if (eS.pos==1) ssc.addNode(eS.ln);
       
       return ae;
     }
@@ -197,7 +196,7 @@ public abstract class InlineNode extends Node {
   public static String getSelection(Selection s) {
     StringBuilder res = new StringBuilder();
     scanSelection(s, new SubSelConsumer() {
-      public void addString(StringNode nd, int s, int e) { if (s==-1) res.append("??"); else res.append(nd.s, s, e); }
+      public void addString(StringNode nd, int s, int e) { res.append(nd.s, s, e); }
       public void addNode(Node nd) { }
     });
     return res.toString();

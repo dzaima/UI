@@ -2,7 +2,7 @@ package dzaima.ui.gui.select;
 
 import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
-import dzaima.ui.node.types.StringNode;
+import dzaima.ui.node.types.*;
 import dzaima.utils.Vec;
 import io.github.humbleui.skija.paragraph.Paragraph;
 
@@ -18,7 +18,7 @@ public class Position {
   public static Position getPosition(Node c, int fx, int fy) {
     Vec<PosPart> ss = new Vec<>();
     int depth = 0;
-    PosPart textS = null;
+    Vec<PosPart> textTodo = new Vec<>();
     
     while (true) {
       Node n = c.findCh(fx, fy);
@@ -31,59 +31,73 @@ public class Position {
         switch (s.selType()) { default: throw new IllegalStateException();
           case "v": ss.add(new PosPart(depth, s, fy < n.h/2? 0 : 1)); break;
           case "h": ss.add(new PosPart(depth, s, fx < n.w/2? 0 : 1)); break;
-          case "text": textS = new PosPart(depth, s, -1); break; // keep the latest one
+          case "text": ss.add(textTodo.add(new PosPart(depth, s, -1))); break; // keep the latest one
         }
       }
+      nextText(n, textTodo, fx, fy);
       
       depth++;
       c = n;
     }
-    
-    str: if (textS!=null && c instanceof StringNode) {
-      StringNode strNode = (StringNode) c;
-      textS.ln = strNode;
-      if (strNode.words==null) break str;
-      // TODO gracefully handle the case when no word matches 
-      Font f = strNode.f;
-      int fa = f.ascI;
-      int fh = f.hi;
-      int sum = 0;
-      for (int wp = 0; wp < strNode.words.length; wp++) {
-        StringNode.Word w = strNode.words[wp];
-        int n = -1;
-        w: if (w.type==0) {
-          int wx = (int) w.x;
-          int wy = w.y;
-          if (w.split == null) {
-            n = wPos(fx, fy, strNode, w, -1, wx, wy+w.bl-fa, (int) Math.ceil(w.w), fh);
-          } else {
-            wy-= fa;
-            int i = 0;
-            String cs = w.split[i];
-            n = wPos(fx, fy, strNode, w, i, wx, wy, f.width(cs), fh);
-            if (n!=-1) break w;
-            for (i++; i < w.split.length-1; i++) {
-              wy+= fh;
-              cs = w.split[i];
-              n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
-              if (n!=-1) break w;
-            }
-            wy+= fh + w.bl - fa;
-            cs = w.split[i];
-            n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
-          }
-        }
-        if (n!=-1) {
-          textS.pos = n+sum;
-          break;
-        }
-        sum+= w.s.length();
-      }
-      ss.add(textS);
-    }
+    assert textTodo.sz == 0;
     
     return new Position(c, ss);
   }
+  
+  private static void nextText(Node c, Vec<PosPart> textTodo, int fx, int fy) {
+    if (textTodo.sz>0) {
+      int rPos = -1;
+      if (c instanceof StringNode) {
+        StringNode strNode = (StringNode) c;
+        Font f = strNode.f;
+        int fa = f.ascI;
+        int fh = f.hi;
+        int sum = 0;
+        for (int wp = 0; wp < strNode.words.length; wp++) {
+          StringNode.Word w = strNode.words[wp];
+          int n = -1;
+          w: if (w.type==0) {
+            int wx = (int) w.x;
+            int wy = w.y;
+            if (w.split == null) {
+              n = wPos(fx, fy, strNode, w, -1, wx, wy+w.bl-fa, (int) Math.ceil(w.w), fh);
+            } else {
+              wy-= fa;
+              int i = 0;
+              String cs = w.split[i];
+              n = wPos(fx, fy, strNode, w, i, wx, wy, f.width(cs), fh);
+              if (n!=-1) break w;
+              for (i++; i < w.split.length-1; i++) {
+                wy+= fh;
+                cs = w.split[i];
+                n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
+                if (n!=-1) break w;
+              }
+              wy+= fh + w.bl - fa;
+              cs = w.split[i];
+              n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
+            }
+          }
+          if (n!=-1) {
+            rPos = n+sum;
+            break;
+          }
+          sum+= w.s.length();
+        }
+        if (rPos==-1) rPos = 0;
+      } else if (!(c instanceof InlineNode)) {
+        rPos = fx>c.w/2? 1 : 0;
+      }
+      if (rPos!=-1) {
+        for (PosPart p : textTodo) {
+          p.pos = rPos;
+          p.ln = c;
+        }
+        textTodo.clear();
+      }
+    }
+  }
+  
   private static int wPos(int fx, int fy, StringNode nd, StringNode.Word c, int spl, int x, int y, int w, int h) {
     if (fx>=x && fy>=y && fx<x+w && fy<y+h) {
       if (spl<0) {
