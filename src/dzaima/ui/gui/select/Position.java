@@ -98,8 +98,13 @@ public class Position {
     }
   }
   
-  private static int wPos(int fx, int fy, StringNode nd, StringNode.Word c, int spl, int x, int y, int w, int h) {
-    if (fx>=x && fy>=y && fx<x+w && fy<y+h) {
+  private static int wPos(int fx, int fy, StringNode nd, StringNode.Word c, int spl, int x, int sy, int w, int fh) {
+    int ey = sy+fh;
+    if (sy+fh/2<nd.sY2) {
+      sy = nd.sY1;
+      ey = nd.sY2;
+    }
+    if (fx>=x && fy>=sy && fx<x+w && fy<ey) {
       if (spl<0) {
         if (c.overkill==null) c.overkill = c.buildPara(nd);
         return c.overkill.getGlyphPositionAtCoordinate(fx-x, 1).getPosition();
