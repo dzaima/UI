@@ -78,11 +78,13 @@ public class TextNode extends InlineNode {
   //   }
   // }
   
-  public void drawC(Graphics g) {
+  
+  public void bg(Graphics g, boolean full) {
     if (xpad>0 && hasBg) {
       g.rect(sX, sY1, sX+xpad, sY2, bgCol);
       g.rect(eX-xpad, eY1, eX, eY2, bgCol);
     }
+    super.bg(g, full);
   }
   
   public int minW() {

@@ -35,15 +35,14 @@ public class Key {
   public static boolean ctrl (int mod) { return (mod&M_CTRL )!=0; }
   public static boolean shift(int mod) { return (mod&M_SHIFT)!=0; }
   public static boolean alt  (int mod) { return (mod&M_ALT  )!=0; }
+  public static boolean none (int mod) { return (mod&M_MOD) == 0; }
+  public static boolean any  (int mod) { return (mod&M_MOD) != 0; }
   
   public static boolean only(int mod, int want) {
     return want == ( want & mod)
         &&    0 == (~want & mod & M_MOD);
   }
   
-  public static boolean none(int mod) {
-    return (mod&M_MOD) == 0;
-  }
   
   
   public boolean k_shift      () { return val==KeyVal.shift;       }

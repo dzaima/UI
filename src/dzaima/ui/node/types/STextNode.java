@@ -1,11 +1,13 @@
 package dzaima.ui.node.types;
 
+import dzaima.ui.eval.Token;
 import dzaima.ui.gui.NodeWindow;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
+import dzaima.utils.Tools;
 
 public class STextNode extends TextNode implements Selectable {
   public STextNode(Ctx ctx, String[] ks, Prop[] vs) {
@@ -48,6 +50,7 @@ public class STextNode extends TextNode implements Selectable {
   }
   public boolean mouseDown(int x, int y, Click c) {
     if (super.mouseDown(x, y, c)) return true;
+    if (Key.any(c.mod)) return false;
     forceStart(x, y, c);
     return true;
   }
