@@ -23,6 +23,7 @@ public class StringNode extends InlineNode {
   
   private String[] lns; // non-inline only; TODO reuse words maybe?
   public Word[] words; // inline only
+  public short asc;
   private XY sz; // TODO not
   private int maxW;
   
@@ -34,7 +35,7 @@ public class StringNode extends InlineNode {
       int lnW = 0;
       for (Word c : words) {
         lnW+= cf.width(c.s);
-        if (c.nl()) { maxW=Math.max(maxW,lnW); lnW=0; }
+        if (c.f(Word.F_LN)) { maxW=Math.max(maxW,lnW); lnW=0; }
       }
       maxW = Math.max(maxW, lnW) + 1;
       sz = new XY(Math.min(gc.em, maxW), -1);
@@ -79,17 +80,19 @@ public class StringNode extends InlineNode {
     if (words!=null) {
       if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
       for (Word c : words) {
+        int y = c.y+f.ascI;
         if (c.split == null) {
-          text(g, c, this, c.x, c.y+c.bl);
+          text(g, c, this, c.x, y);
         } else {
-          int y = c.y;
           int i = 0;
           text(g, c.split[i++], this, c.x, y);
+          if (c.f(Word.F_SL)) y = sY2+f.ascI;
+          else y+= fh;
           while (i < c.split.length-1) {
-            y+= fh;
             text(g, c.split[i++], this, 0, y);
+            y+= fh;
           }
-          y+= fh + c.bl - f.ascI;
+          if (c.f(Word.F_EL)) y = eY1+asc+f.ascI;
           text(g, c.split[i], this, 0, y);
         }
       }
@@ -109,7 +112,6 @@ public class StringNode extends InlineNode {
     int ss = sel==null? -1 : sel.x;
     int se = sel==null? -1 : sel.y;
     if (words!=null && (Tools.vs(colBG) || sel!=null)) {
-      int fa = f.ascI;
       int fh = f.hi;
       if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
       int cs = 0;
@@ -117,16 +119,17 @@ public class StringNode extends InlineNode {
         int x = (int) c.x;
         int y = c.y;
         if (c.split == null) {
-          cs = bgRect(g, ss, se, cs, x, y+c.bl-fa, c.s, (int) Math.ceil(c.w), fh);
+          cs = bgRect(g, ss, se, cs, x, y, c.s, (int) Math.ceil(c.w), fh);
         } else {
-          y-= fa;
           int i = 0;
           cs = bgRect(g, ss, se, cs, x, y, c.split[i], f.width(c.split[i]), fh); i++;
+          if (c.f(Word.F_SL)) y = sY2;
+          else y+= fh;
           while (i < c.split.length-1) {
-            y+= fh;
             cs = bgRect(g, ss, se, cs, 0, y, c.split[i], f.width(c.split[i]), fh); i++;
+            y+= fh;
           }
-          y+= fh + c.bl - fa;
+          if (c.f(Word.F_EL)) y = eY1+asc;
           cs = bgRect(g, ss, se, cs, 0, y, c.split[i], f.width(c.split[i]), fh);
         }
       }
@@ -157,13 +160,17 @@ public class StringNode extends InlineNode {
     
     int a = f.ascI;
     int b = f.dscI;
-    lnS = 0;
-    
+    int li = 0;
+    boolean first = true;
     for (int i = 0; i < words.length; i++) {
       Word c = words[i];
+      if (mut) {
+        c.setFlag(Word.F_SL, first);
+        c.setFlag(Word.F_EL, true); // cleared by newline calls
+      }
       if (mut) c.split = null;
-      if (sv.x+c.w >= sv.w || c.nl()) {
-        if (c.w >= sv.w) { // split word into chars
+      if (sv.x+c.w >= sv.w) {
+        if (c.w >= sv.w && c.s.length()>1) { // break up word
           int x0 = search(c.s, 0, sv.w-sv.x);
           Vec<String> spl = new Vec<>();
           spl.add(c.s.substring(0, x0));
@@ -173,25 +180,27 @@ public class StringNode extends InlineNode {
             x0 = x1;
           }
           sv.ab(a, b);
-          while (spl.sz<2) spl.add(""); // just in case
+          if (spl.sz==1) spl.add(""); // just in case
           if (mut) {
             c.split = spl.toArray(new String[0]);
             c.x = sv.x;
-            c.y = sv.y + sv.a;
+            c.y = (short) (sv.y+sv.a-a);
           }
-          baseline(lnS, i, sv.a); lnS = i; sv.nl(); sv.a = a; sv.b = b;
+          li = newline(li, i, sv, a, b, mut); first = false;
           sv.x = f.width(spl.peek());
           sv.y+= f.hi*(spl.sz-2);
           continue;
+        } else { // don't break word; flow to next line and continue as normally
+          if (i!=0) sv.ab(a, b);
+          li = newline(li, i, sv, a, b, mut); first = false;
         }
-        if (i!=0) sv.ab(a, b);
-        baseline(lnS, i, sv.a); lnS = i; sv.nl(); sv.a = a; sv.b = b;
       }
       if (mut) {
         c.x = sv.x;
-        c.y = sv.y;
+        c.y = (short) sv.y;
       }
       sv.x+= c.w;
+      if (c.f(Word.F_LN)) { sv.ab(a, b); li = newline(li, i+1, sv, a, b, mut); first = false; }
     }
     sv.ab(a, b);
     
@@ -199,10 +208,20 @@ public class StringNode extends InlineNode {
     colBG = sv.tbg;
     if (mut) mRedraw();
   }
-  
-  int lnS;
-  protected void baseline(int asc, int dsc) { baseline(lnS, words.length, asc); }
-  private void baseline(int s, int e, int asc) { for (int j = s; j < e; j++) words[j].bl = (short) asc; }
+  protected void baseline(int asc, int dsc) {
+    this.asc = (short)(asc-f.ascI);
+    for (Word w : words) if (w.f(Word.F_EL) && w.split==null) w.y+= asc-f.ascI;
+  }
+  private int newline(int s, int e, InlineSolver sv, int a, int b, boolean mut) {
+    int dy = sv.a-a;
+    assert s==e || dy>=0 : this.s+": "+s+" "+e+" "+sv.a+" "+a;
+    if (mut) for (int i = s; i < e; i++) {
+      words[i].y+= dy;
+      words[i].setFlag(Word.F_EL, false);
+    }
+    sv.nl(a, b);
+    return e;
+  }
   
   
   private int search(String s, int sp, float w) { // returns maximum length with width<w; TODO optimize somehow
@@ -220,14 +239,15 @@ public class StringNode extends InlineNode {
   
   
   public static class Word {
-    public final byte flags;
-    public static final byte F_LN = 1;
-    public float x;
-    public int y; // not split: baseline = y+bl; split: l0 baseline == y; lN baseline == y+bl+f.hi*n
+    public static final byte F_LN = 1; // whether word ends with a newline
+    public static final byte F_SL = 2; // whether word starts within the first line
+    public static final byte F_EL = 4; // whether word ends within the last line
+    public byte flags;
+    public float x; // position of top-left corner (of first line if split)
+    public short y;
+    public float w; // total width in pixels
     public final String s; // actual text (only for type 0)
-    public float w; // width in pixels
-    public short bl; // baseline position
-    public String[] split; // if not null, split this word into multiple lines by this
+    public String[] split; // if not null, split this word into multiple lines by this; guaranteed at least two items
     public Paragraph overkill; // overkill text rendering
     public Word(String s, int flags) {
       this.s = s;
@@ -241,7 +261,12 @@ public class StringNode extends InlineNode {
     public void setFont(Font f) {
       w = f.widthf(s);
     }
-    public boolean nl() { return (flags&F_LN)!=0; }
+    public boolean f(byte f) { return (flags&f)!=0; }
+  
+    public void setFlag(byte f, boolean v) {
+      if (v) flags|= f;
+      else flags&= ~f;
+    }
   }
   
   public Paragraph buildPara(String s) {
@@ -260,7 +285,7 @@ public class StringNode extends InlineNode {
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
       if (c=='\n' | c=='\r') {
-        v.add(new Word(s.substring(pi, i), Word.F_LN));
+        v.add(new Word(s.substring(pi, i), Word.F_LN)); // TODO either include newline, or add it in in scanSelection
         i++;
         if (c=='\r' && i<s.length() && s.charAt(i)=='\n') i++;
         pi = i;

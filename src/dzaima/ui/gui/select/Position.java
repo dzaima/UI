@@ -51,34 +51,35 @@ public class Position {
     if (textTodo.sz>0) {
       int rPos = -1;
       if (c instanceof StringNode) {
-        StringNode strNode = (StringNode) c;
-        Font f = strNode.f;
+        StringNode str = (StringNode) c;
+        Font f = str.f;
         int fa = f.ascI;
         int fh = f.hi;
         int sum = 0;
-        for (int wp = 0; wp < strNode.words.length; wp++) {
-          StringNode.Word w = strNode.words[wp];
+        for (int wp = 0; wp < str.words.length; wp++) {
+          StringNode.Word w = str.words[wp];
           int n = -1;
           w: {
             int wx = (int) w.x;
             int wy = w.y;
             if (w.split == null) {
-              n = wPos(fx, fy, strNode, w, -1, wx, wy+w.bl-fa, (int) Math.ceil(w.w), fh);
+              n = wPos(fx, fy, str, w, -1, wx, wy, (int) Math.ceil(w.w), fh);
             } else {
-              wy-= fa;
               int i = 0;
               String cs = w.split[i];
-              n = wPos(fx, fy, strNode, w, i, wx, wy, f.width(cs), fh);
+              n = wPos(fx, fy, str, w, i, wx, wy, f.width(cs), fh);
               if (n!=-1) break w;
+              if (w.f(StringNode.Word.F_SL)) wy = str.sY2;
+              else wy+= fh;
               for (i++; i < w.split.length-1; i++) {
-                wy+= fh;
                 cs = w.split[i];
-                n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
+                n = wPos(fx, fy, str, w, i, 0, wy, f.width(cs), fh);
                 if (n!=-1) break w;
+                wy+= fh;
               }
-              wy+= fh + w.bl - fa;
+              if (w.f(StringNode.Word.F_EL)) wy = str.eY1 + str.asc;
               cs = w.split[i];
-              n = wPos(fx, fy, strNode, w, i, 0, wy, f.width(cs), fh);
+              n = wPos(fx, fy, str, w, i, 0, wy, f.width(cs), fh);
             }
           }
           if (n!=-1) {

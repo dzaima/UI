@@ -240,6 +240,11 @@ public class Devtools extends NodeWindow {
         InlineNode c = (InlineNode) selected;
         addRow(infoT, "first line X/Y", "x="+c.sX+" y0="+c.sY1+" y1="+c.sY2);
         addRow(infoT, "last line X/Y", "x="+c.eX+" y0="+c.eY1+" y1="+c.eY2);
+        if (c instanceof StringNode && ((StringNode) c).words!=null) {
+          for (StringNode.Word w : ((StringNode) c).words) {
+            addRow(infoT, "\""+w.s+"\"", "x="+w.x+" y="+w.y+" w="+w.w+" fl="+w.flags+" spl="+(w.split==null? "ø" : w.split.length));
+          }
+        }
       }
       
       for (int i = 0; i < insp.ks.length; i++) {

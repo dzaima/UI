@@ -9,12 +9,12 @@ v { select=text
           text { bg=#422
             "background background\nbackground background background background background background aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             text { tsz=0.6em "tiny " }
-            text { tsz=2em "big " }
+            text { tsz=2.4em "big " }
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           }
           "123 456 678 abc def ghijkl"
           text{" 1("text{"2("text{"3("text{"4(" "bar" ")4"}")3"}")2"}")1 "}
-          text { color=#f00 " red color" tsz=3em }
+          text { color=#f00 " red color" tsz=3.2em }
           text { color=#888 " tiny" tsz=.6em }
           " mnopq rstuv wxyz"
           "Enim esse vitae dolor aut qui. Aut laudantium aut quia tenetur dolor ut asperiores. Assumenda molestiae veritatis sed voluptatem porro sed. Voluptas sed laudantium labore aperiam odit aliquid eaque eveniet. Non aliquam sunt aut non repellat sit at dolorem."

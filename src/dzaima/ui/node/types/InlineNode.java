@@ -12,8 +12,8 @@ public abstract class InlineNode extends Node {
   public InlineNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
   }
-  public short sX, sY1, sY2;
-  public short eX, eY1, eY2;
+  public short sX, sY1, sY2; // first line coords
+  public short eX, eY1, eY2; // last line coords; TODO could use h for eY2?
   
   public final int maxH(int w) { return minH(w); }
   
@@ -71,19 +71,25 @@ public abstract class InlineNode extends Node {
     }
     
     public void nl() {
+      nl(0, 0);
+    }
+    public void nl(int na, int nb) {
       int ny = y + Math.max(a+b, h);
       if (resize) {
         for (InlineNode c : ln) {
-          if (c.sY2==-1) c.sY2 = (short)ny;
+          boolean start = c.sY2==-1;
+          if (start) c.sY2 = (short)ny;
           c.eY2 = (short)ny;
-          c.baseline(a, b); // TODO pass h in too?
+          if (!start) c.baseline(a, b); // TODO pass h in too?
           c.h = ny;
         }
       }
       ln.sz0();
       y = ny;
       x = 0;
-      a = b = h = 0;
+      h = 0;
+      a = na;
+      b = nb;
     }
   
     void ab(int a, int b) {
