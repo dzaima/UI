@@ -39,8 +39,11 @@ public class Position {
       depth++;
       c = n;
     }
-    assert textTodo.sz == 0;
-    
+    // assert textTodo.sz == 0;
+    for (PosPart p : textTodo) { // TODO proper fallback
+      p.ln = c;
+      p.pos = 0;
+    }
     return new Position(c, ss);
   }
   
@@ -56,7 +59,7 @@ public class Position {
         for (int wp = 0; wp < strNode.words.length; wp++) {
           StringNode.Word w = strNode.words[wp];
           int n = -1;
-          w: if (w.type==0) {
+          w: {
             int wx = (int) w.x;
             int wy = w.y;
             if (w.split == null) {

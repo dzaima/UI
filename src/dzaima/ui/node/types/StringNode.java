@@ -33,8 +33,8 @@ public class StringNode extends InlineNode {
       maxW = 0;
       int lnW = 0;
       for (Word c : words) {
-        if (c.type==2) { maxW=Math.max(maxW,lnW); lnW=0; }
-        else lnW+= cf.width(c.s);
+        lnW+= cf.width(c.s);
+        if (c.nl()) { maxW=Math.max(maxW,lnW); lnW=0; }
       }
       maxW = Math.max(maxW, lnW) + 1;
       sz = new XY(Math.min(gc.em, maxW), -1);
@@ -79,20 +79,18 @@ public class StringNode extends InlineNode {
     if (words!=null) {
       if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
       for (Word c : words) {
-        if (c.type==0) {
-          if (c.split == null) {
-            text(g, c, this, c.x, c.y+c.bl);
-          } else {
-            int y = c.y;
-            int i = 0;
-            text(g, c.split[i++], this, c.x, y);
-            while (i < c.split.length-1) {
-              y+= fh;
-              text(g, c.split[i++], this, 0, y);
-            }
-            y+= fh + c.bl - f.ascI;
-            text(g, c.split[i], this, 0, y);
+        if (c.split == null) {
+          text(g, c, this, c.x, c.y+c.bl);
+        } else {
+          int y = c.y;
+          int i = 0;
+          text(g, c.split[i++], this, c.x, y);
+          while (i < c.split.length-1) {
+            y+= fh;
+            text(g, c.split[i++], this, 0, y);
           }
+          y+= fh + c.bl - f.ascI;
+          text(g, c.split[i], this, 0, y);
         }
       }
     } else {
@@ -116,7 +114,6 @@ public class StringNode extends InlineNode {
       if (g.clip!=null) if (g.clip.ey<sY1 || g.clip.sy>sY1+h) return;
       int cs = 0;
       for (Word c : words) {
-        if (c.type!=0) continue;
         int x = (int) c.x;
         int y = c.y;
         if (c.split == null) {
@@ -165,8 +162,8 @@ public class StringNode extends InlineNode {
     for (int i = 0; i < words.length; i++) {
       Word c = words[i];
       if (mut) c.split = null;
-      if (sv.x+c.w >= sv.w) {
-        if (c.w >= sv.w  &&  c.s.length()>1) { // split word into chars; c.type==0 guaranteed by length check
+      if (sv.x+c.w >= sv.w || c.nl()) {
+        if (c.w >= sv.w) { // split word into chars
           int x0 = search(c.s, 0, sv.w-sv.x);
           Vec<String> spl = new Vec<>();
           spl.add(c.s.substring(0, x0));
@@ -176,6 +173,7 @@ public class StringNode extends InlineNode {
             x0 = x1;
           }
           sv.ab(a, b);
+          while (spl.sz<2) spl.add(""); // just in case
           if (mut) {
             c.split = spl.toArray(new String[0]);
             c.x = sv.x;
@@ -188,7 +186,6 @@ public class StringNode extends InlineNode {
         }
         if (i!=0) sv.ab(a, b);
         baseline(lnS, i, sv.a); lnS = i; sv.nl(); sv.a = a; sv.b = b;
-        if (c.type==2) { if(mut)c.x=-1; continue; }
       }
       if (mut) {
         c.x = sv.x;
@@ -223,17 +220,18 @@ public class StringNode extends InlineNode {
   
   
   public static class Word {
+    public final byte flags;
+    public static final byte F_LN = 1;
     public float x;
     public int y; // not split: baseline = y+bl; split: l0 baseline == y; lN baseline == y+bl+f.hi*n
-    public final byte type; // 0 - text; 2 - newline
     public final String s; // actual text (only for type 0)
     public float w; // width in pixels
     public short bl; // baseline position
     public String[] split; // if not null, split this word into multiple lines by this
     public Paragraph overkill; // overkill text rendering
-    public Word(byte type, String s) {
+    public Word(String s, int flags) {
       this.s = s;
-      this.type = type;
+      this.flags = (byte)flags;
     }
   
     public Paragraph buildPara(StringNode n) {
@@ -241,8 +239,9 @@ public class StringNode extends InlineNode {
     }
   
     public void setFont(Font f) {
-      w = type==2? Tools.BIG : f.widthf(s);
+      w = f.widthf(s);
     }
+    public boolean nl() { return (flags&F_LN)!=0; }
   }
   
   public Paragraph buildPara(String s) {
@@ -261,16 +260,17 @@ public class StringNode extends InlineNode {
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
       if (c=='\n' | c=='\r') {
-        if (pi!=i) v.add(new Word((byte) 0, s.substring(pi, i)));
-        if (c=='\r' && i+1<s.length() && s.charAt(i+1)=='\n') i++;
-        v.add(new Word((byte) 2, "\n"));
-        pi = i+1;
+        v.add(new Word(s.substring(pi, i), Word.F_LN));
+        i++;
+        if (c=='\r' && i<s.length() && s.charAt(i)=='\n') i++;
+        pi = i;
       } else if (c==' ' || c=='\t') {
-        v.add(new Word((byte) 0, s.substring(pi, i+1)));
-        pi = i+1;
+        i++;
+        v.add(new Word(s.substring(pi, i), 0));
+        pi = i;
       }
     }
-    if (pi!=s.length()) v.add(new Word((byte) 0, s.substring(pi)));
+    if (pi!=s.length()) v.add(new Word(s.substring(pi), 0));
     return v.toArray(new Word[0]);
   }
   
