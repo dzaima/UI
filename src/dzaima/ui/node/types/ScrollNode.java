@@ -104,13 +104,11 @@ public class ScrollNode extends FrameNode {
     mRedraw();
     limit();
     XY fE = focusEl.relPos(this);
-    if (ctx.win().windowResize) {
-      if (atEnd) {
-        toLast(true);
-      } else {
-        quiet(fS.x-fE.x, fS.y-fE.y);
-        limit();
-      }
+    if (atEnd) {
+      toLast(true);
+    } else {
+      quiet(fS.x-fE.x, fS.y-fE.y);
+      limit();
     }
   }
   

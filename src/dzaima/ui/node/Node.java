@@ -181,7 +181,7 @@ public abstract class Node {
       if your draw functions won't necessarily completely redraw your full canvas space, add mRedraw() into your `resized`
         (that's probably only needed if your used canvas space changes between frames, but that's complicated and may not be correct)
    */
-  public int w, h, dx, dy;
+  public int w=-1, h=-1, dx=0, dy=0;
   public /*open*/ void bg(Graphics g, boolean full) { pbg(g, full); } // draw background; by default, fall back to parent; TODO this assumes clipping
   public /*open*/ void drawC(Graphics g) { } // draw self foreground
   public /*open*/ void drawCh(Graphics g, boolean full) { for (Node n : ch) { n.draw(g, full); assert n.p==this; } }
@@ -291,7 +291,7 @@ public abstract class Node {
     if (ch.sz<2) return ch.sz==0? null : ch.get(0);
     int min = Integer.MAX_VALUE, curr;
     Node best = null;
-    for (Node c : ch) if ((curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
+    for (Node c : ch) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
     return best;
   }
   public /*open*/ boolean mouseDown(int x, int y, Click c) { // return if consumed
