@@ -61,13 +61,13 @@ public class VNode extends FrameNode {
   public Node nearestCh(int x, int y) {
     if (ch.sz<20) return super.nearestCh(x, y);
     int p = s2(ch, y);
-    if (ch.sz<2) return ch.sz==0? null : ch.get(0);
     int min = Integer.MAX_VALUE, curr;
     Node best = null;
     for (int i = Math.max(0, p-2); i < Math.min(p+2, ch.sz); i++) {
       Node c = ch.get(i);
-      if ((curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
+      if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
     }
+    if (best==null) return super.nearestCh(x, y); // fallback for w==-1
     return best;
   }
   

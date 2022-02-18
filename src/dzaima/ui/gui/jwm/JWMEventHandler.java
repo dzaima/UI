@@ -103,7 +103,7 @@ public class JWMEventHandler implements Consumer<Event> {
     } else if (ev instanceof EventWindowClose) {
       // ignore
     } else {
-      System.out.println("Got event "+ev.getClass().getSimpleName()+":");
+      System.out.println("Got event "+(ev==null? "null" : ev.getClass().getSimpleName())+":");
       System.out.println(ev);
     }
   }

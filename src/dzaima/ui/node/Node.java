@@ -287,8 +287,8 @@ public abstract class Node {
     for (Node c : ch) if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
     return null;
   }
-  public /*open*/ Node nearestCh(int x, int y) {
-    if (ch.sz<2) return ch.sz==0? null : ch.get(0);
+  public /*open*/ Node nearestCh(int x, int y) { // must not return nodes with width -1, i.e. ones that haven't come from previous resize
+    if (ch.sz<2) return ch.sz==0 || ch.get(0).w==-1? null : ch.get(0);
     int min = Integer.MAX_VALUE, curr;
     Node best = null;
     for (Node c : ch) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
@@ -310,7 +310,7 @@ public abstract class Node {
   public /*open*/ void hoverE() { }
   
   // may be called at any point in time! (except between resizing & drawing)
-  public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this); }
+  public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this, false); }
   public /*open*/ void focusE() { mRedraw(); }
   
   public /*open*/ void typed(int codepoint) { }

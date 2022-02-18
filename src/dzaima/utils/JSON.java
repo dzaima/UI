@@ -294,6 +294,7 @@ public class JSON {
     public Iterable<String> strs() { return new ArrStrIter(); }
     public Iterable<Obj> objs() { return new ArrObjIter(); }
     public Iterable<Arr> arrs() { return new ArrArrIter(); }
+    public String[] strArr() { String[] r = new String[size()]; Iterator<String> t=strs().iterator(); for (int i = 0; i < r.length; i++) r[i] = t.next(); return r; }
     
     class ArrNumIter implements Iterable<Double>,Iterator<Double> {
       int i = 0;

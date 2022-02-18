@@ -19,12 +19,14 @@ public class ScrollNode extends FrameNode {
   }
   
   private Node scrollTo;
-  public static void scrollTo(Node n) {
+  private boolean forceScrollTo;
+  public static void scrollTo(Node n, boolean forceScroll) {
     Node p = n;
     while (!(p instanceof ScrollNode) && p!=null) p = p.p;
     if (p==null) return;
     ScrollNode sc = (ScrollNode) p;
     sc.scrollTo = n;
+    sc.forceScrollTo = forceScroll;
   }
   
   
@@ -56,6 +58,9 @@ public class ScrollNode extends FrameNode {
     mRedraw();
     toLastState = Math.max(toLastState, instant?2:1);
   }
+  public boolean atStart(int err) {
+    return -oy < err;
+  }
   public boolean atEnd(int err) {
     return oy-err<=ih-chH;
   }
@@ -82,14 +87,22 @@ public class ScrollNode extends FrameNode {
       x-= c.dx;
       y-= c.dy;
       Node n = c.nearestCh(x, y);
-      if (n==null) return c;
+      if (n==null || n.w==-1) return c;
       c = n;
     }
   }
+  
+  private boolean ignoreEnd;
+  public void ignoreEnd() { ignoreEnd = true; }
   public void resized() {
+    
     Node focusEl = getBest(0, (clipSY+clipEY)/2);
-    XY fS = focusEl.relPos(this);
-    boolean atEnd = atEnd(5);
+    if (focusEl==this) focusEl = null;
+    XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
+    
+    boolean atEnd = atEnd(5) && !ignoreEnd;
+    ignoreEnd = false;
+    
     Node c = ch();
     int wCov = yMode==OFF | yMode==HIDDEN | tempOverlap? 0 : barSize;
     int hCov = xMode==OFF | xMode==HIDDEN | tempOverlap? 0 : barSize;
@@ -102,8 +115,9 @@ public class ScrollNode extends FrameNode {
     vOpen = yMode!=OFF && chH>(hVis? subH : h); vVis = (yMode==ON | vOpen) & yMode!=HIDDEN;
     c.resize(chW, chH, c.dx, c.dy);
     mRedraw();
-    limit();
-    XY fE = focusEl.relPos(this);
+    
+    XY fE = focusEl==null? XY.ZERO : focusEl.relPos(this);
+    
     if (atEnd) {
       toLast(true);
     } else {
@@ -187,7 +201,7 @@ public class ScrollNode extends FrameNode {
     Node c = ch();
     if (scrollTo!=null) {
       XY rel = scrollTo.relPos(this);
-      if (rel.y+scrollTo.h<0 || rel.y>h) {
+      if (rel.y+scrollTo.h<0 || rel.y>h || forceScrollTo) {
         loud(-rel.x, (clipEY-clipSY)/2 - rel.y);
         limit();
       }
