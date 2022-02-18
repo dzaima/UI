@@ -176,6 +176,9 @@ public class Key {
     keyBase.put("bs", keyBase.get("backspace"));
     keyBase.put("pageup", keyBase.get("pgup"));
     keyBase.put("pagedown", keyBase.get("pgdn"));
+    keyBase.put("plus", keyBase.get("add"));
+    keyBase.put("sub",      keyBase.get("minus"));
+    keyBase.put("subtract", keyBase.get("minus"));
     
     keyBase.put("!", new Key(KeyVal.d1, M_SHIFT));
     keyBase.put("@", new Key(KeyVal.d2, M_SHIFT));

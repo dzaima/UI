@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class GConfig {
-  public int em;
+  public int em = 15;
   public float imgScale = 1;
   
   public Cfg cfg = null;
@@ -29,8 +29,7 @@ public class GConfig {
   
   private final HashMap<String, CfgProp> cfgMap = new HashMap<>();
   
-  public GConfig(int em) {
-    setEM(em);
+  public GConfig() {
     addCfg(() -> Tools.readRes("base/default.dzcfg"));
   }
   
@@ -42,6 +41,9 @@ public class GConfig {
   }
   public void cfgUpdated() {
     for (NodeWindow w : ws) w.cfgUpdated();
+  }
+  public void initialLoaded() {
+    setEM(getProp("str.defaultEM").i());
   }
   public Vec<Supplier<String>> configs = new Vec<>();
   public void addCfg(Supplier<String> src) {
@@ -81,7 +83,15 @@ public class GConfig {
   
   ///////// themes \\\\\\\\\
   public static GConfig newConfig() {
-    return new GConfig(13);
+    GConfig r = new GConfig();
+    r.initialLoaded();
+    return r;
+  }
+  public static GConfig newConfig(Consumer<GConfig> init) { // put initial addCfg-s here so they may contribute to one-time initialized things
+    GConfig r = new GConfig();
+    init.accept(r);
+    r.initialLoaded();
+    return r;
   }
   public PropI getProp(String path) {
     return cfg.get(path);
