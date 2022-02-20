@@ -35,7 +35,12 @@ public class Typeface {
     return tf;
   }
   private static io.github.humbleui.skija.Typeface n(String name, FontStyle s) {
-    return fontMgr.matchFamilyStyle(name, s);
+    io.github.humbleui.skija.Typeface r = fontMgr.matchFamilyStyle(name, s);
+    if (r==null) {
+      System.err.println("Warning: Font \""+name+"\" not found; using fallback..");
+      return fontCol.defaultFallback();
+    }
+    return r;
   }
   
   private Typeface[] tfs;
