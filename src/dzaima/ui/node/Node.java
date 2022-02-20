@@ -125,7 +125,7 @@ public abstract class Node {
     for (Node c : ch) c.hidden();
     mResize();
   }
-  private void hProps() { propsUpd(); flags&=~PROPS; flags|= RS_ME; }
+  private void hProps() { propsUpd(); flags&=~PROPS; }
   
   
   
@@ -227,7 +227,7 @@ public abstract class Node {
   }
   public final void aTick() { flags|= ATICK; anyc(); }
   public final void mTick() { flags|= MTICK; anyc(); }
-  public final void mProp() { flags|= PROPS; anyc(); mRedraw(); }
+  public final void mProp() { flags|= PROPS; anyc(); mResize(); }
   private void anyc() {
     Node c = p;
     while (c!=null && (c.flags&ANYCT)==0) { c.flags|= ANYCT; c = c.p; }

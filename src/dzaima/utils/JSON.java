@@ -94,15 +94,17 @@ public class JSON {
   }
   
   public static class Num extends Val {
+    public static final Num ZERO = new Num(0);
     public final double val;
     public Num(double val) { this.val = val; }
     
     public double num() { return val; }
     public double num(double def) { return val; }
-    void format(StringBuilder b) { b.append(val); }
+    void format(StringBuilder b) { String s = Double.toString(val); b.append(s.endsWith(".0")? s.substring(0, s.length()-2) : s); }
   }
   
   public static class Str extends Val {
+    public static final Str E = new Str("");
     public final String val;
     public Str(String val) { this.val = val; }
     
@@ -124,6 +126,7 @@ public class JSON {
     public Obj(HashMap<String, Val> map) {
       this.map = map;
     }
+    public Obj() { this.map = new HashMap<>(); }
   
   
     public Obj obj() { return this; }
