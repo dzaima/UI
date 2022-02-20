@@ -88,7 +88,14 @@ public abstract class Window {
     
     // important events
     if (!hasSetup) {
-      setup();
+      try {
+        setup();
+      } catch (Throwable e) {
+        System.err.println("Errored during setup:");
+        closeOnNext();
+        hasSetup = true;
+        throw new RuntimeException(e);
+      }
       hasSetup = true;
     }
     boolean resize = updateSize.getAndSet(false);
@@ -104,10 +111,10 @@ public abstract class Window {
     if (t!=null) t.time("event");
     
     // process nodes
-    if (NodeWindow.NEW_RESIZE_ORDER) maybeResize();
+    maybeResize();
     tick();
     if (t!=null) t.time("tick");
-    if (NodeWindow.NEW_RESIZE_ORDER) maybeResize();
+    maybeResize();
     
     // redraw
     nodrawFrames++;

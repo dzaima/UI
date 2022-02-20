@@ -15,7 +15,6 @@ import java.awt.datatransfer.*;
 import java.io.IOException;
 
 public class NodeWindow extends Window {
-  public static boolean NEW_RESIZE_ORDER = true;
   public static boolean PRINT_ON_RESIZE = false;
   
   public final GConfig gc;
@@ -169,7 +168,6 @@ public class NodeWindow extends Window {
     if (base.needsResize()) resizeCh();
   }
   public void draw(Graphics g, boolean full) {
-    if (!NEW_RESIZE_ORDER) maybeResize();
     base.draw(g, full);
     if (tools!=null) tools.drawInsp(g);
   }

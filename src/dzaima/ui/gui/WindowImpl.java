@@ -13,7 +13,7 @@ public abstract class WindowImpl {
   public static final boolean ALWAYS_REDRAW = false; // must be true if not USE_OFFSCREEN
   public static final boolean USE_OFFSCREEN = true;
   public static boolean DEBUG_REDRAW = false;
-  public static boolean ESC_EXIT = true;
+  public static boolean ESC_EXIT = false;
   public boolean vsync = true;
   public Windows mgr;
   

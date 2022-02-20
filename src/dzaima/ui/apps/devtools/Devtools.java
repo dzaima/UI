@@ -2,7 +2,7 @@ package dzaima.ui.apps.devtools;
 
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
-import dzaima.ui.gui.io.Click;
+import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
@@ -304,6 +304,11 @@ public class Devtools extends NodeWindow {
     return c;
   }
   
+  public boolean key(Key key, int scancode, KeyAction a) {
+    if (super.key(key, scancode, a)) return true;
+    if (a.press && key.k_esc()) { closeOnNext(); return true; }
+    return false;
+  }
   
   public long getTime(String s) {
     RotBuf l = times.get(s);
