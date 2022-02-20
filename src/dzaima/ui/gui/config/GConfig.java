@@ -35,11 +35,11 @@ public class GConfig {
   
   public void setEM(int em) {
     this.em = em;
-    defFont = Typeface.of("Arial").sizeMode(em, 0);
     imgScale = em>10 && em<16? 1 : 13f/em; // don't scale images if they'd be scaled by too little (to keep pixels real pixels)
     cfgUpdated();
   }
   public void cfgUpdated() {
+    defFont = Typeface.of(getProp("str.defaultFont").str()).sizeMode(em, 0);
     for (NodeWindow w : ws) w.cfgUpdated();
   }
   public void initialLoaded() {
