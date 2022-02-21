@@ -1,4 +1,4 @@
-// https://github.com/skiftOS/skift/blob/main/sysroot/Files/Themes/skift-dark.json
+// warning: don't modify outside of UI/res/base/ as a build will write over your changes!
 
 str.defaultEM = 13
 str.color = #D2D2D2 // your regular text color
