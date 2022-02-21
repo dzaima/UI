@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.nio.file.attribute.FileTime;
 import java.security.*;
+import java.time.*;
 import java.util.Arrays;
 
 @SuppressWarnings({"AssertWithSideEffects", "ConstantConditions"})
@@ -37,21 +39,37 @@ public class Tools {
   }
   
   
+  public static Path cachePath = Paths.get("cache");
+  public static int cacheDays = 5;
+  public static void purgeOldCache() {
+    if (!Files.isDirectory(cachePath)) return;
+    try {
+      for (Path p : Files.newDirectoryStream(cachePath)) {
+        Duration d = Duration.between(Files.getLastModifiedTime(p).toInstant(), Instant.now());
+        if (d.toDays() > cacheDays) Files.deleteIfExists(p);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+  
   public static byte[] get(String path, boolean cache) {
     Path p;
     if (cache) {
-      p = Paths.get("cache/"+sha256(path.getBytes(StandardCharsets.UTF_8)));
+      purgeOldCache();
+      p = cachePath.resolve(sha256(path.getBytes(StandardCharsets.UTF_8)));
       if (Files.exists(p)) {
         try {
+          Files.setLastModifiedTime(p, FileTime.from(Instant.now()));
           return Files.readAllBytes(p);
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException e) { System.out.println("Failed reading cache:"); e.printStackTrace(); }
       }
     } else p=null;
     try {
       URL u = new URL(path);
       HttpURLConnection c = (HttpURLConnection) u.openConnection();
       c.setRequestMethod("GET");
-      c.setUseCaches(false);
+      c.setUseCaches(cache);
       
       byte[] b = new byte[1024];
       int i = 0, am;
@@ -62,7 +80,10 @@ public class Tools {
         }
       }
       byte[] r = Arrays.copyOf(b, i);
-      if (cache) Files.write(p, r);
+      if (cache) {
+        Files.createDirectories(p.getParent());
+        Files.write(p, r);
+      }
       return r;
     } catch (IOException e) {
       throw new RuntimeException(e);
