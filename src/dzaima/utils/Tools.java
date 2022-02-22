@@ -56,14 +56,15 @@ public class Tools {
   public static byte[] get(String path, boolean cache) {
     Path p;
     if (cache) {
-      purgeOldCache();
       p = cachePath.resolve(sha256(path.getBytes(StandardCharsets.UTF_8)));
       if (Files.exists(p)) {
         try {
           Files.setLastModifiedTime(p, FileTime.from(Instant.now()));
+          purgeOldCache();
           return Files.readAllBytes(p);
         } catch (IOException e) { System.out.println("Failed reading cache:"); e.printStackTrace(); }
       }
+      purgeOldCache();
     } else p=null;
     try {
       URL u = new URL(path);
