@@ -3,6 +3,7 @@ package dzaima.ui.gui.select;
 import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.types.*;
+import dzaima.ui.node.types.StringNode.Word;
 import dzaima.utils.Vec;
 import io.github.humbleui.skija.paragraph.Paragraph;
 
@@ -56,29 +57,29 @@ public class Position {
         int fh = f.hi;
         int sum = 0;
         for (int wp = 0; wp < str.words.length; wp++) {
-          StringNode.Word w = str.words[wp];
+          Word w = str.words[wp];
           int n = -1;
           w: {
             int wx = (int) w.x;
             int wy = w.y;
             if (w.split == null) {
-              n = wPos(fx, fy, str, w, -1, wx, wy, (int) Math.ceil(w.w), fh);
+              n = wPos(fx, fy, str, w, -1, wx, wy, wy+fh, (int) Math.ceil(w.w));
             } else {
               int i = 0;
               String cs = w.split[i];
-              n = wPos(fx, fy, str, w, i, wx, wy, f.width(cs), fh);
+              n = wPos(fx, fy, str, w, i, wx, wy, wy+fh, f.width(cs));
               if (n!=-1) break w;
-              if (w.f(StringNode.Word.F_SL)) wy = str.sY2;
+              if (w.f(Word.F_SL)) wy = str.sY2;
               else wy+= fh;
               for (i++; i < w.split.length-1; i++) {
                 cs = w.split[i];
-                n = wPos(fx, fy, str, w, i, 0, wy, f.width(cs), fh);
+                n = wPos(fx, fy, str, w, i, 0, wy, wy+fh, f.width(cs));
                 if (n!=-1) break w;
                 wy+= fh;
               }
-              if (w.f(StringNode.Word.F_EL)) wy = str.eY1 + str.asc;
+              boolean e = w.f(Word.F_EL);
               cs = w.split[i];
-              n = wPos(fx, fy, str, w, i, 0, wy, f.width(cs), fh);
+              n = wPos(fx, fy, str, w, i, 0, e? str.eY1 : wy, e? str.eY2 : wy+fh, f.width(cs));
             }
           }
           if (n!=-1) {
@@ -101,11 +102,12 @@ public class Position {
     }
   }
   
-  private static int wPos(int fx, int fy, StringNode nd, StringNode.Word c, int spl, int x, int sy, int w, int fh) {
-    int ey = sy+fh;
-    if (sy<nd.sY2)       { sy = nd.sY1; ey = nd.sY2; }
-    else if (sy>=nd.eY1) { sy = nd.eY1; ey = nd.eY2; }
-    if (fx>=x && fy>=sy && fx<x+w && fy<ey) {
+  private static int wPos(int fx, int fy, StringNode nd, Word c, int spl, int x, int sy, int ey, int w) {
+    if (spl<=0 && c.f(Word.F_SL)) { // if these don't hold, assume wPos has been given correct sy/ey
+      sy = nd.sY1;
+      ey = nd.sY2;
+    }
+    if (fx>=x && fx<x+w && fy>=sy && fy<ey) {
       if (spl<0) {
         if (c.overkill==null) c.overkill = c.buildPara(nd);
         return c.overkill.getGlyphPositionAtCoordinate(fx-x, 1).getPosition();
