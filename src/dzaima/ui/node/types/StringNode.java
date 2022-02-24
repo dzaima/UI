@@ -165,15 +165,15 @@ public class StringNode extends InlineNode {
     for (int i = 0; i < words.length; i++) {
       Word c = words[i];
       if (mut) {
-        c.setFlag(Word.F_SL, first);
         c.setFlag(Word.F_EL, true); // cleared by newline calls
       }
       if (mut) c.split = null;
       if (sv.x+c.w >= sv.w) {
         if (c.w >= sv.w && c.s.length()>1) { // break up word
+          c.setFlag(Word.F_SL, first);
           int x0 = search(c.s, 0, sv.w-sv.x);
           Vec<String> spl = new Vec<>();
-          spl.add(c.s.substring(0, x0));
+          spl.add(c.s.substring(0, x0)); // TODO maybe do something special if this is a length zero string? (make sure to correct F_SL if so)
           while (x0 != c.s.length()) {
             int x1 = Math.max(search(c.s, x0, sv.w), x0+1);
             spl.add(c.s.substring(x0, x1));
@@ -198,6 +198,7 @@ public class StringNode extends InlineNode {
       if (mut) {
         c.x = sv.x;
         c.y = (short) sv.y;
+        c.setFlag(Word.F_SL, first);
       }
       sv.x+= c.w;
       if (c.f(Word.F_LN)) { sv.ab(a, b); li = newline(li, i+1, sv, a, b, mut); first = false; }

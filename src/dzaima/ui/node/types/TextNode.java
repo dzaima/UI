@@ -4,7 +4,7 @@ import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 
 public class TextNode extends InlineNode {
   public TextNode(Ctx ctx, String[] ks, Prop[] vs) {
@@ -85,6 +85,12 @@ public class TextNode extends InlineNode {
       g.rect(eX-xpad, eY1, eX, eY2, bgCol);
     }
     super.bg(g, full);
+  }
+  
+  public Node findCh(int x, int y) {
+    if (XY.in(x, y, sX, sY1, sX+xpad, sY2)) return ch.get(0);
+    // ending padding handled by super.findCh returning last if none found
+    return super.findCh(x, y);
   }
   
   public int minW() {

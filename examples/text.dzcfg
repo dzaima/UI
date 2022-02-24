@@ -26,7 +26,8 @@ v { select=text
           }
           " 12aaaaaaaaaaaaaaaaaa34 lorem ipsum"
           " 12aaaaaaaaaaaaaaaaaabbbbbbbbbbbbbb34 " text { tsz=3em "big again" }
-          text { "codeblock" bg=#111 xpad=.2em }
+          text { "code" "block" bg=#111 xpad=.3em }
+          " text after codeblock"
         }
       }
     }

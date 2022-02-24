@@ -20,7 +20,7 @@ h { bg=#333
   }
   hsep{x=0em y=0em}
   v {
-    h { select=h pad=.1em
+    h { select=h pad=.1em weight=.5
       h { bg=#222 alX=center alY=center "item 1" }
       h { bg=#222 alX=center alY=center "item 2" }
       h { bg=#222 alX=center alY=center "item 3" }

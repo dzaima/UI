@@ -106,7 +106,7 @@ public abstract class InlineNode extends Node {
         if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
       }
     }
-    return null;
+    return ch.peek();
   }
   public boolean in(int x, int y) {
     if (y>=sY1 && y<eY2) {

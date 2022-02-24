@@ -88,7 +88,7 @@ public class Position {
           }
           sum+= w.s.length();
         }
-        if (rPos==-1) rPos = 0;
+        if (rPos==-1) rPos = str.s.length();
       } else if (!(c instanceof InlineNode)) {
         rPos = fx>c.w/2? 1 : 0;
       }
@@ -102,24 +102,25 @@ public class Position {
     }
   }
   
-  private static int wPos(int fx, int fy, StringNode nd, Word c, int spl, int x, int sy, int ey, int w) {
+  private static int wPos(int px, int py, StringNode nd, Word c, int spl, int x, int sy, int ey, int w) {
     if (spl<=0 && c.f(Word.F_SL)) { // if these don't hold, assume wPos has been given correct sy/ey
       sy = nd.sY1;
       ey = nd.sY2;
     }
-    if (fx>=x && fx<x+w && fy>=sy && fy<ey) {
-      if (spl<0) {
-        if (c.overkill==null) c.overkill = c.buildPara(nd);
-        return c.overkill.getGlyphPositionAtCoordinate(fx-x, 1).getPosition();
-      } else {
-        Paragraph p = nd.buildPara(c.split[spl]);
-        int r = p.getGlyphPositionAtCoordinate(fx-x, 1).getPosition();
-        p.close();
-        for (int i = 0; i < spl; i++) r+= c.split[i].length();
-        return r;
-      }
+    if (py>=ey) return -1;
+    if (py<=sy) return 0;
+    if (px>=x+w) return -1;
+    if (px<=x) return 0;
+    if (spl<0) {
+      if (c.overkill==null) c.overkill = c.buildPara(nd);
+      return c.overkill.getGlyphPositionAtCoordinate(px-x, 1).getPosition();
+    } else {
+      Paragraph p = nd.buildPara(c.split[spl]);
+      int r = p.getGlyphPositionAtCoordinate(px-x, 1).getPosition();
+      p.close();
+      for (int i = 0; i < spl; i++) r+= c.split[i].length();
+      return r;
     }
-    return -1;
   }
   
   

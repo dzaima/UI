@@ -13,6 +13,10 @@ public class XY {
     return y>=y0 & y<y0+h
         && x>=x0 & x<x0+w;
   }
+  public static boolean in(int x, int y, int x0, int y0, int x1, int y1) {
+    return y>=y0 & y<y1
+        && x>=x0 & x<x1;
+  }
   public static boolean inL(int v, int s, int l) { return v>=s & v<s+l; }
   
   public boolean le(XY that) {

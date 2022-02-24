@@ -63,7 +63,7 @@ public class ExMain extends NodeWindow {
   }
   
   public static void main(String[] args) {
-    Windows.setManager(Windows.Manager.LWJGL);
+    Windows.setManager(Windows.Manager.JWM);
     Windows.start(ExMain::run);
   }
   
