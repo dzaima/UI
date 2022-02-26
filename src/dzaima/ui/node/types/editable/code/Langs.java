@@ -22,7 +22,7 @@ public class Langs {
     defLang = new Language("Text", new String[0], TextLang::new);
   }
   
-  private void addLang(String name, Function<Font, Lang> gen, String... ext) {
+  public void addLang(String name, Function<Font, Lang> gen, String... ext) {
     Language l = new Language(name, ext, gen);
     for (String c : ext) extMap.put(c, l);
     nameMap.put(name.toLowerCase(), l);
@@ -40,7 +40,7 @@ public class Langs {
   
   public Language fromFilename(String filename) {
     int d = filename.indexOf('.');
-    if (d!=-1) filename = filename.substring(d+1);
+    if (d!=-1) filename = filename.substring(d+1).toLowerCase();
     Language l = extMap.get(filename);
     if (l==null) return defLang;
     return l;

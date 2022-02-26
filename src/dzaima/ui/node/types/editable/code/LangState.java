@@ -19,6 +19,9 @@ public abstract class LangState<T extends LangState<T>> {
     public boolean has(char[] p, int s, int e) {
       return contains(new KW(Arrays.copyOfRange(p, s, e)));
     }
+    public boolean has(char[] str) {
+      return contains(new KW(str));
+    }
   
     static class KW {
       char[] is;
