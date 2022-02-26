@@ -167,8 +167,9 @@ public class Tools {
   
   
   
-  static class QInterruptedException extends RuntimeException {
+  public static class QInterruptedException extends RuntimeException {
     public QInterruptedException(InterruptedException e) { super(e); }
+    public QInterruptedException() { }
   }
   public interface RunnableThread {
     void run() throws InterruptedException;

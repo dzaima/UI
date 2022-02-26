@@ -108,9 +108,9 @@ public class Position {
       ey = nd.sY2;
     }
     if (py>=ey) return -1;
-    if (py<=sy) return 0;
+    if (py<sy) return 0;
     if (px>=x+w) return -1;
-    if (px<=x) return 0;
+    if (px<x) return 0;
     if (spl<0) {
       if (c.overkill==null) c.overkill = c.buildPara(nd);
       return c.overkill.getGlyphPositionAtCoordinate(px-x, 1).getPosition();
