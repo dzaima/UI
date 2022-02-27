@@ -9,7 +9,7 @@ public class SingeliLang extends Lang {
     "void","i8","i16","i32","i64","u1","u8","u16","u32","u64","f32","f64","Size"
   );
   public static LangState.Keywords keyw = new LangState.Keywords(
-    "def","include","do","while","if","else","oper","prefix","infix","left","none","over","from","to","return"
+    "def","include","do","while","if","else","oper","over","from","to","return"
   );
   
   public static int[] cols = new int[]{

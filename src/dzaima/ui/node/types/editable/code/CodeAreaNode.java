@@ -117,7 +117,7 @@ public class CodeAreaNode extends EditNode {
   }
   
   private int calcNs;
-  private static final int MAX_NS = 200000; // .2ms/frame max; excludes the resulting paragraph rebuilding, which will take much more
+  private static final int MAX_NS = 600000; // .6ms/frame max; excludes the resulting paragraph rebuilding, which will take much more
   public void tickC() { super.tickC();
     calcNs = 0;
   }
