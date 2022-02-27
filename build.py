@@ -89,7 +89,7 @@ def jar(res, classpath, release = ""):
       "-d", "classes",
       * srcs
     ])
-    subprocess.check_call(["jar", "cf", res, "-C", "classes", "."])
+  subprocess.check_call(["jar", "cf", res, "-C", "classes", "."])
 
 def build_ui_lib(uiloc):
   mkdirs("lib/")
