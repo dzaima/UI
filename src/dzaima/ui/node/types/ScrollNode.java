@@ -95,17 +95,17 @@ public class ScrollNode extends FrameNode {
     }
   }
   
-  private boolean ignoreEnd;
-  public void ignoreEnd() { ignoreEnd = true; }
+  private boolean ignoreE, ignoreS;
+  public void ignoreEnd() { ignoreE = true; }
+  public void ignoreStart() { ignoreS = true; }
   public void resized() {
     
     Node focusEl = getBest(0, (clipSY+clipEY)/2);
     if (focusEl==this) focusEl = null;
     XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
-    boolean atStart = atStart(2);
-    boolean atEnd   = atEnd  (2) && !ignoreEnd;
-    ignoreEnd = false;
+    boolean atStart = atStart(2) && !ignoreS; ignoreS = false;
+    boolean atEnd   = atEnd  (2) && !ignoreE; ignoreE = false;
     int de = distEnd();
     
     Node c = ch();
