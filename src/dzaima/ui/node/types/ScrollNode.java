@@ -61,6 +61,9 @@ public class ScrollNode extends FrameNode {
   public boolean atStart(int err) {
     return -oy < err;
   }
+  int distEnd() {
+    return oy+chH-ih;
+  }
   public boolean atEnd(int err) {
     return oy-err<=ih-chH;
   }
@@ -100,8 +103,10 @@ public class ScrollNode extends FrameNode {
     if (focusEl==this) focusEl = null;
     XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
-    boolean atEnd = atEnd(5) && !ignoreEnd;
+    boolean atStart = atStart(2);
+    boolean atEnd   = atEnd  (2) && !ignoreEnd;
     ignoreEnd = false;
+    int de = distEnd();
     
     Node c = ch();
     int wCov = yMode==OFF | yMode==HIDDEN | tempOverlap? 0 : barSize;
@@ -118,12 +123,15 @@ public class ScrollNode extends FrameNode {
     
     XY fE = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
-    if (atEnd) {
-      toLast(true);
+    isz();
+    if (atStart) {
+      // do nothing
+    } else if (atEnd) {
+      quiet(0, de-distEnd());
     } else {
       quiet(fS.x-fE.x, fS.y-fE.y);
-      limit();
     }
+    limit();
   }
   
   private static final int OFF=0, AUTO=1, ON=2, HIDDEN=3;
