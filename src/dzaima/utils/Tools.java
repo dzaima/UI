@@ -43,8 +43,8 @@ public class Tools {
   public static int cacheDays = 5;
   public static void purgeOldCache() {
     if (!Files.isDirectory(cachePath)) return;
-    try {
-      for (Path p : Files.newDirectoryStream(cachePath)) {
+    try (DirectoryStream<Path> s = Files.newDirectoryStream(cachePath)) {
+      for (Path p : s) {
         Duration d = Duration.between(Files.getLastModifiedTime(p).toInstant(), Instant.now());
         if (d.toDays() > cacheDays) Files.deleteIfExists(p);
       }
