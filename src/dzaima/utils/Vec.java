@@ -128,6 +128,15 @@ public class Vec<T> implements Iterable<T> {
     }
     return res;
   }
+  public void filterInplace(Predicate<T> f) {
+    int oi = 0;
+    int osz = sz;
+    for (int i = 0; i < osz; i++) {
+      T c = arr[i];
+      if (f.test(c)) arr[oi++] = c;
+      else sz--;
+    }
+  }
   
   
   private void dcap() {
