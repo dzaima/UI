@@ -5,7 +5,7 @@ str.color = #D2D2D2 // your regular text color
 str.colorDisabled = #888888
 str.defaultFont = "Arial"
 text.bgSel = #df264C99
-stext.keys.copy = { "ctrl+c" }
+stext.keys.copy = { "ctrl+c" "shift+ctrl+c" }
 
 icon.color = #CCC
 
@@ -66,7 +66,7 @@ textarea {
   keys {
     keepFirst = { "escape" } // keep only first cursor, or cancel selection
     keepLast = { "shift+escape" } // keep only last cursor, or cancel selection, going to original position
-    copy = { "ctrl+c" }
+    copy = { "ctrl+c" "shift+ctrl+c" }
     paste = { "ctrl+v" }
     cut = { "ctrl+x" }
     undo = { "ctrl+z" }
