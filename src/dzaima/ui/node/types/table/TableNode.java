@@ -99,7 +99,7 @@ public class TableNode extends Node { // TODO table is very unfinished
   public int minW() {
     if (mW<0) {
       if (clip) return 0;
-      int[] cols = cols(w);
+      int[] cols = cols(w==-1? 0 : w); // TODO this shouldn't be using w
       mW = cols.length*colDist-sep;
       for (int c : cols) mW+= c;
     }
