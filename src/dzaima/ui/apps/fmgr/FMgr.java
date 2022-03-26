@@ -65,7 +65,7 @@ public class FMgr extends NodeWindow {
         }
         try {
           //noinspection BusyWait
-          Thread.sleep(100); // ↑ yep you're correct
+          Thread.sleep(100); // ↑ yep you're correct; TODO do something better
         } catch (InterruptedException e) { return; }
       }
     });

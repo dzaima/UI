@@ -170,7 +170,8 @@ public class NodeWindow extends Window {
       dx = dy;
       dy = 0;
     }
-    base.scroll(mx, my, dx, dy);
+    float speed = gc.getProp("scroll.globalSpeed").f();
+    base.scroll(mx, my, dx*speed, dy*speed);
   }
   public boolean key(Key key, int scancode, KeyAction a) {
     Node n = focusNode();

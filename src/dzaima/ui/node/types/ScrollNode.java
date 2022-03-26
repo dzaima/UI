@@ -236,7 +236,7 @@ public class ScrollNode extends FrameNode {
     if (dx==0 && yMode==OFF) dx=dy;
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
-    int sz = gc.em*7; // TODO theme option
+    int sz = gc.getProp("scroll.nodeSpeed").len();
     ox+= dx*sz;
     oy+= dy*sz;
     limit();

@@ -17,6 +17,8 @@ bg.bg2  = bg.back // ↑
 bg.sel  = #214283 // selected text color
 bg.selU = #404040 // selected text color while unfocused
 
+scroll.globalSpeed = 0.8 // global scrolling speed; affects anything that uses it
+scroll.nodeSpeed = 7em // scroll speed for scrolling 
 scroll.barCol   = #333 // background color of scrollbar
 scroll.thumbCol = #666 // main color
 scroll.barSize  = 1em  // width
