@@ -43,11 +43,21 @@ public class Cfg {
         if (!dedup.add(k)) throw new RuntimeException("Duplicate theme key "+k);
       }
     }
+    if (prev!=null) {
+      CfgTree prevC = prev.propTree;
+      for (String p : Tools.split(r, '.')) {
+        prevC = prevC.sub.get(p);
+        if (prevC==null) break;
+      }
+      if (prevC!=null) prevC.props.forEach(t.props::putIfAbsent);
+    }
     for (PNode o : g.ch) {
       if (o instanceof PNodeGroup) {
         PNodeGroup c = (PNodeGroup) o;
+        
         String path = joinPath(r, c.name);
         String[] ps = Tools.split(c.name, '.');
+        
         CfgTree t2 = t.prepTree(ps, ps.length);
         recInit(toMapK, toMapV, dedup, t2, path, c);
       } else if (o instanceof PNodeStr) {
