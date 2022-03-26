@@ -80,7 +80,7 @@ public class Devtools extends NodeWindow {
     tree.add(new DTTNNode(this, base.ctx, insp.base));
     ((BtnNode) base.ctx.id("pick")).setFn(b -> pick = true);
     ((BtnNode) base.ctx.id("hlInline")).setFn(b -> { hlInline^= true; newSel.set(true); });
-    ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> { WindowImpl.DEBUG_REDRAW^= true; });
+    ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> { VirtualWindow.DEBUG_REDRAW^= true; });
     focus(tree);
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));

@@ -20,7 +20,7 @@ public class JWMWindow extends WindowImpl {
   
   
   public JWMWindow(dzaima.ui.gui.Window w, WindowInit init) {
-    super(w, init);
+    super(w, init, true);
   }
   
   public void setTitle(String s) {
@@ -136,10 +136,6 @@ public class JWMWindow extends WindowImpl {
     winG.init(s);
     w.w = winG.w;
     w.h = winG.h;
-    if (USE_OFFSCREEN) {
-      if (offscreen!=null) offscreen.close();
-      offscreen = new OffscreenGraphics(s, w.w, w.h);
-    }
   }
   
   ///////// runtime \\\\\\\\\
@@ -159,7 +155,9 @@ public class JWMWindow extends WindowImpl {
     else layer.skipPaint();
   }
   
-  public void runResize() { }
+  public Surface runResize() {
+    return layer.initParts();
+  }
   
   public static Rect primaryDisplay() {
     return new Rect(App.getPrimaryScreen().getBounds());
@@ -189,7 +187,6 @@ public class JWMWindow extends WindowImpl {
     w.stopped();
     endDraw(true);
     
-    if (offscreen!=null) offscreen.close();
     layer.close();
     jwmw.close();
     jwmw = null; // make sure nothing accidentally uses it

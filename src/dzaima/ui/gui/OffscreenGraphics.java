@@ -15,6 +15,9 @@ public class OffscreenGraphics extends Graphics {
     surface.close();
   }
   
+  public void drawTo(Graphics g, int x, int y) {
+    drawTo(g.canvas, x, y);
+  }
   public void drawTo(Canvas c, int x, int y) {
     surface.draw(c, x, y, null);
   }

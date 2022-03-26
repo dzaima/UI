@@ -77,7 +77,7 @@ public class FMgr extends NodeWindow {
   }
   
   Thread thr;
-  public void stopped() {
+  public void stopped() { super.stopped();
     thr.interrupt();
   }
   

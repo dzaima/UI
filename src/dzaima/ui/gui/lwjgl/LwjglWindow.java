@@ -31,7 +31,7 @@ public class LwjglWindow extends WindowImpl {
   
   
   public LwjglWindow(Window w, WindowInit init) {
-    super(w, init);
+    super(w, init, true);
   }
   
   
@@ -234,9 +234,6 @@ public class LwjglWindow extends WindowImpl {
     renderTarget = BackendRenderTarget.makeGL(w.w, w.h, /*samples*/ 0, /*stencil*/ 8, GL11.glGetInteger(0x8CA6), FramebufferFormat.GR_GL_RGBA8); // magic
     surface = Surface.makeFromBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getSRGB(), new SurfaceProps(PixelGeometry.RGB_H));
     winG.init(surface);
-    
-    if (offscreen!=null) offscreen.close();
-    offscreen = new OffscreenGraphics(surface, w.w, w.h);
   }
   
   
@@ -251,8 +248,9 @@ public class LwjglWindow extends WindowImpl {
   public void startDraw(boolean needed) { }
   public void endDraw(boolean needed) { }
   
-  public void runResize() {
+  public Surface runResize() {
     newCanvas();
+    return surface;
   }
   
   static Rect primaryDisplay;

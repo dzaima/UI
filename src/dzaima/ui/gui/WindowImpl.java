@@ -2,6 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.utils.*;
+import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
 import java.util.function.Consumer;
@@ -10,16 +11,15 @@ public abstract class WindowImpl {
   public final Window w;
   public WindowInit init;
   
-  public static final boolean ALWAYS_REDRAW = false; // must be true if not USE_OFFSCREEN
-  public static final boolean USE_OFFSCREEN = true;
-  public static boolean DEBUG_REDRAW = false;
   public static boolean ESC_EXIT = false;
   public boolean vsync = true;
   public Windows mgr;
+  public final boolean misuseBuffers;
   
-  protected WindowImpl(Window w, WindowInit init) {
+  protected WindowImpl(Window w, WindowInit init, boolean misuseBuffers) {
     this.w = w;
     this.init = init;
+    this.misuseBuffers = misuseBuffers;
   }
   
   ///////// actions \\\\\\\\\
@@ -57,10 +57,9 @@ public abstract class WindowImpl {
   public abstract boolean needsDraw();
   public abstract void startDraw(boolean needed);
   public abstract void endDraw(boolean needed);
-  public abstract void runResize();
+  public abstract Surface runResize();
   
   public Graphics winG = new Graphics();
-  public OffscreenGraphics offscreen;
   
   
   

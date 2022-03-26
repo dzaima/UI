@@ -33,17 +33,17 @@ public class ExMain extends NodeWindow {
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/tree.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/text.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/unicode.dzcfg")));
-    PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/selection.dzcfg")));
+    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/selection.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
-    ExMain w = new ExMain(gc, ctx, g, "example window");
+    // ExMain w = new ExMain(gc, ctx, g, "example window");
     
-    // ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
-    // CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
-    // ed.setLang(w.gc.langs().fromName("java"));
-    // int s = ed.um.pushIgnore();
-    // ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
-    // ed.um.popIgnore(s);
+    ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
+    CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
+    ed.setLang(w.gc.langs().fromName("java"));
+    int s = ed.um.pushIgnore();
+    ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
+    ed.um.popIgnore(s);
     
     
     if (dtc == 0) {

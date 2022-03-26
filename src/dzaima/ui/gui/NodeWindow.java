@@ -9,6 +9,7 @@ import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.types.StringNode;
 import dzaima.utils.*;
+import io.github.humbleui.skija.Surface;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -16,10 +17,13 @@ import java.io.IOException;
 
 public class NodeWindow extends Window {
   public static boolean PRINT_ON_RESIZE = false;
+  public static final boolean ALWAYS_REDRAW = false; // must be true if not USE_OFFSCREEN
+  public static final boolean USE_OFFSCREEN = true;
   
   public final GConfig gc;
   public final Ctx.WindowCtx ctx;
   public final Node base;
+  public final Vec<VirtualWindow> vws = new Vec<>(); 
   
   public NodeWindow(Node base, WindowInit i) {
     super(i);
@@ -27,6 +31,7 @@ public class NodeWindow extends Window {
     this.ctx = (Ctx.WindowCtx) base.ctx;
     this.base = base;
     ctx.w = this;
+    addMainVW();
   }
   public NodeWindow(GConfig gc, Ctx pctx, PNodeGroup g, WindowInit i) {
     super(i);
@@ -34,6 +39,22 @@ public class NodeWindow extends Window {
     this.ctx = new Ctx.WindowCtx(gc, pctx);
     ctx.w = this;
     this.base = ctx.makeHere(g);
+    addMainVW();
+  }
+  
+  protected void addMainVW() {
+    vws.add(new VirtualWindow(this) {
+      public boolean fullyOpaque() { return true; }
+      public Rect getSize(int pw, int ph) {
+        return new Rect(0, 0, pw, ph);
+      }
+      protected void implDraw(Graphics g, boolean full) {
+        base.draw(g, full);
+      }
+      protected boolean implRequiresRedraw() {
+        return base.needsRedraw();
+      }
+    });
   }
   
   public Node focusNode;
@@ -92,11 +113,13 @@ public class NodeWindow extends Window {
   public void setup() {
     base.shown();
     gc.ws.add(this); // TODO not
-    resized();
   }
   
   public void stopped() {
     gc.ws.remove(this);
+    for (VirtualWindow c : vws) {
+      c.stopped();
+    }
   }
   
   public Vec<Node> pHover = new Vec<>();
@@ -131,10 +154,6 @@ public class NodeWindow extends Window {
     base.tick();
   }
   
-  public boolean shouldRedraw() {
-    return base.needsRedraw();
-  }
-  
   private static boolean unusedClick;
   public void mouseDown(int x, int y, Click cl) {
     if (tools!=null && tools.mouseDownInsp(x, y, cl)) return;
@@ -164,15 +183,31 @@ public class NodeWindow extends Window {
     if (n!=null) n.typed(p);
   }
   
+  
+  
+  public boolean requiresDraw() {
+    for (VirtualWindow c : vws) if (c.requiresRedraw()) return true;
+    return false;
+  }
+  public boolean draw(Graphics g, boolean full) {
+    boolean any = false;
+    for (VirtualWindow c : vws) {
+      if (c.draw()) any = true;
+      c.drawTo(g);
+    }
+    
+    if (tools!=null) tools.drawInsp(g);
+    return any || full;
+  }
+  
+  
+  
   public void maybeResize() {
     if (base.needsResize()) resizeCh();
   }
-  public void draw(Graphics g, boolean full) {
-    base.draw(g, full);
-    if (tools!=null) tools.drawInsp(g);
-  }
   public boolean windowResize;
-  public void resized() {
+  public void resized(Surface s) {
+    for (VirtualWindow vw : vws) vw.parentResized(s, w, h);
     windowResize = true;
     resizeCh();
     windowResize = false;
@@ -185,6 +220,9 @@ public class NodeWindow extends Window {
     long ens = System.nanoTime();
     if (PRINT_ON_RESIZE && !(this instanceof Devtools)) System.out.println((ens-sns)/1e6d+"ms resize to "+this.w+";"+this.h);
   }
+  
+  
+  
   public void cfgUpdated() {
     recProps(base);
     base.mRedraw();

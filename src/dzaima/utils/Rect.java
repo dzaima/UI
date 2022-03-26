@@ -64,7 +64,6 @@ public class Rect {
   public boolean equals(Object o) {
     if (!(o instanceof Rect)) return false;
     Rect r = (Rect) o;
-  
     return sx==r.sx && sy==r.sy && ex==r.ex && ey==r.ey;
   }
   
