@@ -15,4 +15,10 @@ public class Time {
     ZonedDateTime z = t.atZone(tz);
     return z.format(z.toLocalDate().equals(LocalDate.now())? dt0 : dt1);
   }
+  public static String logStart() {
+    return "["+Instant.now().toString()+"] ";
+  }
+  public static String logStart(Object type) {
+    return "["+Instant.now().toString()+" "+type+"] ";
+  }
 }

@@ -150,7 +150,7 @@ public class NodeWindow extends Window {
   }
   
   public void tick() {
-    gc.tick(); // TODO this is messy
+    gc.tick(impl.intentionallyLong()); // TODO this is messy
     base.tick();
   }
   

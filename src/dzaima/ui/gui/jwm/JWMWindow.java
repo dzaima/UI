@@ -1,6 +1,7 @@
 package dzaima.ui.gui.jwm;
 
 import dzaima.ui.gui.*;
+import dzaima.ui.gui.Window.DrawReq;
 import dzaima.ui.gui.lwjgl.LwjglWindow;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Window;
@@ -9,18 +10,24 @@ import io.github.humbleui.skija.Surface;
 import io.github.humbleui.types.IRect;
 
 import java.nio.file.Path;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class JWMWindow extends WindowImpl {
+  public static final boolean DEBUG_UPDATES = false;
+  
+  public final int id; // roughly unique identifier of the current window (as long as your program hasn't made 4 billion windows)
   public Window jwmw;
   public String title;
   public boolean visible;
   
-  
+  private static final AtomicInteger idCounter = new AtomicInteger();
   public JWMWindow(dzaima.ui.gui.Window w, WindowInit init) {
-    super(w, init, true);
+    super(w, init, false);
+    id = idCounter.getAndIncrement();
   }
   
   public void setTitle(String s) {
@@ -142,6 +149,7 @@ public class JWMWindow extends WindowImpl {
   private final LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
   public void enqueue(Runnable r) {
     queue.add(r);
+    requestTick();
   }
   
   public boolean needsDraw() {
@@ -159,21 +167,83 @@ public class JWMWindow extends WindowImpl {
     return layer.initParts();
   }
   
+  public void closeOnNext() {
+    shouldStop.set(true);
+    jwmw.requestFrame();
+  }
+  
   public static Rect primaryDisplay() {
     return new Rect(App.getPrimaryScreen().getBounds());
   }
   
-  public void nextFrame() {
-    long sns = System.nanoTime();
+  private boolean intentionallyLong;
+  private DrawReq drawRequest;
+  private long prevFrameStartNs = -1;
+  private long prevFrameStartMs = -1;
+  
+  public void nextFrame(boolean onlyTick) { // if !onlyTick, return 
     assert state.get()==1;
-    int r = w.nextTick();
-    if (r!=0) {
-      w.nextDraw(winG, r==2);
-    } else {
-      startDraw(false);
-      endDraw(false);
+    if (drawRequest==null) {
+      prevFrameStartNs = System.nanoTime();
+      prevFrameStartMs = System.currentTimeMillis();
+      nextRequestMs = Long.MAX_VALUE;
     }
-    w.postDraw(r!=0, sns);
+    if (!onlyTick) cancelTickRequest(); // something force-called a draw while a tick request is active; ¯\_(ツ)_/¯
+    
+    DrawReq pdr = drawRequest;
+    if (drawRequest==null) drawRequest = w.nextTick();
+    
+    if (DEBUG_UPDATES) System.out.println(Time.logStart(id)+"nextFrame("+onlyTick+"): drawRequest="+pdr+"→"+drawRequest);
+    boolean draw = drawRequest!=DrawReq.NONE;
+  
+    intentionallyLong = !draw;
+    if (draw) {
+      jwmw.requestFrame();
+      if (onlyTick) return; // and have next run through nextFrame continue to postDraw
+      w.nextDraw(winG, drawRequest==DrawReq.FULL);
+    } else {
+      requestTick(false);
+    }
+    
+    w.postDraw(draw, prevFrameStartNs);
+    
+    drawRequest = null;
+  }
+  
+  
+  
+  private final Timer timer = new Timer(true);
+  private TimerTask currentTickRequest; // null while jwm.Window.requestFrame is definitely active; otherwise, state is arbitrary
+  private long nextRequestMs = Long.MAX_VALUE;
+  private void requestTick(boolean instant) {
+    long next = prevFrameStartMs + (instant? 1000/w.framerate() : w.tickDelta());
+    if (!instant || next < nextRequestMs) {
+      nextRequestMs = next;
+      if (DEBUG_UPDATES) System.out.println(Time.logStart(id) + "scheduling tick to "+Instant.ofEpochMilli(next));
+      
+      cancelTickRequest();
+      timer.schedule(currentTickRequest = new TimerTask() {
+        public void run() {
+          if (DEBUG_UPDATES) System.out.println(Time.logStart(id) + "tick timer hit");
+          App.runOnUIThread(() -> {
+            if (currentTickRequest==this && !shouldStop.get()) {
+              currentTickRequest = null;
+              nextFrame(true);
+            }
+          });
+        }
+      }, new Date(next));
+    }
+  }
+  public void cancelTickRequest() {
+    if (currentTickRequest!=null) {
+      currentTickRequest.cancel();
+      currentTickRequest = null;
+    }
+  }
+  public void requestTick() {
+    if (currentTickRequest==null) return; // else, requestFrame is running
+    requestTick(true);
   }
   
   public void runEvents() {
@@ -184,6 +254,9 @@ public class JWMWindow extends WindowImpl {
     }
   }
   
+  public boolean intentionallyLong() {
+    return intentionallyLong;
+  }
   
   
   private boolean stopped;

@@ -50,7 +50,7 @@ public class LwjglWindow extends WindowImpl {
       make();
       while (true) {
         try {
-          if (w.shouldStop.get()) break;
+          if (shouldStop.get()) break;
           nextFrame();
         } catch (Throwable t) {
           Tools.sleep(1000/60);
@@ -253,6 +253,10 @@ public class LwjglWindow extends WindowImpl {
     return surface;
   }
   
+  public void closeOnNext() {
+    shouldStop.set(true);
+  }
+  
   static Rect primaryDisplay;
   public static Rect primaryDisplay() {
     if (primaryDisplay == null) {
@@ -274,16 +278,20 @@ public class LwjglWindow extends WindowImpl {
       r.run();
     }
   }
+  public boolean intentionallyLong() {
+    return false;
+  }
   
   public int mod;
-  public void nextFrame() { // returns if should exit
+  public void nextFrame() {
     long sns = System.nanoTime();
     assert state.get()==1;
     glfwMakeContextCurrent(windowPtr);
-    if (glfwWindowShouldClose(windowPtr)) w.shouldStop.set(true);
-    int r = w.nextTick();
-    if (r!=0) {
-      w.nextDraw(winG, r==2);
+    if (glfwWindowShouldClose(windowPtr)) shouldStop.set(true);
+    Window.DrawReq r = w.nextTick();
+    boolean draw = r!=Window.DrawReq.NONE;
+    if (draw) {
+      w.nextDraw(winG, r==Window.DrawReq.FULL);
     } else {
       startDraw(false);
       endDraw(false);
@@ -292,7 +300,7 @@ public class LwjglWindow extends WindowImpl {
     context.flush();
     glfwSwapBuffers(windowPtr);
     
-    w.postDraw(r!=0, sns);
+    w.postDraw(draw, sns);
   }
   
   public void stop() {

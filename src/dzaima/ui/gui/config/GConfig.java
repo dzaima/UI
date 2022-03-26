@@ -18,11 +18,13 @@ import java.util.function.*;
 public class GConfig {
   public int em = 15;
   public float imgScale = 1;
+  public final int framerate = 60; // frames per second; currently unchangeable
   
   public Cfg cfg = null;
   public boolean dragScroll = false; // enable scrolling by dragging (for mobile); may interfere with things expecting draggability
   public long lastNs = System.nanoTime();
   public long lastMs = lastNs/1000000;
+  public long deltaNs; // only accurate when last tick did drawing, otherwise it's capped to 1/framerate
   public long cursorOnMs = 500; // TODO theme
   public Font defFont;
   public Vec<NodeWindow> ws = new Vec<>();
@@ -68,8 +70,11 @@ public class GConfig {
     postReload.add(r);
   }
   
-  public void tick() {
+  public void tick(boolean intentionallyLong) {
+    long prevNs = lastNs;
     lastNs = System.nanoTime();
+    deltaNs = lastNs-prevNs;
+    if (intentionallyLong) deltaNs = Math.min(deltaNs, 1000000000/framerate);
     lastMs = lastNs/1000000;
   }
   

@@ -286,6 +286,7 @@ public class EditNode extends Node {
   public boolean isFocused;
   public boolean drawCursor;
   public /*open*/ void tickC() {
+    // TODO call some gc.requestTickIn(n milliseconds) to make sure that the cursor properly flashes
     long dt = gc.lastMs-cursorTime;
     if (dt > gc.cursorOnMs*4) cursorTime = gc.lastMs;
     else if (dt > gc.cursorOnMs*2) cursorTime+= gc.cursorOnMs*2;

@@ -2,7 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.io.*;
-import dzaima.utils.XY;
+import dzaima.utils.*;
 import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
@@ -52,6 +52,9 @@ public abstract class Window {
   public void setTitle(String s) { impl.setTitle(s); }
   public String getTitle() { return impl.getTitle(); }
   
+  public /*open*/ int framerate() { return 60; } // target frames per second
+  public /*open*/ int tickDelta() { return 1000/60; } // milliseconds to wait between ticks; shouldn't be less than framerate (aka, tps≤fps)
+  
   
   public enum CursorType { REGULAR, HAND, IBEAM }
   public void setCursor(CursorType c) { impl.setCursor(c); }
@@ -62,7 +65,7 @@ public abstract class Window {
   public void copyString(String s) { impl.copyString(s); }
   public void pasteString(Consumer<String> f) { impl.pasteString(f); }
   
-  public void closeOnNext() { shouldStop.set(true); } // close the window on next tick
+  public final void closeOnNext() { impl.closeOnNext(); } // close the window on next tick
   public void closeRequested() { closeOnNext(); } // called when user wants to close window
   
   public Devtools createTools() { return impl.createTools(); }
@@ -76,10 +79,10 @@ public abstract class Window {
   }
   
   private boolean hasSetup = false;
-  public final AtomicBoolean shouldStop = new AtomicBoolean(false);
   public final AtomicBoolean updateSize = new AtomicBoolean(true);
   public int nodrawFrames=-60;
-  public int nextTick() { // 0-don't draw; 1-needs partial draw; 2-needs full draw 
+  public enum DrawReq { NONE, TEMP, PARTIAL, FULL };
+  public DrawReq nextTick() { // 0-don't draw; 1-needs partial draw; 2-needs full draw
     long sns = System.nanoTime();
     Devtools t = tools;
     if (t!=null) t.timeStart(sns);
@@ -136,10 +139,10 @@ public abstract class Window {
     // if (t!=null) t.time("flush");
   
     int toolsRedraw = t!=null? t.redrawInsp() : 0;
-    boolean draw = resize || toolsRedraw==2 || requiresDraw() || !impl.misuseBuffers || nodrawFrames<20;
+    boolean draw = resize || toolsRedraw==2 || requiresDraw();
     boolean full = resize || toolsRedraw!=0;
     
-    return full? 2 : draw? 1 : 0;
+    return full? DrawReq.FULL : draw? DrawReq.PARTIAL : (impl.misuseBuffers && nodrawFrames<20? DrawReq.TEMP : DrawReq.NONE);
   }
   public void nextDraw(Graphics g, boolean full) {
     Devtools t = tools;

@@ -5,6 +5,7 @@ import dzaima.utils.*;
 import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public abstract class WindowImpl {
@@ -52,14 +53,16 @@ public abstract class WindowImpl {
   
   public abstract void enqueue(Runnable o);
   public abstract void runEvents();
+  public abstract boolean intentionallyLong();
   
   
-  public abstract boolean needsDraw();
+  public Graphics winG = new Graphics();
   public abstract void startDraw(boolean needed);
   public abstract void endDraw(boolean needed);
   public abstract Surface runResize();
   
-  public Graphics winG = new Graphics();
+  public final AtomicBoolean shouldStop = new AtomicBoolean(false);
+  public abstract void closeOnNext();
   
   
   

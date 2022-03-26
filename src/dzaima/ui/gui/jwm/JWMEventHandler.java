@@ -2,6 +2,7 @@ package dzaima.ui.gui.jwm;
 
 import dzaima.ui.gui.WindowImpl;
 import dzaima.ui.gui.io.*;
+import dzaima.utils.Time;
 import io.github.humbleui.jwm.Key;
 import io.github.humbleui.jwm.*;
 import io.github.humbleui.types.IRect;
@@ -24,10 +25,12 @@ public class JWMEventHandler implements Consumer<Event> {
     running = true;
   }
   
-  @SuppressWarnings("StatementWithEmptyBody")
-  public void accept(Event ev) {
+  public void accept(Event ev) { // TODO this is willy nilly immediately invoking functions on the window without going through the event queue to execute at the proper time
     if (ev instanceof EventFrame) {
-      if (w.visible && paint()) jwmw.requestFrame();
+      if (w.visible) {
+        if (JWMWindow.DEBUG_UPDATES) System.out.println(Time.logStart(w.id)+"EventFrame");
+        paint();
+      }
     } else if (ev instanceof EventWindowScreenChange) {
       if (w.visible) {
         w.layer.reconfigure();
@@ -41,11 +44,13 @@ public class JWMEventHandler implements Consumer<Event> {
       ww.h = e.getContentHeight();
       w.layer.resize(ww.w, ww.h);
       w.w.updateSize.set(true);
+      // eventFrame will appear later, so not requesting tick is fine
     } else if (ev instanceof EventMouseScroll) {
       EventMouseScroll e = (EventMouseScroll) ev;
       w.enqueue(() -> ww.scroll(e.getDeltaX()/15f, e.getDeltaY()/15f, e.isModifierDown(KeyModifier.SHIFT)));
     } else if (ev instanceof EventWindowCloseRequest) {
       w.w.closeRequested();
+      w.requestTick();
     } else if (ev instanceof EventMouseMove) { // waiting on https://github.com/HumbleUI/JWM/issues/146
       EventMouseMove e = (EventMouseMove) ev;
       int mx = e.getX();
@@ -54,10 +59,12 @@ public class JWMEventHandler implements Consumer<Event> {
       ww.dy+= my-ww.my;
       ww.mx = mx;
       ww.my = my;
+      w.requestTick();
     } else if (ev instanceof EventWindowMove) {
       EventWindowMove e = (EventWindowMove) ev;
       wx = e._windowLeft;
       wy = e._windowTop;
+      w.requestTick();
     } else if (ev instanceof EventMouseButton) {
       EventMouseButton e = (EventMouseButton) ev;
       MouseButton b = e.getButton();
@@ -78,6 +85,7 @@ public class JWMEventHandler implements Consumer<Event> {
           ww.mouseUp(ww.mx, ww.my, c);
         }
       }
+      w.requestTick();
     } else if (ev instanceof EventKey) {
       EventKey e = (EventKey) ev;
       Key k = e.getKey();
@@ -88,6 +96,7 @@ public class JWMEventHandler implements Consumer<Event> {
         if (p) escPressHandled = handled;
         else if (!handled && !escPressHandled) ww.closeOnNext();
       }
+      w.requestTick();
     } else if (ev instanceof EventTextInput) {
       String s = ((EventTextInput) ev).getText();
       int i = 0;
@@ -96,12 +105,15 @@ public class JWMEventHandler implements Consumer<Event> {
         ww.typed(p);
         i+= Character.charCount(p);
       }
+      w.requestTick();
     } else if (ev instanceof EventWindowFocusIn) {
       w.w.focused();
+      w.requestTick();
     } else if (ev instanceof EventWindowFocusOut) {
       w.w.unfocused();
+      w.requestTick();
     } else if (ev instanceof EventWindowClose) {
-      // ignore
+      w.requestTick();
     } else {
       System.out.println("Got event "+(ev==null? "null" : ev.getClass().getSimpleName())+":");
       System.out.println(ev);
@@ -110,18 +122,17 @@ public class JWMEventHandler implements Consumer<Event> {
   
   private boolean escPressHandled = false;
   public boolean dontPaint = true;
-  public boolean paint() { // returns if keep running
-    if (!running) return false;
-    if (dontPaint) return true; // don't recursively paint
+  public void paint() { // returns if keep running
+    if (!running) return;
+    if (dontPaint) return; // don't recursively paint
     dontPaint = true;
     try {
-      if (w.w.shouldStop.get()) {
+      if (w.shouldStop.get()) {
         running = false;
         w.stop();
-        return false;
+        return;
       }
-      w.nextFrame();
-      return true;
+      w.nextFrame(false);
     } finally {
       dontPaint = false;
     }

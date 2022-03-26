@@ -65,7 +65,7 @@ public class Windows {
           for (Window c : w.ws) if (!c.impl.running()) w.ws.remove(c);
           GLFW.glfwPollEvents();
         }
-        for (Window c : w.ws) c.shouldStop.set(true);
+        for (Window c : w.ws) c.impl.closeOnNext();
         finalWait: while (true) {
           GLFW.glfwPollEvents();
           Tools.sleep(1000/120);

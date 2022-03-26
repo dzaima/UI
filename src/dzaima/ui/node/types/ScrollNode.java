@@ -204,7 +204,6 @@ public class ScrollNode extends FrameNode {
     }
   }
   
-  private long lastNs;
   public void tickC() {
     Node c = ch();
     if (scrollTo!=null) {
@@ -216,12 +215,11 @@ public class ScrollNode extends FrameNode {
       scrollTo = null;
     }
     if (ox!=c.dx | oy!=c.dy) {
-      float speed = (float) Math.pow(gc.getProp("scroll.smooth").f(), (gc.lastNs-lastNs) * 60e-9);
+      float speed = (float) Math.pow(gc.getProp("scroll.smooth").f(), gc.deltaNs*60e-9);
       int ndx = (int) (c.dx*speed + ox*(1-speed)); c.dx = ndx==c.dx? ox : ndx;
       int ndy = (int) (c.dy*speed + oy*(1-speed)); c.dy = ndy==c.dy? oy : ndy;
       mRedraw();
     }
-    lastNs = gc.lastNs;
   }
   
   private void limit() {
