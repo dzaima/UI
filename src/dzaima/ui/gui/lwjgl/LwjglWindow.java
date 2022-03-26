@@ -277,13 +277,22 @@ public class LwjglWindow extends WindowImpl {
   
   public int mod;
   public void nextFrame() { // returns if should exit
+    long sns = System.nanoTime();
     assert state.get()==1;
     glfwMakeContextCurrent(windowPtr);
     if (glfwWindowShouldClose(windowPtr)) w.shouldStop.set(true);
-    w.nextFrame();
+    int r = w.nextTick();
+    if (r!=0) {
+      w.nextDraw(winG, r==2);
+    } else {
+      startDraw(false);
+      endDraw(false);
+    }
     
     context.flush();
     glfwSwapBuffers(windowPtr);
+    
+    w.postDraw(r!=0, sns);
   }
   
   public void stop() {

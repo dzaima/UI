@@ -79,7 +79,7 @@ public abstract class Window {
   public final AtomicBoolean shouldStop = new AtomicBoolean(false);
   public final AtomicBoolean updateSize = new AtomicBoolean(true);
   public int nodrawFrames=-60;
-  public void nextFrame() {
+  public int nextTick() { // 0-don't draw; 1-needs partial draw; 2-needs full draw 
     long sns = System.nanoTime();
     Devtools t = tools;
     if (t!=null) t.timeStart(sns);
@@ -136,23 +136,32 @@ public abstract class Window {
     // if (t!=null) t.time("flush");
   
     int toolsRedraw = t!=null? t.redrawInsp() : 0;
-    boolean draw = resize || requiresDraw() || toolsRedraw==2 || !impl.misuseBuffers || nodrawFrames<20;
-    impl.startDraw(draw);
-    if (draw) {
-      int prevCount = impl.winG.canvas.getSaveCount();
-      boolean drew = draw(impl.winG, resize || toolsRedraw!=0);
-      if (impl.winG.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
-      
-      if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
-      else nodrawFrames++;
-    }
-    if (t!=null) t.time("draw");
-    impl.endDraw(draw);
-    if (t!=null) t.time("flush");
+    boolean draw = resize || toolsRedraw==2 || requiresDraw() || !impl.misuseBuffers || nodrawFrames<20;
+    boolean full = resize || toolsRedraw!=0;
+    
+    return full? 2 : draw? 1 : 0;
+  }
+  public void nextDraw(Graphics g, boolean full) {
+    Devtools t = tools;
+    impl.startDraw(true);
+    int prevCount = g.canvas.getSaveCount();
+    boolean drew = draw(g, full);
+    if (g.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
   
+    if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
+    else nodrawFrames++;
+    if (t!=null) t.time("draw");
+    impl.endDraw(true);
+  }
+  public void postDraw(boolean didDraw, long sns) {
     frameCount++;
     dx = 0; dy = 0;
-    if (t!=null) t.time("all", sns);
+    Devtools t = tools;
+    if (t!=null) {
+      if (!didDraw) t.timeDirect("draw", 0);
+      t.time("flush");
+      t.time("all", sns);
+    }
   }
   
   // deprecated methods for erroring on usage

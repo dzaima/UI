@@ -164,9 +164,18 @@ public class JWMWindow extends WindowImpl {
   }
   
   public void nextFrame() {
+    long sns = System.nanoTime();
     assert state.get()==1;
-    w.nextFrame();
+    int r = w.nextTick();
+    if (r!=0) {
+      w.nextDraw(winG, r==2);
+    } else {
+      startDraw(false);
+      endDraw(false);
+    }
+    w.postDraw(r!=0, sns);
   }
+  
   public void runEvents() {
     while (true) {
       Runnable r = queue.poll();
