@@ -39,38 +39,12 @@ public class Tools {
   }
   
   
-  public static Path cachePath = Paths.get("cache");
-  public static int cacheDays = 5;
-  public static void purgeOldCache() {
-    if (!Files.isDirectory(cachePath)) return;
-    try (DirectoryStream<Path> s = Files.newDirectoryStream(cachePath)) {
-      for (Path p : s) {
-        Duration d = Duration.between(Files.getLastModifiedTime(p).toInstant(), Instant.now());
-        if (d.toDays() > cacheDays) Files.deleteIfExists(p);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-  
-  public static byte[] get(String path, boolean cache) {
-    Path p;
-    if (cache) {
-      p = cachePath.resolve(sha256(path.getBytes(StandardCharsets.UTF_8)));
-      if (Files.exists(p)) {
-        try {
-          Files.setLastModifiedTime(p, FileTime.from(Instant.now()));
-          purgeOldCache();
-          return Files.readAllBytes(p);
-        } catch (IOException e) { System.out.println("Failed reading cache:"); e.printStackTrace(); }
-      }
-      purgeOldCache();
-    } else p=null;
+  public static byte[] get(String path) {
     try {
       URL u = new URL(path);
       HttpURLConnection c = (HttpURLConnection) u.openConnection();
       c.setRequestMethod("GET");
-      c.setUseCaches(cache);
+      c.setUseCaches(false);
       
       byte[] b = new byte[1024];
       int i = 0, am;
@@ -81,10 +55,6 @@ public class Tools {
         }
       }
       byte[] r = Arrays.copyOf(b, i);
-      if (cache) {
-        Files.createDirectories(p.getParent());
-        Files.write(p, r);
-      }
       return r;
     } catch (IOException e) {
       throw new RuntimeException(e);
