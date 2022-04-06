@@ -40,17 +40,16 @@ public class STextNode extends TextNode implements Selectable {
     return "text";
   }
   
-  public void forceStart(int x, int y, Click c) {
-    c.notify(this, x, y);
+  
+  public void mouseStart(int x, int y, Click c) {
+    super.mouseStart(x, y, c);
+    if (Key.none(c.mod)) c.register(this, x, y);
+  }
+  
+  public void mouseDown(int x, int y, Click c) {
     NodeWindow w = ctx.win();
     w.startSelection(Position.getPosition(this, x, y));
     w.focus(this);
-  }
-  public boolean mouseDown(int x, int y, Click c) {
-    if (super.mouseDown(x, y, c)) return true;
-    if (Key.any(c.mod)) return false;
-    forceStart(x, y, c);
-    return true;
   }
   
   public void mouseTick(int x, int y, Click c) {

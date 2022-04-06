@@ -105,19 +105,23 @@ public class TNNode extends ATreeNode {
   
   
   // user interaction
-  public boolean mouseDown(int x, int y, Click c) {
+  
+  public void mouseStart(int x, int y, Click c) {
+    super.mouseStart(x, y, c);
+    if (y < ch.get(0).h && c.bL()) {
+      c.register(this, x, y);
+    }
+  }
+  public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
+  public void mouseUp(int x, int y, Click c) {
     if (y < ch.get(0).h) {
       boolean prev = ctx.win().focusNode==this;
       if (ctx.win().focusNode!=this) ctx.win().focus(this);
-      if (ch.get(0).mouseDown(x, y, c)) return true; // TODO option for drag-selecting different nodes
-      if (prev && openable && gc.isDoubleclick(c)) {
-        c.clearDoubleclick();
+      if (prev && openable && c.onDoubleClick()) {
         if (open) close();
         else open();
       }
-      return true;
     }
-    return super.mouseDown(x, y, c);
   }
   
   public boolean keyF(Key key, int scancode, KeyAction a) {

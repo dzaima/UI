@@ -244,24 +244,22 @@ public class ScrollNode extends FrameNode {
   }
   
   int selBar = 0; // 1 - x; 2 - y; 3 - xy drag
-  public boolean mouseDown(int x, int y, Click c) {
-    if (c.btn!=Click.LEFT) return super.mouseDown(x, y, c);
+  
+  public void mouseStart(int x, int y, Click c) {
+    if (c.btn!=Click.LEFT) return;
     boolean yS = y > h-barSize;
     boolean xS = x > w-barSize;
     if (yS && xS) selBar = cornerVertical || !hVis? 2 : 0;
     else if (vVis && xS) selBar = 2;
     else if (hVis && yS) selBar = 1;
     else selBar = gc.dragScroll? 3 : 0;
-    if (selBar!=0) {
-      c.notify(this, x, y);
-      return true;
-    }
-    return super.mouseDown(x, y, c);
+    if (selBar!=0) c.register(this, x, y);
+    else super.mouseStart(x, y, c);
   }
   
   public void mouseTick(int x, int y, Click cl) {
-    int dx = cl.cdx;
-    int dy = cl.cdy;
+    int dx = cl.dx;
+    int dy = cl.dy;
     Node c = ch();
     if (selBar==2) {
       int vH = cornerVertical? h : ih;
@@ -286,12 +284,6 @@ public class ScrollNode extends FrameNode {
       c.dy = oy;
     }
     mRedraw();
-  }
-  
-  public void mouseUp(int x, int y, Click cl) {
-    if (gc.isClick(cl)) {
-      if (super.mouseDown(cl.lx, cl.ly, cl)) cl.stop();
-    }
   }
   
   public boolean key(int x, int y, Key key, int scancode, KeyAction a) {

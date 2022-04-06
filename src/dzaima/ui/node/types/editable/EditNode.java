@@ -310,31 +310,45 @@ public class EditNode extends Node {
   public void hoverS() { ctx.win().setCursor(Window.CursorType.IBEAM); }
   public void hoverE() { ctx.win().setCursor(Window.CursorType.REGULAR); }
   
-  public boolean mouseDown(int x, int y, Click c) { // TODO mobile-friendly
+  public void mouseStart(int x, int y, Click c) {
+    if (c.bL()) c.register(this, x, y);
+  }
+  
+  Cursor movedCursor;
+  int movedCursorPos = -1;
+  public void mouseDown(int x, int y, Click c) { // TODO mobile-friendly
     x-= drawOffX;
     y-= drawOffY;
-    if (c.btn!=Click.LEFT) return false;
     ctx.win().focus(this);
     XY l = find(x, y);
     if (Key.only(c.mod, Key.M_ALT)) {
       um.pushU("add cursor");
-      addCursor(cs.sz, cs.peek()).mv(l.x, l.y);
+      movedCursor = addCursor(cs.sz, cs.peek());
+      movedCursor.mv(l.x, l.y);
       sortCursors();
+      movedCursorPos = cs.indexOf(movedCursor);
       um.pop();
     } else {
       um.pushU("move cursor mouse");
       collapseCursors(true);
       if (!Key.shift(c.mod)) cs.get(0).mv(l.x, l.y);
+      movedCursor = cs.get(0);
+      movedCursorPos = 0;
       um.pop();
-      c.notify(this, x, y);
     }
     mRedraw();
-    return true;
   }
   public void mouseTick(int x, int y, Click c) {
+    if (movedCursor==null) return; 
+    x-= drawOffX;
+    y-= drawOffY;
     XY l = find(x, y);
     um.pushU("move cursor mouse");
-    cs.get(0).mv(true, l.x, l.y);
+    if (movedCursorPos<0 || movedCursorPos>=cs.sz || cs.get(movedCursorPos)!=movedCursor) {
+      movedCursor = null;
+      return;
+    }
+    movedCursor.mv(true, l.x, l.y);
     um.pop();
     mRedraw();
   }

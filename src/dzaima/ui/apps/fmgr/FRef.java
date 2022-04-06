@@ -84,11 +84,15 @@ public class FRef {
         else r.m.gc.openFile(r.path);
       }
     }
-    public boolean mouseDown(int x, int y, Click c) {
-      if (c.btn==Click.RIGHT) {
-        Menu.auto(ctx.win(), this, Prs.parseNode("v { w=10em bg=#222 h{\"New folder\"} h{\"New file\"} }"), false, () -> { });
-        return true;
-      } else return super.mouseDown(x, y, c);
+  
+    public void mouseStart(int x, int y, Click c) {
+      if (c.bR()) c.register(this, x, y);
+    }
+  
+    public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
+  
+    public void mouseUp(int x, int y, Click c) {
+      Menu.auto(ctx.win(), this, Prs.parseNode("v { w=10em bg=#222 h{\"New folder\"} h{\"New file\"} }"), false, () -> { });
     }
   }
 }

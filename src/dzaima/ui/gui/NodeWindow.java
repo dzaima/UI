@@ -154,15 +154,16 @@ public class NodeWindow extends Window {
     base.tick();
   }
   
-  private static boolean unusedClick;
   public void mouseDown(int x, int y, Click cl) {
     if (tools!=null && tools.mouseDownInsp(x, y, cl)) return;
-    unusedClick = !base.mouseDown(x, y, cl);
+    cl.startClick();
+    base.mouseStart(x, y, cl);
+    cl.nextItem();
+    cl.initialTick(x, y);
   }
   public void mouseUp(int x, int y, Click cl) {
-    if (unusedClick) {
-      if (gc.isClick(cl)) focus(null);
-    }
+    cl.endClick();
+    if (cl.queueWasEmpty() && gc.isClick(cl)) focus(null);
   }
   
   public void scroll(float dx, float dy, boolean shift) {

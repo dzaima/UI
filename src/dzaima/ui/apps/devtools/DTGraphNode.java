@@ -75,11 +75,11 @@ public class DTGraphNode extends Node {
     g.pop();
   }
   
-  
-  public boolean mouseDown(int x, int y, Click c) {
+  public void mouseStart(int x, int y, Click c) { c.register(this, x, y); }
+  public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
+  public void mouseUp(int x, int y, Click c) {
     ctx.win().focus(this);
     aTick();
-    return true;
   }
   
   public void tickC() {

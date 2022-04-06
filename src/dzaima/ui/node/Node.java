@@ -11,7 +11,7 @@ import dzaima.utils.*;
 
 import java.util.function.Function;
 
-public abstract class Node {
+public abstract class Node implements Click.RequestImpl {
   public final Ctx ctx;
   public final GConfig gc;
   public final String[] ks;
@@ -283,7 +283,7 @@ public abstract class Node {
   
   
   ///////// events \\\\\\\\\
-  public /*open*/ Node findCh(int x, int y) { // return child that contains (x;y) or null; open for optimization or custom child deltas
+  public /*open*/ Node findCh(int x, int y) { // return child that contains (x;y) or null; open for optimization or custom child deltas; TODO decide whether this should be legal to call on not exactly in x;y
     for (Node c : ch) if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
     return null;
   }
@@ -294,13 +294,15 @@ public abstract class Node {
     for (Node c : ch) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
     return best;
   }
-  public /*open*/ boolean mouseDown(int x, int y, Click c) { // return if consumed
+  public /*open*/ void mouseStart(int x, int y, Click c) {
     Node ch = findCh(x, y);
-    if (ch!=null) return ch.mouseDown(x-ch.dx, y-ch.dy, c);
-    return false;
+    if (ch!=null) ch.mouseStart(x-ch.dx, y-ch.dy, c);
   }
+  public /*open*/ void mouseDown(int x, int y, Click c) { }
   public /*open*/ void mouseTick(int x, int y, Click c) { }
   public /*open*/ void mouseUp(int x, int y, Click c) { }
+  public final GConfig gc() { return gc; }
+  
   public /*open*/ boolean scroll(int x, int y, float dx, float dy) {
     Node c = findCh(x, y);
     if (c!=null) return c.scroll(x-c.dx, y-c.dy, dx, dy);

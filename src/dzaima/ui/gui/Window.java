@@ -107,7 +107,7 @@ public abstract class Window {
     
     // regular events
     impl.runEvents();
-    for (Click c : btns) c.tick(dx, dy); // process mouse
+    for (Click c : btns) c.tickClick(mx, my); // process mouse
     eventTick();
     if (t!=null) t.time("event");
     

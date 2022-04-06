@@ -25,17 +25,15 @@ public class TRNode extends TRTNode {
     if (Tools.vs(c)) g.rect(0, 0, w, h, c);
   }
   
-  public boolean mouseDown(int x, int y, Click c) {
-    if (super.mouseDown(x, y, c)) return true;
-    if (!c.bL()) return false;
-    if (t.rowSel) ctx.win().focus(this);
-    c.notify(this, x, y);
-    return true;
+  public void mouseStart(int x, int y, Click c) {
+    super.mouseStart(x, y, c);
+    if (c.bL()) c.register(this, x, y);
   }
-  
+  public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
     if (c.bL()) {
-      if (gc.isDoubleclick(c)) action(2);
+      if (t.rowSel) ctx.win().focus(this);
+      if (c.onDoubleClick()) action(2);
       else if (gc.isClick(c)) action(1);
     }
   }

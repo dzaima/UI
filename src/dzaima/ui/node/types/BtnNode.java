@@ -78,16 +78,20 @@ public class BtnNode extends Node {
     ch().resize(w-(bRad+padX)*2, h - (bRad+padY)*2, bRad+padX, bRad+padY);
   }
   
-  boolean clicked;
-  public boolean mouseDown(int x, int y, Click c) {
-    clicked = true;
-    c.notify(this, x, y);
-    mRedraw();
-    return true;
+  public void mouseStart(int x, int y, Click c) {
+    c.register(this, x, y);
   }
+  
+  boolean clicked;
+  public void mouseDown(int x, int y, Click c) {
+    clicked = true;
+    mRedraw();
+  }
+  
   public void mouseTick(int x, int y, Click c) {
     clicked = x>=0 & y>=0 && x<w & y<h;
     mRedraw();
+    if (!clicked) c.unregister();
   }
   public void mouseUp(int x, int y, Click c) {
     if (clicked) clicked();
