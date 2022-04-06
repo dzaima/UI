@@ -19,30 +19,9 @@ public class ImgNode extends Node {
   public int iw, ih;
   public int aw, ah;
   public void propsUpd() { super.propsUpd();
-    int ui = id("url");
-    if (!custom) {
-      if (ui==-1) {
-        url = null;
-      } else {
-        String nurl = vs[ui].str();
-        if (nurl.startsWith("//")) nurl = "https:"+nurl;
-        if (!nurl.equals(url)) {
-          url = nurl;
-          try {
-            img = Image.makeFromEncoded(Tools.get(url, true)); // TODO async
-            iw = img.getWidth();
-            ih = img.getHeight();
-          } catch (Exception e) {
-            img = null;
-            iw = ih = 10;
-          }
-        }
-      }
-    }
     updSize();
   }
   
-  private boolean custom;
   public void setImg(byte[] data) {
     try {
       img = Image.makeFromEncoded(data); // TODO async
