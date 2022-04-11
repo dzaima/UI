@@ -99,53 +99,14 @@ public class ScrollNode extends FrameNode {
     return gc.em*3;
   }
   public Node getBest(int x, int y) {
-    Node c = this; x+= dx; y+= dy;
+    Node c = ch.get(0);
     while (true) {
-      x-= c.dx;
-      y-= c.dy;
       Node n = c.nearestCh(x, y);
       if (n==null || n.w==-1) return c;
+      x-= n.dx;
+      y-= n.dy;
       c = n;
     }
-  }
-  
-  public boolean ignoreE, ignoreS;
-  public void ignoreEnd() { ignoreE = true; }
-  public void ignoreStart() { ignoreS = true; }
-  public void resized() {
-    
-    Node focusEl = w==-1 && stNode!=null? stNode : getBest(0, (targetSY+targetEY)/2);
-    if (focusEl==this) focusEl = null;
-    XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
-    
-    boolean atStart = atStart(2) && !ignoreS; ignoreS = false;
-    boolean atEnd   = atEnd  (2) && !ignoreE; ignoreE = false;
-    int de = distEnd();
-    
-    Node c = ch();
-    int wCov = yMode==OFF | yMode==HIDDEN | tempOverlap? 0 : barSize;
-    int hCov = xMode==OFF | xMode==HIDDEN | tempOverlap? 0 : barSize;
-    int subW = w - wCov;
-    int subH = h - hCov;
-    chW = xMode==OFF? subW : Math.max(Math.min(c.maxW(   ), subW), c.minW(   ));
-    chH = yMode==OFF? subH : Math.max(Math.min(c.maxH(chW), subH), c.minH(chW));
-    vOpen = yMode!=OFF && chH>h;                vVis = (yMode==ON | vOpen) & yMode!=HIDDEN;
-    hOpen = xMode!=OFF && chW>(vVis? subW : w); hVis = (xMode==ON | hOpen) & xMode!=HIDDEN;
-    vOpen = yMode!=OFF && chH>(hVis? subH : h); vVis = (yMode==ON | vOpen) & yMode!=HIDDEN;
-    c.resize(chW, chH, c.dx, c.dy);
-    mRedraw();
-    
-    XY fE = focusEl==null? XY.ZERO : focusEl.relPos(this);
-    
-    isz();
-    if (atStart) {
-      // do nothing
-    } else if (atEnd) {
-      instant(0, de-distEnd());
-    } else {
-      instant(fS.x-fE.x, fS.y-fE.y);
-    }
-    limit();
   }
   
   private static final int OFF=0, AUTO=1, ON=2, HIDDEN=3;
@@ -315,5 +276,46 @@ public class ScrollNode extends FrameNode {
       return true;
     }
     return false;
+  }
+  
+  
+  
+  public boolean ignoreE, ignoreS;
+  public void ignoreEnd() { ignoreE = true; }
+  public void ignoreStart() { ignoreS = true; }
+  public void resized() {
+    
+    Node focusEl = w==-1 && stNode!=null? stNode : getBest(0, (targetSY+targetEY)/2);
+    if (focusEl==this) focusEl = null;
+    XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
+    
+    boolean atStart = atStart(2) && !ignoreS; ignoreS = false;
+    boolean atEnd   = atEnd  (2) && !ignoreE; ignoreE = false;
+    int de = distEnd();
+    
+    Node c = ch();
+    int wCov = yMode==OFF | yMode==HIDDEN | tempOverlap? 0 : barSize;
+    int hCov = xMode==OFF | xMode==HIDDEN | tempOverlap? 0 : barSize;
+    int subW = w - wCov;
+    int subH = h - hCov;
+    chW = xMode==OFF? subW : Math.max(Math.min(c.maxW(   ), subW), c.minW(   ));
+    chH = yMode==OFF? subH : Math.max(Math.min(c.maxH(chW), subH), c.minH(chW));
+    vOpen = yMode!=OFF && chH>h;                vVis = (yMode==ON | vOpen) & yMode!=HIDDEN;
+    hOpen = xMode!=OFF && chW>(vVis? subW : w); hVis = (xMode==ON | hOpen) & xMode!=HIDDEN;
+    vOpen = yMode!=OFF && chH>(hVis? subH : h); vVis = (yMode==ON | vOpen) & yMode!=HIDDEN;
+    c.resize(chW, chH, c.dx, c.dy);
+    mRedraw();
+    
+    XY fE = focusEl==null? XY.ZERO : focusEl.relPos(this);
+    
+    isz();
+    if (atStart) {
+      // do nothing
+    } else if (atEnd) {
+      instant(0, de-distEnd());
+    } else {
+      instant(fS.x-fE.x, fS.y-fE.y);
+    }
+    limit();
   }
 }
