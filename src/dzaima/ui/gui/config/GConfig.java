@@ -209,25 +209,27 @@ public class GConfig {
   }
   public /*open*/ void openLink(String s) {
     if (!s.startsWith("https://") && !s.startsWith("http://")) return; // don't try to open as file
-    if (Desktop.isDesktopSupported()) {
-      Desktop d = Desktop.getDesktop();
-      if (d.isSupported(Desktop.Action.BROWSE)) {
-        try {
-          d.browse(new URI(s));
-          return;
-        } catch (IOException | URISyntaxException e) {
-          System.err.println("Error on using Desktop::browse or URI::new");
-          e.printStackTrace(); // TODO
+    Tools.thread(() -> { // start on a new thread because Desktop::browse likes to hang sometimes; TODO detect hanging & fall back
+      if (Desktop.isDesktopSupported()) {
+        Desktop d = Desktop.getDesktop();
+        if (d.isSupported(Desktop.Action.BROWSE)) {
+          try {
+            d.browse(new URI(s));
+            return;
+          } catch (IOException | URISyntaxException e) {
+            System.err.println("Error on using Desktop::browse or URI::new");
+            e.printStackTrace(); // TODO
+          };
         }
       }
-    }
-    System.err.println("open link: fallback to xdg-open");
-    try {
-      new ProcessBuilder("xdg-open", s).start();
-    } catch (IOException e) {
-      System.err.println("Failed to open link:");
-      e.printStackTrace();
-    }
+      System.err.println("open link: fallback to xdg-open");
+      try {
+        new ProcessBuilder("xdg-open", s).start();
+      } catch (IOException e) {
+        System.err.println("Failed to open link:");
+        e.printStackTrace();
+      }
+    }, true);
   }
   
   

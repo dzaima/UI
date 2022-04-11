@@ -145,11 +145,15 @@ public class Tools {
     void run() throws InterruptedException;
   }
   public static Thread thread(RunnableThread r) {
+    return thread(r, false);
+  }
+  public static Thread thread(RunnableThread r, boolean daemon) {
     Thread t = new Thread(() -> {
       try {
         r.run();
       } catch (QInterruptedException | InterruptedException ignored) { }
     });
+    t.setDaemon(daemon);
     t.start();
     return t;
   }
