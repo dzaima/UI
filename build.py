@@ -99,8 +99,9 @@ def build_ui_lib(uiloc):
   cp = build_ui(prev+"/lib/UI.jar")
   os.chdir(prev)
   res = "res/base"
-  if os.path.exists(uilib): shutil.rmtree(uilib)
-  shutil.copytree(uiloc+"/lib/", uilib)
+  if not 'keeplib' in sys.argv:
+    if os.path.exists(uilib): shutil.rmtree(uilib)
+    shutil.copytree(uiloc+"/lib/", uilib)
   if os.path.exists(res): shutil.rmtree(res)
   shutil.copytree(uiloc+"/"+res, res)
   return ':'.join(["lib/ui"+x for x in cp])+":lib/UI.jar"

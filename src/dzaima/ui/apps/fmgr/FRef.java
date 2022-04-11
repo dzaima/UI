@@ -52,7 +52,7 @@ public class FRef {
       type = dir? "Folder" : name.indexOf('.')==-1? "File" : name.substring(name.lastIndexOf('.')+1);
       if (Files.isSymbolicLink(path)) type = "Link to "+type;
       t = Files.getLastModifiedTime(path).toInstant();
-      time = Time.localTimeStr(t);
+      time = Time.localNearTimeStr(t);
       size = dir? "" : String.valueOf(Files.size(path));
     } catch (Exception ignored) { }
   }
