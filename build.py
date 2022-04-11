@@ -124,7 +124,7 @@ def build_ui(res = "UI.jar"):
   
   classpath = [
     maven_lib("io/github/humbleui", "types", "0.1.2", "lib"),
-    maven_lib("io/github/humbleui", "jwm", "0.4.0", "lib"),
+    maven_lib("io/github/humbleui", "jwm", "0.4.1", "lib"),
     maven_lib("io/github/humbleui", "skija-shared", "0.98.1", "lib"),
     maven_lib("io/github/humbleui", "skija-"+skija_os, "0.98.1", "lib"),
     
