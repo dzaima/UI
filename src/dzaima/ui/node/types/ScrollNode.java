@@ -26,6 +26,7 @@ public class ScrollNode extends FrameNode {
     while (!(p instanceof ScrollNode) && p!=null) p = p.p;
     if (p==null) return;
     ScrollNode sc = (ScrollNode) p;
+    if (n == sc.ch()) return;
     sc.stNode = n;
     sc.stX = x;
     sc.stY = y;
@@ -99,7 +100,7 @@ public class ScrollNode extends FrameNode {
     return gc.em*3;
   }
   public Node getBest(int x, int y) {
-    Node c = ch.get(0);
+    Node c = ch();
     while (true) {
       Node n = c.nearestCh(x, y);
       if (n==null || n.w==-1) return c;

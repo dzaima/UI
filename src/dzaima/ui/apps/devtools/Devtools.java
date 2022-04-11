@@ -93,6 +93,15 @@ public class Devtools extends NodeWindow {
   }
   
   
+  public static String path(Node n) {
+    Vec<Node> v = new Vec<>();
+    Node c = n;
+    while (c!=null) { v.add(c); c = c.p; }
+    StringBuilder b = new StringBuilder();
+    for (int i = v.sz-1; i >= 0; i--) b.append(name(v.get(i), false)).append(i==0? "" : " → ");
+    return b.toString();
+  }
+  
   ConcurrentLinkedQueue<Node> modified = new ConcurrentLinkedQueue<>();
   public AtomicReference<Node> toOpen = new AtomicReference<>(null);
   String lastError;
@@ -120,12 +129,7 @@ public class Devtools extends NodeWindow {
       newSel.set(true);
       Node path = base.ctx.id("path"); path.clearCh();
       if (nSel!=null && nSel.visible) {
-        Vec<Node> v = new Vec<>();
-        Node c = nSel;
-        while (c!=null) { v.add(c); c = c.p; }
-        StringBuilder b = new StringBuilder();
-        for (int i = v.sz-1; i >= 0; i--) b.append(name(v.get(i), false)).append(i==0? "" : " → ");
-        path.add(new StringNode(base.ctx, b.toString()));
+        path.add(new StringNode(base.ctx, path(nSel)));
         ((ScrollNode) base.ctx.id("pathScroll")).toRight();
       } else path.add(new StringNode(base.ctx, ""));
     }
