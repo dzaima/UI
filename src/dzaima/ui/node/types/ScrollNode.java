@@ -18,15 +18,20 @@ public class ScrollNode extends FrameNode {
     aTick();
   }
   
-  private Node scrollTo;
-  private boolean forceScrollTo;
-  public static void scrollTo(Node n, boolean forceScroll) {
+  public enum Mode { NONE, OFFSCREEN, SMOOTH, INSTANT }
+  private Node stNode;
+  private Mode stX, stY;
+  public static void scrollTo(Node n, Mode x, Mode y) {
     Node p = n;
     while (!(p instanceof ScrollNode) && p!=null) p = p.p;
     if (p==null) return;
     ScrollNode sc = (ScrollNode) p;
-    sc.scrollTo = n;
-    sc.forceScrollTo = forceScroll;
+    sc.stNode = n;
+    sc.stX = x;
+    sc.stY = y;
+  }
+  public boolean stable() {
+    return stNode==null && !ignoreS && !ignoreE;
   }
   
   
@@ -42,22 +47,23 @@ public class ScrollNode extends FrameNode {
   public Node ch() { return ch.get(0); }
   
   
-  public void quiet(int x, int y) {
+  public void instant(int x, int y) {
     Node ch = ch();
     ox+= x; ch.dx+= x;
     oy+= y; ch.dy+= y;
     mRedraw();
   }
-  public void loud(int x, int y) {
+  public void smooth(int x, int y) {
     ox+= x;
     oy+= y;
     mRedraw();
   }
-  public int toLastState = 0; // 0-none; 1-smooth; 2-instant
-  public void toLast(boolean instant) {
-    mRedraw();
-    toLastState = Math.max(toLastState, instant?2:1);
+  public void move(int x, int y, boolean instant) {
+    if (instant) instant(x, y);
+    else smooth(x, y);
   }
+  
+  
   public boolean atStart(int err) {
     return -oy < err;
   }
@@ -67,12 +73,20 @@ public class ScrollNode extends FrameNode {
   public boolean atEnd(int err) {
     return oy-err<=ih-chH;
   }
+  
+  
+  public int toLastState = 0; // 0-none; 1-smooth; 2-instant
+  public void toLast(boolean instant) {
+    mRedraw();
+    toLastState = Math.max(toLastState, instant?2:1);
+  }
   public void toFirst(boolean quiet) {
     ox = oy = 0;
     if (quiet) ch().dy = ch().dx = 0;
   }
   private boolean toRight;
   public void toRight() { mRedraw(); toRight = true; }
+  
   
   public int fillW() {
     if (xMode==HIDDEN) return 0;
@@ -95,12 +109,12 @@ public class ScrollNode extends FrameNode {
     }
   }
   
-  private boolean ignoreE, ignoreS;
+  public boolean ignoreE, ignoreS;
   public void ignoreEnd() { ignoreE = true; }
   public void ignoreStart() { ignoreS = true; }
   public void resized() {
     
-    Node focusEl = getBest(0, (clipSY+clipEY)/2);
+    Node focusEl = w==-1 && stNode!=null? stNode : getBest(0, (targetSY+targetEY)/2);
     if (focusEl==this) focusEl = null;
     XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
@@ -127,9 +141,9 @@ public class ScrollNode extends FrameNode {
     if (atStart) {
       // do nothing
     } else if (atEnd) {
-      quiet(0, de-distEnd());
+      instant(0, de-distEnd());
     } else {
-      quiet(fS.x-fE.x, fS.y-fE.y);
+      instant(fS.x-fE.x, fS.y-fE.y);
     }
     limit();
   }
@@ -158,12 +172,16 @@ public class ScrollNode extends FrameNode {
     g.pop();
   }
   
-  private int clipSY, clipEY;
+  private int targetSY, targetEY, targetSX, targetEX;
   public void drawC(Graphics g) {
-    clipSY = Math.max(g.clip==null? 0   : g.clip.sy,  0);
-    clipEY = Math.min(g.clip==null? g.h : g.clip.ey, ih);
     assert ch.sz==1 : "scroll should have only 1 child node";
     Node c = ch();
+    
+    targetSX = Math.max(g.clip==null? 0   : g.clip.sx,  0)-ox;
+    targetEX = Math.min(g.clip==null? g.w : g.clip.ex, iw)-ox;
+    targetSY = Math.max(g.clip==null? 0   : g.clip.sy,  0)-oy;
+    targetEY = Math.min(g.clip==null? g.h : g.clip.ey, ih)-oy;
+    
     isz();
     if (toLastState!=0) {
       oy = ih-chH;
@@ -206,13 +224,12 @@ public class ScrollNode extends FrameNode {
   
   public void tickC() {
     Node c = ch();
-    if (scrollTo!=null) {
-      XY rel = scrollTo.relPos(this);
-      if (rel.y+scrollTo.h<0 || rel.y>h || forceScrollTo) {
-        loud(-rel.x, (clipEY-clipSY)/2 - rel.y);
-        limit();
-      }
-      scrollTo = null;
+    if (stNode!=null) {
+      XY rel = stNode.relPos(c);
+      if (stX!=Mode.NONE && (stX!=Mode.OFFSCREEN || rel.x<targetSX || rel.x>targetEX)) move((targetSX+targetEX)/2 - rel.x, 0, stX==Mode.INSTANT);
+      if (stY!=Mode.NONE && (stY!=Mode.OFFSCREEN || rel.y<targetSY || rel.y>targetEY)) move(0, (targetSY+targetEY)/2 - rel.y, stY==Mode.INSTANT);
+      limit();
+      stNode = null;
     }
     if (ox!=c.dx | oy!=c.dy) {
       float speed = (float) Math.pow(gc.getProp("scroll.smooth").f(), gc.deltaNs*60e-9);
