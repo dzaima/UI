@@ -216,8 +216,8 @@ public class ScrollNode extends FrameNode {
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
     int sz = gc.getProp("scroll.nodeSpeed").len();
-    ox+= dx*sz;
-    oy+= dy*sz;
+    ox+= (int)(dx*sz);
+    oy+= (int)(dy*sz);
     limit();
     return true;
   }
