@@ -18,7 +18,7 @@ public class ScrollNode extends FrameNode {
     aTick();
   }
   
-  public enum Mode { NONE, OFFSCREEN, SMOOTH, INSTANT }
+  public enum Mode { NONE, PARTLY_OFFSCREEN, FULLY_OFFSCREEN, SMOOTH, INSTANT }
   private Node stNode;
   private Mode stX, stY;
   public static void scrollTo(Node n, Mode x, Mode y) {
@@ -184,12 +184,20 @@ public class ScrollNode extends FrameNode {
     }
   }
   
+  private static boolean move(Mode m, int os, int oe, int ts, int te) {
+    switch (m) { default: throw new IllegalStateException();
+      case NONE: return false;
+      case SMOOTH: case INSTANT: return true;
+      case PARTLY_OFFSCREEN: return os<ts || oe>te;
+      case FULLY_OFFSCREEN: return os>te || oe<ts;
+    }
+  }
   public void tickC() {
     Node c = ch();
     if (stNode!=null) {
       XY rel = stNode.relPos(c);
-      if (stX!=Mode.NONE && (stX!=Mode.OFFSCREEN || rel.x<targetSX || rel.x>targetEX)) move((targetSX+targetEX)/2 - rel.x, 0, stX==Mode.INSTANT);
-      if (stY!=Mode.NONE && (stY!=Mode.OFFSCREEN || rel.y<targetSY || rel.y>targetEY)) move(0, (targetSY+targetEY)/2 - rel.y, stY==Mode.INSTANT);
+      if (move(stX, rel.x, rel.x+stNode.w, targetSX, targetEX)) move((targetSX+targetEX)/2 - rel.x, 0, stX==Mode.INSTANT);
+      if (move(stY, rel.y, rel.y+stNode.h, targetSY, targetEY)) move(0, (targetSY+targetEY)/2 - rel.y, stY==Mode.INSTANT);
       limit();
       stNode = null;
     }

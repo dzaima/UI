@@ -315,7 +315,7 @@ public abstract class Node implements Click.RequestImpl {
   public /*open*/ void hoverE() { }
   
   // may be called at any point in time! (except between resizing & drawing)
-  public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this, ScrollNode.Mode.OFFSCREEN, ScrollNode.Mode.OFFSCREEN); }
+  public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this, ScrollNode.Mode.FULLY_OFFSCREEN, ScrollNode.Mode.FULLY_OFFSCREEN); }
   public /*open*/ void focusE() { mRedraw(); }
   
   public /*open*/ void typed(int codepoint) { }
