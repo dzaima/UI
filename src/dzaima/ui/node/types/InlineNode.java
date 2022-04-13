@@ -98,6 +98,11 @@ public abstract class InlineNode extends Node {
     }
   }
   
+  public Node nearestProperCh(int x, int y) {
+    Node found = findCh(x, y);
+    if (found!=null || ch.sz==0) return found;
+    return y>0 && x>0? ch.peek() : ch.get(0);
+  }
   public Node findCh(int x, int y) {
     for (Node c : ch) {
       if (c instanceof InlineNode) {
@@ -106,7 +111,7 @@ public abstract class InlineNode extends Node {
         if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
       }
     }
-    return ch.peek();
+    return null;
   }
   public boolean in(int x, int y) {
     if (y>=sY1 && y<eY2) {

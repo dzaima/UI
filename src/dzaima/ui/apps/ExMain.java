@@ -8,7 +8,7 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
-import dzaima.ui.node.ctx.Ctx;
+import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
@@ -25,7 +25,7 @@ public class ExMain extends NodeWindow {
   
   public static void run(Windows mgr) {
     GConfig gc = GConfig.newConfig();
-    Ctx ctx = Ctx.newCtx();
+    BaseCtx ctx = Ctx.newCtx();
     
     // NodeWindow w = FMgr.create(gc, Paths.get("."));
     

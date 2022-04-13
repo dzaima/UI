@@ -4,7 +4,7 @@ import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.StringNode.Word;
-import dzaima.utils.Vec;
+import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.Paragraph;
 
 public class Position {
@@ -22,7 +22,7 @@ public class Position {
     Vec<PosPart> textTodo = new Vec<>();
     
     while (true) {
-      Node n = c.findCh(fx, fy);
+      Node n = c.nearestProperCh(fx, fy);
       if (n==null) break;
       fx-= n.dx;
       fy-= n.dy;
@@ -90,7 +90,7 @@ public class Position {
         }
         if (rPos==-1) rPos = str.s.length();
       } else if (!(c instanceof InlineNode)) {
-        rPos = fx>c.w/2? 1 : 0;
+        rPos = fy<0? 0 : fy>c.h? 1 : fx>c.w/2? 1 : 0;
       }
       if (rPos!=-1) {
         for (PosPart p : textTodo) {

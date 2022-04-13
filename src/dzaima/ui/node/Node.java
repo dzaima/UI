@@ -283,9 +283,12 @@ public abstract class Node implements Click.RequestImpl {
   
   
   ///////// events \\\\\\\\\
-  public /*open*/ Node findCh(int x, int y) { // return child that contains (x;y) or null; open for optimization or custom child deltas; TODO decide whether this should be legal to call on not exactly in x;y
+  public /*open*/ Node findCh(int x, int y) { // return child that contains (x;y), else null; open for optimization or custom child deltas
     for (Node c : ch) if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
     return null;
+  }
+  public /*open*/ Node nearestProperCh(int x, int y) { // return child that should handle incoming mouse events at x/y
+    return findCh(x, y);
   }
   public /*open*/ Node nearestCh(int x, int y) { // must not return nodes with width -1, i.e. ones that haven't come from previous resize
     if (ch.sz<2) return ch.sz==0 || ch.get(0).w==-1? null : ch.get(0);
