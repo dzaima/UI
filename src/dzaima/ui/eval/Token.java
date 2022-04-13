@@ -30,6 +30,10 @@ public class Token {
       this.c = got;
     }
     
+    public static Integer parsePrefixed(String s) {
+      if (s.startsWith("#")) return parse(s.substring(1));
+      else return parse(s);
+    }
     public static Integer parse(String s) { // doesn't expect a starting '#'
       try {
         int p = Integer.parseUnsignedInt(s, 16);

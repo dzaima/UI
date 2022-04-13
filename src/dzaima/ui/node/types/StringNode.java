@@ -62,9 +62,12 @@ public class StringNode extends InlineNode {
   }
   
   public static boolean PARAGRAPH_TEXT = true;
+  public static void text(Graphics g, String s, Font f, int col, float x, float y) {
+    if (PARAGRAPH_TEXT) g.textP(s, f, x, y, col);
+    else g.text(s, f, x, y, col);
+  }
   public static void text(Graphics g, String s, StringNode n, float x, float y) {
-    if (PARAGRAPH_TEXT) g.textP(s, n.f, x, y, n.colFG);
-    else g.text(s, n.f, x, y, n.colFG);
+    text(g, s, n.f, n.colFG, x, y);
   }
   
   public static void text(Graphics g, Word w, StringNode n, float x, float y) {
