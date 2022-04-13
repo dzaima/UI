@@ -132,9 +132,12 @@ public abstract class InlineNode extends Node {
     protected void addInline(InlineSolver sv) {
       if (sv.x!=0) sv.nl();
       Node c = ch.get(0);
+      sX = 0; eX = (short) w;
+      sY1 = eY1 = (short) sv.y;
       c.resize(sv.w, c.minH(sv.w), (int)sv.x, sv.y);
       sv.a = 0; sv.b = 0;
       sv.y+= c.h;
+      sY2 = eY2 = (short) sv.y;
     }
     protected void baseline(int asc, int dsc) { }
     public static FullBlock wrap(Node n) {
