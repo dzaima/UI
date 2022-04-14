@@ -17,15 +17,20 @@ public class MenuNode extends Node {
     super(ctx, ks, vs);
   }
   
+  short padY;
+  public void propsUpd() { super.propsUpd();
+    padY = (short) gc.getProp("menu.wholePadY").len();
+  }
+  
   public int minW() { return Math.max(Solve.vMinW(ch), gc.getProp("menu.minWidth").len()); }
-  public int minH(int w) { return Solve.vMinH(ch, w); }
+  public int minH(int w) { return Solve.vMinH(ch, w) + padY*2; }
   
   public void bg(Graphics g, boolean full) {
     g.clear(gc.getProp("menu.bg").col());
   }
   
   protected void resized() {
-    int y = 0;
+    int y = padY;
     for (Node c : ch) {
       int cw = Math.min(w, c.maxW());
       int ch = c.minH(cw);

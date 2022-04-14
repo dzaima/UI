@@ -28,9 +28,10 @@ menu {
   bg = bg.middle // background color of menus
   hover = bg.sel // color of hovered over item
   minWidth = 15em
-  padL = 1.5em
+  padL = 1.5em // padding of separate menu items
   padR = .6em
   padY = .2em
+  wholePadY = .3em // padding of whole menu
   keybindSize = 0.8em
   
   shadowBlur = 0.6em
