@@ -30,8 +30,13 @@ public class JSON {
     return r;
   }
   public static void fmtDouble(StringBuilder b, double val) {
-    String s = Double.toString(val);
-    b.append(s.endsWith(".0")? s.substring(0, s.length()-2) : s);
+    if (val==(long)val) {
+      if (Double.compare(val, -0.0)==0) b.append("-0.0");
+      else b.append(Long.toString((long)val));
+    } else {
+      String s = Double.toString(val);
+      b.append(s.endsWith(".0")? s.substring(0, s.length()-2) : s);
+    }
   }
   
   
@@ -78,7 +83,7 @@ public class JSON {
     public Formatter(int indent) { this.indent = indent>0? indent : 0; mini = indent<0; }
     int ci;
     void add(Val v) {
-      if (v instanceof Num) b.append(v.num());
+      if (v instanceof Num) fmtDouble(b, v.num());
       else if (v instanceof Bool) b.append(v.bool());
       else if (v instanceof Str) quote(b, v.str());
       else if (v instanceof Null) b.append("null");
