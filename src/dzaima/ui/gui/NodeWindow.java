@@ -202,7 +202,7 @@ public class NodeWindow extends Window {
     for (VirtualWindow c : vws) {
       if (c.draw()) any = true;
       c.drawTo(g);
-      if (c.drawShadow()) g.canvas.drawRectShadow(c.rect.skiaf(), 0, 0, shBlur, shSpread, shColor);
+      if (c.drawShadow()) g.canvas.drawRectShadow(c.rect.skiaf().inflate(1), 0, 0, shBlur, shSpread, shColor);
     }
     
     if (tools!=null) tools.drawInsp(g);
