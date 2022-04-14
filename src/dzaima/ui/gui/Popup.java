@@ -85,7 +85,7 @@ public abstract class Popup {
   
   
   
-  public static class RightClickMenu extends Popup {
+  public static class RightClickMenu extends Popup implements Click.RequestImpl {
     private final Consumer<String> action;
     
     public RightClickMenu(Ctx ctx, Consumer<String> action) {
@@ -102,7 +102,14 @@ public abstract class Popup {
       close();
     }
     
-    public void takeClick(Click c) { }
+    public void takeClick(Click c) {
+      c.replace(this, 0, 0);
+    }
+    public void mouseDown(int x, int y, Click c) { }
+    public void mouseTick(int x, int y, Click c) { }
+    public void mouseUp(int x, int y, Click c) { }
+    public GConfig gc() { return node.gc; }
+    public XY relPos(Node nullArgument) { return XY.ZERO; }
   }
   
   

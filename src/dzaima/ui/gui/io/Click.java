@@ -117,6 +117,10 @@ public class Click {
       else endClick();
     }
   }
+  public void replace(RequestImpl n, int x, int y) {
+    assert pos < queue.sz;
+    queue.set(pos, new Request(n, x, y));
+  }
   public boolean onClickEnd() {
     if (!current().n.gc().isClick(this)) {
       unregister();

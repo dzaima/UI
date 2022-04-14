@@ -1,6 +1,6 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.gui.NodeWindow;
+import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
@@ -63,6 +63,8 @@ public class STextNode extends TextNode implements Selectable {
     }
   }
   
+  // public void hoverS() { ctx.win().setCursor(Window.CursorType.IBEAM); } // TODO re-enable when proper cursor stacking exists
+  // public void hoverE() { ctx.win().setCursor(Window.CursorType.REGULAR); }
   
   public boolean keyF(Key key, int scancode, KeyAction a) {
     switch (gc.keymap(key, a, "stext")) {
