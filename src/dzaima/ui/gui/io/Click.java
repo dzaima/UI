@@ -68,19 +68,21 @@ public class Click {
     r.n.mouseDown(r.x, r.y, this);
     return true;
   }
-  public void tickClick(int ngx, int ngy) {
+  public void initialTick(int gx0, int gy0) {
+    dx = dy = 0;
+    cx = sx = gx0;
+    cy = sy = gy0;
+  }
+  public boolean tickClick(int ngx, int ngy) {
     if (state>0) {
       dx = ngx-cx;
       dy = ngy-cy;
       cx = ngx;
       cy = ngy;
       tickClick();
+      return true;
     }
-  }
-  public void initialTick(int gx0, int gy0) {
-    dx = dy = 0;
-    cx = sx = gx0;
-    cy = sy = gy0;
+    return false;
   }
   void tickClick() {
     Request r = current();
@@ -92,13 +94,14 @@ public class Click {
     if (state!=1) return; // in case window didn't call corresponding mouseDown
     state = 2;
     Request r = current();
-    if (r==null) return;
-    XY np = r.n.relPos(null);
-    int x = cx - np.x;
-    int y = cy - np.y;
-    // System.out.println(cx+" "+cy+" "+np);
-    r.n.mouseTick(x, y, this);
-    r.n.mouseUp(x, y, this);
+    if (r!=null) {
+      XY np = r.n.relPos(null);
+      int x = cx - np.x;
+      int y = cy - np.y;
+      r.n.mouseTick(x, y, this);
+      r = current(); // reloading current as mouseTick may cause it to end
+      if (r!=null) r.n.mouseUp(x, y, this);
+    }
     state = 0;
   }
   

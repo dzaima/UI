@@ -5,7 +5,7 @@ import io.github.humbleui.skija.*;
 import io.github.humbleui.skija.impl.Native;
 import io.github.humbleui.skija.paragraph.*;
 
-public class Graphics {
+public abstract class Graphics {
   public final boolean redraw = false; // might be un-final-ed at some point
   public int w, h;
   
@@ -14,6 +14,17 @@ public class Graphics {
   private final IntVec yoffs = new IntVec(); public int yoff;
   public Rect clip;
   public Canvas canvas;
+  
+  
+  
+  protected void init(Surface s) {
+    canvas = s.getCanvas();
+    w = s.getWidth();
+    h = s.getHeight();
+  }
+  public abstract void close();
+  
+  
   
   private final Paint tempPaint = new Paint();
   private final long tempPaintPtr = Native.getPtr(tempPaint);
@@ -45,12 +56,6 @@ public class Graphics {
   public void clip(Rect r) {
     canvas.clipRect(r.skiaf());
     clip = clip==null? r : clip.and(r);
-  }
-  
-  public void init(Surface s) {
-    canvas = s.getCanvas();
-    w = s.getWidth();
-    h = s.getHeight();
   }
   
   public void rect(Rect r, int   fill) { rect(r.sx, r.sy, r.ex, r.ey, fill); }

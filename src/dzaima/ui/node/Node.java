@@ -249,8 +249,8 @@ public abstract class Node implements Click.RequestImpl {
     this.w = w; this.h = h;
     resized();
     flags&= ~(RS_ME|RS_CH);
-    assert minW( )<=w : minW( )+" >= "+w;
-    assert minH(w)<=h : minH(w)+" >= "+h;
+    assert minW( )<=w : "Wanted width " +w+" less than the minimum "+minW( );
+    assert minH(w)<=h : "Wanted height "+h+" less than the minimum "+minH(w);
   }
   protected /*open*/ void resized() { assert ch.sz==0 : "No resized() for "+getClass().getSimpleName()+" (doesn't expect children)"; } // called when w/h have been updated; should resize children if applicable
   public /*open*/ int minW() { return 0; }

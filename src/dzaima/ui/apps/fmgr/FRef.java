@@ -1,7 +1,6 @@
 package dzaima.ui.apps.fmgr;
 
-import dzaima.ui.eval.Prs;
-import dzaima.ui.gui.Menu;
+import dzaima.ui.gui.Popup;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
@@ -72,27 +71,41 @@ public class FRef {
   
   public static class FileRow extends TRNode {
     public final FRef r;
-  
+    
     public FileRow(FRef r) {
       super(r.m.ftb.ctx, Node.KS_NONE, Node.VS_NONE);
       this.r = r;
     }
-  
+    
     public void action(int mode) {
       if (mode!=1) {
         if (r.dir) r.m.to(r.path);
         else r.m.gc.openFile(r.path);
       }
     }
-  
+    
     public void mouseStart(int x, int y, Click c) {
+      super.mouseStart(x, y, c);
       if (c.bR()) c.register(this, x, y);
     }
-  
-    public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
+    
+    public void mouseDown(int x, int y, Click c) {
+      if (c.bR()) {
+        ctx.focus(this);
+        Popup m = new Popup(ctx.win()) {
+          protected void unfocused() { close(); }
+      
+          public void menuItem(String id) {
+            System.out.println(id);
+            close();
+          }
+        };
+        Popup.rightClickMenu(gc, ctx, gc.getProp("fmgr.fileMenuUI").gr(), id -> System.out.println("Action: "+id));
+      }
+    }
   
     public void mouseUp(int x, int y, Click c) {
-      Menu.auto(ctx.win(), this, Prs.parseNode("v { w=10em bg=#222 h{\"New folder\"} h{\"New file\"} }"), false, () -> { });
+      super.mouseUp(x, y, c);
     }
   }
 }

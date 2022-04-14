@@ -56,7 +56,7 @@ public abstract class WindowImpl {
   public abstract boolean intentionallyLong();
   
   
-  public Graphics winG = new Graphics();
+  public MainGraphics winG = new MainGraphics();
   public abstract void startDraw(boolean needed);
   public abstract void endDraw(boolean needed);
   public abstract Surface runResize();

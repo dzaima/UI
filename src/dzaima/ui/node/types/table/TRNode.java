@@ -20,7 +20,7 @@ public class TRNode extends TRTNode {
   public int pos;
   public void bg(Graphics g, boolean full) {
     int c = hasBg? bg : (pos&1)==0? t.bg1 : t.bg2;
-    if (ctx.win().focusNode==this) c = t.bgSel;
+    if (ctx.focusedNode()==this) c = t.bgSel;
     if (Tools.st(c)) pbg(g, full);
     if (Tools.vs(c)) g.rect(0, 0, w, h, c);
   }
@@ -32,7 +32,7 @@ public class TRNode extends TRTNode {
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
     if (c.bL()) {
-      if (t.rowSel) ctx.win().focus(this);
+      if (t.rowSel) ctx.focus(this);
       if (c.onDoubleClick()) action(2);
       else if (gc.isClick(c)) action(1);
     }
@@ -44,7 +44,7 @@ public class TRNode extends TRTNode {
       int y = pos + (key.k_up()?-1:1);
       if (y<0) return true;
       if (t.th()!=null) y++;
-      if (y<t.ch.sz) ctx.win().focus(t.ch.get(y));
+      if (y<t.ch.sz) ctx.focus(t.ch.get(y));
       return true;
     }
     if (key.k_enter()) action(0); // TODO shouldn't this return true?

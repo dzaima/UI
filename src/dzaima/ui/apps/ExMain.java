@@ -4,12 +4,11 @@ import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.apps.fmgr.FMgr;
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
+import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
-import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
-import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
@@ -63,7 +62,7 @@ public class ExMain extends NodeWindow {
   }
   
   public static void main(String[] args) {
-    Windows.setManager(Windows.Manager.JWM);
+    // Windows.setManager(Windows.Manager.JWM);
     Windows.start(ExMain::run);
   }
   
@@ -83,6 +82,10 @@ public class ExMain extends NodeWindow {
         StringNode.PARAGRAPH_TEXT^= true;
         base.mRedraw();
         return true;
+      }
+      if (key.onlyCtrl()) {
+        if (key.k_add())   { gc.setEM(gc.em+1); return true; }
+        if (key.k_minus()) { gc.setEM(gc.em-1); return true; }
       }
     }
     return super.key(key, scancode, a);

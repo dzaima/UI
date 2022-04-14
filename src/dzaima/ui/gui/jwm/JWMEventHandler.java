@@ -77,7 +77,7 @@ public class JWMEventHandler implements Consumer<Event> {
         Click c = ww.btns[num];
         c.mod = mod(e::isModifierDown);
         c.down = e.isPressed();
-        if (c.down) ww.mouseDown(ww.mx, ww.my, c);
+        if (c.down) ww.mouseDown(c);
         else ww.mouseUp(ww.mx, ww.my, c);
       }
       w.requestTick();

@@ -1,6 +1,6 @@
 package dzaima.ui.node;
 
-import dzaima.utils.Vec;
+import dzaima.utils.*;
 
 public class Solve {
   // public static int[] solveN(Vec<Node> ch, int x, int aw, boolean y) { // returns ch.sz+1 items, last being sum of minW
@@ -62,5 +62,53 @@ public class Solve {
     }
     
     return max;
+  }
+  
+  public static int vMinW(Vec<Node> nds) {
+    int r = 0;
+    for (Node c : nds) r = Math.max(c.minW(), r);
+    return r;
+  }
+  public static int vMinH(Vec<Node> nds, int w) {
+    int r = 0;
+    for (Node c : nds) r+= c.minH(w);
+    return r;
+  }
+  public static int hMinW(Vec<Node> nds) {
+    int r = 0;
+    for (Node c : nds) r+= c.minW();
+    return r;
+  }
+  public static int hMinH(Vec<Node> nds, int w) {
+    int r = 0;
+    for (Node c : nds) r = Math.max(c.minH(w), r);
+    return r;
+  }
+  
+  public static int vMaxW(Vec<Node> nds) {
+    int r = 0;
+    for (Node c : nds) r = Math.max(c.maxW(), r);
+    return r;
+  }
+  public static int vMaxH(Vec<Node> nds, int w) {
+    int r = 0;
+    for (Node c : nds) {
+      r+= c.maxH(w);
+      if (r>=Tools.BIG || r<0) return Tools.BIG;
+    }
+    return r;
+  }
+  public static int hMaxW(Vec<Node> nds) {
+    int r = 0;
+    for (Node c : nds) {
+      r+= c.maxW();
+      if (r>=Tools.BIG || r<0) return Tools.BIG;
+    }
+    return r;
+  }
+  public static int hMaxH(Vec<Node> nds, int w) {
+    int r = 0;
+    for (Node c : nds) r = Math.max(c.maxH(w), r);
+    return r;
   }
 }

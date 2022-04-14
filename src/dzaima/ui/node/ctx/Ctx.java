@@ -1,7 +1,7 @@
 package dzaima.ui.node.ctx;
 
 import dzaima.ui.eval.*;
-import dzaima.ui.gui.NodeWindow;
+import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.prop.Prop;
@@ -23,6 +23,15 @@ public abstract class Ctx {
   }
   
   public NodeWindow win() { return null; }
+  public NodeVW vw() { return null; }
+  
+  
+  public void focus(Node n) {
+    win().focus(n);
+  }
+  public Node focusedNode() {
+    return win().focusNode;
+  }
   
   
   public Ctx shadow() {
@@ -76,17 +85,17 @@ public abstract class Ctx {
   
   public static class WindowCtx extends Ctx {
     private final Ctx p;
-    public NodeWindow w;
-  
-    public WindowCtx(GConfig gc, Ctx p) {
+    public NodeVW vw;
+    
+    public WindowCtx(GConfig gc, Ctx p, NodeVW vw) {
       super(gc);
       this.p = p;
+      this.vw = vw;
     }
-  
-    public NodeWindow win() {
-      return w;
-    }
-  
+    
+    public NodeWindow win() { return vw.w; }
+    public NodeVW vw() { return vw; }
+    
     public NodeGen getGen(String name) {
       return p.getGen(name);
     }
@@ -100,6 +109,7 @@ public abstract class Ctx {
     }
   
     public NodeWindow win() { return p.win(); }
+    public NodeVW vw() { return p.vw(); }
   
     public NodeGen getGen(String name) {
       return p.getGen(name);
@@ -141,6 +151,8 @@ public abstract class Ctx {
     map.put("img", ImgNode::new);
     map.put("hide", HideNode::new);
     map.put("overlap", OverlapNode::new);
+    map.put("menu", MenuNode::new);
+    map.put("mi", MenuNode.MINode::new);
     return new BaseCtx(map);
   }
 }

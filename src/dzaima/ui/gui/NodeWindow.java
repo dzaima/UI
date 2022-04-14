@@ -1,6 +1,5 @@
 package dzaima.ui.gui;
 
-import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.config.GConfig;
@@ -23,55 +22,74 @@ public class NodeWindow extends Window {
   public final GConfig gc;
   public final Ctx.WindowCtx ctx;
   public final Node base;
-  public final Vec<VirtualWindow> vws = new Vec<>(); 
+  public final Vec<VirtualWindow> vws = new Vec<>();
+  public VirtualWindow focusedVW, hoveredVW;
   
-  public NodeWindow(Node base, WindowInit i) {
-    super(i);
-    this.gc = base.gc;
-    this.ctx = (Ctx.WindowCtx) base.ctx;
-    this.base = base;
-    ctx.w = this;
-    addMainVW();
-  }
   public NodeWindow(GConfig gc, Ctx pctx, PNodeGroup g, WindowInit i) {
     super(i);
     this.gc = gc;
-    this.ctx = new Ctx.WindowCtx(gc, pctx);
-    ctx.w = this;
-    this.base = ctx.makeHere(g);
-    addMainVW();
-  }
-  
-  protected void addMainVW() {
-    vws.add(new VirtualWindow(this) {
+    NodeVW baseVW = new NodeVW(this, gc, pctx, g) {
       public boolean fullyOpaque() { return true; }
-      public Rect getSize(int pw, int ph) {
-        return new Rect(0, 0, pw, ph);
-      }
-      protected void implDraw(Graphics g, boolean full) {
-        base.draw(g, full);
-      }
-      protected boolean implRequiresRedraw() {
-        return base.needsRedraw();
-      }
-    });
+      public boolean drawShadow() { return false; }
+      public boolean ownsXY(int x, int y) { return true; }
+      public boolean shouldRemove() { return false; }
+      public Rect getSize(int pw, int ph) { return new Rect(0, 0, pw, ph); }
+    };
+    vws.add(baseVW);
+    base = baseVW.base;
+    focusedVW = baseVW;
+    hoveredVW = baseVW;
+    ctx = (Ctx.WindowCtx) base.ctx;
   }
   
+  public void setup() {
+    for (VirtualWindow vw : vws) vw.started();
+    gc.ws.add(this); // TODO not
+  }
+  
+  public void addVW(VirtualWindow vw) {
+    vws.add(vw);
+    if (setupDone) { // TODO don't
+      vw.started();
+      vw.newSurface(lastSurface, w, h);
+      requestDraw = true;
+    }
+  }
+  
+  public void stopped() {
+    gc.ws.remove(this);
+    for (VirtualWindow c : vws) c.stopped();
+  }
+  
+  
+  
+  ///////// focus \\\\\\\\\
   public Node focusNode;
   public void focus(Node n) {
     Node prev = focusNode();
     focusNode = n;
-    if (prev!=null) prev.focusE();
-    if (n!=null && base.visible) {
+    if (prev != null) prev.focusE();
+    if (n == null) return;
+    
+    NodeVW vw = n.ctx.vw();
+    if (vw.base.visible) {
       assert n.visible;
       n.focusS();
+      focusedVW = vw;
     }
+  }
+  public void focusVW(VirtualWindow vw) {
+    assert vws.indexOf(vw)!=-1;
+    focusedVW = vw;
   }
   public Node focusNode() {
     if (focusNode!=null && !focusNode.visible) focusNode = null;
     return focusNode;
   }
   
+  
+  
+  ///////// selection \\\\\\\\\
   public Selection selection;
   private Position selStart;
   public void startSelection(Position p) {
@@ -110,56 +128,39 @@ public class NodeWindow extends Window {
     return new XY(0, n.s.length());
   }
   
-  public void setup() {
-    base.shown();
-    gc.ws.add(this); // TODO not
-  }
   
-  public void stopped() {
-    gc.ws.remove(this);
-    for (VirtualWindow c : vws) {
-      c.stopped();
-    }
-  }
   
-  public Vec<Node> pHover = new Vec<>();
+  ///////// events \\\\\\\\\
   public void eventTick() {
-    Node c = base;
-    int cx = mx;
-    int cy = my;
-    Vec<Node> nHover = new Vec<>();
-    int i = 0;
-    while (c!=null) {
-      cx-= c.dx;
-      cy-= c.dy;
-      nHover.add(c);
-      Node p = i<pHover.sz? pHover.get(i) : null;
-      if (c!=p) {
-        if (p!=null) {
-          for (int j = i; j < pHover.sz; j++) pHover.get(j).hoverE();
-          pHover.sz0();
-        }
-        c.hoverS();
+    for (int i = vws.size()-1; i>=0; i--) {
+      VirtualWindow v = vws.get(i);
+      if (v.rect.contains(mx, my) && v.ownsXY(mx-v.rect.sx, my-v.rect.sy)) {
+        hoveredVW = v;
+        break;
       }
-    
-      c = c.findCh(cx, cy);
-      i++;
     }
-    for (int j = i; j < pHover.sz; j++) pHover.get(j).hoverE();
-    pHover = nHover;
+    for (VirtualWindow vw : vws) vw.eventTick();
+    vws.filterInplace(c -> {
+      if (c.shouldRemove()) {
+        c.stopped();
+        requestDraw = true;
+        return false;
+      }
+      return true;
+    });
   }
-  
   public void tick() {
     gc.tick(impl.intentionallyLong()); // TODO this is messy
-    base.tick();
+    for (VirtualWindow c : vws) c.tick();
   }
   
-  public void mouseDown(int x, int y, Click cl) {
-    if (tools!=null && tools.mouseDownInsp(x, y, cl)) return;
+  public void mouseDown(Click cl) {
+    if (tools!=null && tools.mouseDownInsp(cl)) return;
+    focusedVW = hoveredVW;
     cl.startClick();
-    base.mouseStart(x, y, cl);
+    focusedVW.mouseStart(cl);
     cl.nextItem();
-    cl.initialTick(x, y);
+    focusedVW.initialMouseTick(cl);
   }
   public void mouseUp(int x, int y, Click cl) {
     cl.endClick();
@@ -172,12 +173,13 @@ public class NodeWindow extends Window {
       dy = 0;
     }
     float speed = gc.getProp("scroll.globalSpeed").f();
-    base.scroll(mx, my, dx*speed, dy*speed);
+    hoveredVW.scroll(dx*speed, dy*speed);
   }
   public boolean key(Key key, int scancode, KeyAction a) {
     Node n = focusNode();
     if (n!=null && n.keyF(key, scancode, a)) return true;
-    return base.key(mx, my, key, scancode, a);
+    if (focusedVW!=null) return focusedVW.key(key, scancode, a);
+    return false;
   }
   
   public void typed(int p) {
@@ -186,41 +188,37 @@ public class NodeWindow extends Window {
   }
   
   
-  
+  private boolean requestDraw;
   public boolean requiresDraw() {
+    if (requestDraw) return true;
     for (VirtualWindow c : vws) if (c.requiresRedraw()) return true;
     return false;
   }
   public boolean draw(Graphics g, boolean full) {
-    boolean any = false;
+    float shBlur = gc.getProp("menu.shadowBlur").lenF();
+    float shSpread = gc.getProp("menu.shadowSpread").lenF();
+    int shColor = gc.getProp("menu.shadowColor").col();
+    boolean any = requestDraw;
     for (VirtualWindow c : vws) {
       if (c.draw()) any = true;
       c.drawTo(g);
+      if (c.drawShadow()) g.canvas.drawRectShadow(c.rect.skiaf(), 0, 0, shBlur, shSpread, shColor);
     }
     
     if (tools!=null) tools.drawInsp(g);
+    requestDraw = false;
     return any || full;
   }
   
   
   
   public void maybeResize() {
-    if (base.needsResize()) resizeCh();
+    for (VirtualWindow vw : vws) vw.maybeResize();
   }
-  public boolean windowResize;
+  private Surface lastSurface; // TODO decide if there's a better way
   public void resized(Surface s) {
-    for (VirtualWindow vw : vws) vw.parentResized(s, w, h);
-    windowResize = true;
-    resizeCh();
-    windowResize = false;
-  }
-  public void resizeCh() {
-    long sns = System.nanoTime();
-    int w = Math.max(base.minW( ), Math.min(this.w,  base.maxW( )));
-    int h = Math.max(base.minH(w), Math.min(this.h, base.maxH(w)));
-    base.resize(w, h, 0, 0);
-    long ens = System.nanoTime();
-    if (PRINT_ON_RESIZE && !(this instanceof Devtools)) System.out.println((ens-sns)/1e6d+"ms resize to "+this.w+";"+this.h);
+    lastSurface = s;
+    for (VirtualWindow vw : vws) vw.newSurface(s, w, h);
   }
   
   

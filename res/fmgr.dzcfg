@@ -59,4 +59,16 @@ fmgr {
       }
     }
   }
+  fileMenuUI = menu {
+    mi { id=newFolder "New Folder" }
+    mi { id=newFile "New File" }
+    vsep{}
+    mi { id=up "Up" key=fmgr.keys.up }
+    vsep{}
+    mi { id=thisIs "This Is" }
+    mi { id=aTemplate "A Template" }
+  }
+  keys {
+    up = { "alt+up" }
+  }
 }

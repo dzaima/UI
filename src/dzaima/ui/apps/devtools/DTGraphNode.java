@@ -78,12 +78,12 @@ public class DTGraphNode extends Node {
   public void mouseStart(int x, int y, Click c) { c.register(this, x, y); }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
-    ctx.win().focus(this);
+    ctx.focus(this);
     aTick();
   }
   
   public void tickC() {
-    if (ctx.win().focusNode==this) mRedraw();
+    if (ctx.focusedNode()==this) mRedraw();
     super.tickC();
   }
 }

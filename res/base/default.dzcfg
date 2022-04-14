@@ -24,6 +24,19 @@ scroll.thumbCol = #666 // main color
 scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
+menu {
+  bg = bg.middle // background color of menus
+  hover = bg.sel // color of hovered over item
+  minWidth = 15em
+  padL = 1.5em
+  padR = .6em
+  padY = .2em
+  keybindSize = 0.8em
+  
+  shadowBlur = 0.6em
+  shadowSpread = 0.1em
+  shadowColor = #7f000000
+}
 
 tree.bg1 = bg.bg1
 tree.bg2 = bg.bg2

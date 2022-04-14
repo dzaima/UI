@@ -39,7 +39,7 @@ public abstract class Window {
   public /*open*/ boolean requiresDraw() { return true; } // just a hint
   
   public Click[] btns = new Click[]{new Click(Click.LEFT), new Click(Click.RIGHT), new Click(Click.CENTER), new Click(Click.BACK), new Click(Click.FORWARD)};
-  public abstract void mouseDown(int x, int y, Click c);
+  public abstract void mouseDown(Click c);
   public abstract void mouseUp(int x, int y, Click c);
   public abstract void scroll(float dx, float dy, boolean shift);
   public abstract boolean key(Key key, int scancode, KeyAction action);
@@ -78,7 +78,7 @@ public abstract class Window {
     impl.setType(t);
   }
   
-  private boolean hasSetup = false;
+  protected boolean setupDone = false;
   public final AtomicBoolean updateSize = new AtomicBoolean(true);
   public int nodrawFrames=-60;
   public enum DrawReq { NONE, TEMP, PARTIAL, FULL };
@@ -89,16 +89,16 @@ public abstract class Window {
     
     
     // important events
-    if (!hasSetup) {
+    if (!setupDone) {
       try {
         setup();
       } catch (Throwable e) {
         System.err.println("Errored during setup:");
         closeOnNext();
-        hasSetup = true;
+        setupDone = true;
         throw new RuntimeException(e);
       }
-      hasSetup = true;
+      setupDone = true;
     }
     boolean resize = updateSize.getAndSet(false);
     if (resize) {
@@ -107,7 +107,6 @@ public abstract class Window {
     
     // regular events
     impl.runEvents();
-    for (Click c : btns) c.tickClick(mx, my); // process mouse
     eventTick();
     if (t!=null) t.time("event");
     

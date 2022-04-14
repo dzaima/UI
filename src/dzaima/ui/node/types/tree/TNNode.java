@@ -55,7 +55,7 @@ public class TNNode extends ATreeNode {
     super.drawCh(g, full);
   }
   public /*open*/ int bgCol() {
-    if (ctx.win().focusNode==this) return base.bgSel;
+    if (ctx.focusedNode()==this) return base.bgSel;
     return even? base.bg1 : base.bg2;
   }
   public void bg(Graphics g, boolean full) {
@@ -115,8 +115,8 @@ public class TNNode extends ATreeNode {
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
     if (y < ch.get(0).h) {
-      boolean prev = ctx.win().focusNode==this;
-      if (ctx.win().focusNode!=this) ctx.win().focus(this);
+      boolean prev = ctx.focusedNode()==this;
+      if (ctx.focusedNode()!=this) ctx.focus(this);
       if (prev && openable && c.onDoubleClick()) {
         if (open) close();
         else open();
@@ -142,13 +142,13 @@ public class TNNode extends ATreeNode {
     if (key.k_right() || key.k_down()) return right();
     
     if (key.k_home()) {
-      ctx.win().focus(base.ch.get(0));
+      ctx.focus(base.ch.get(0));
       return true;
     }
     if (key.k_end()) {
       Node c = base;
       while (c instanceof ATreeNode && ((ATreeNode) c).open && c.ch.sz>1) c = c.ch.peek();
-      ctx.win().focus(c);
+      ctx.focus(c);
     }
     
     return false;
@@ -160,17 +160,17 @@ public class TNNode extends ATreeNode {
     int i = p.ch.indexOf(this);
     if (i<=((ATreeNode) p).startN) {
       if (!(p instanceof TNNode)) return false;
-      ctx.win().focus(p);
+      ctx.focus(p);
     } else {
       Node c = p.ch.get(i-1);
       while (c instanceof TNNode && ((TNNode) c).open && c.ch.sz>1) c = c.ch.peek();
-      ctx.win().focus(c);
+      ctx.focus(c);
     }
     return true;
   }
   public boolean right() { // doesn't include opening self
     if (ch.sz>1 && open) {
-      ctx.win().focus(ch.get(1));
+      ctx.focus(ch.get(1));
       return true;
     }
     return down();
@@ -178,22 +178,22 @@ public class TNNode extends ATreeNode {
   public boolean down() { // doesn't go through children; for that, use right()
     int i = p.ch.indexOf(this);
     if (i+1 < p.ch.sz) {
-      ctx.win().focus(p.ch.get(i+1));
+      ctx.focus(p.ch.get(i+1));
     } else {
       Node c = this;
       while (c instanceof TNNode && c.p.ch.peek()==c) c = c.p;
       if (!(c instanceof TNNode)) return false;
-      ctx.win().focus(c.p.ch.get(c.p.ch.indexOf(c)+1));
+      ctx.focus(c.p.ch.get(c.p.ch.indexOf(c)+1));
     }
     return true;
   }
   public boolean left() {
     if (open) close();
-    else if (p instanceof TNNode) ctx.win().focus(p);
+    else if (p instanceof TNNode) ctx.focus(p);
     else { assert p instanceof TreeNode;
       int i = p.ch.indexOf(this);
       if (i==0) return false;
-      ctx.win().focus(p.ch.get(i-1));
+      ctx.focus(p.ch.get(i-1));
     }
     return true;
   }

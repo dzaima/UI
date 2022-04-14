@@ -319,7 +319,7 @@ public class EditNode extends Node {
   public void mouseDown(int x, int y, Click c) { // TODO mobile-friendly
     x-= drawOffX;
     y-= drawOffY;
-    ctx.win().focus(this);
+    ctx.focus(this);
     XY l = find(x, y);
     if (Key.only(c.mod, Key.M_ALT)) {
       um.pushU("add cursor");

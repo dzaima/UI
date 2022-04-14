@@ -18,6 +18,7 @@ public class Devtools extends NodeWindow {
   public static int openDevtools = 0;
   
   public final NodeWindow insp;
+  public NodeVW currVW;
   public boolean pick;
   public boolean hlInline = true;
   DTGraphNode graph;
@@ -76,18 +77,24 @@ public class Devtools extends NodeWindow {
   }
   
   public void setup() { super.setup();
-    Node tree = base.ctx.id("main");
-    tree.add(new DTTNNode(this, base.ctx, insp.base));
     ((BtnNode) base.ctx.id("pick")).setFn(b -> pick = true);
     ((BtnNode) base.ctx.id("hlInline")).setFn(b -> { hlInline^= true; newSel.set(true); });
     ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> { VirtualWindow.DEBUG_REDRAW^= true; });
-    focus(tree);
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));
+    newVW(((NodeVW) insp.vws.get(0)));
   }
+  
+  public void newVW(NodeVW vw) {
+    currVW = vw;
+    Node tree = base.ctx.id("main");
+    tree.clearCh();
+    tree.add(new DTTNNode(this, base.ctx, vw.base));
+    focus(tree);
+  }
+  
   public void stopped() { super.stopped();
-    Node base = insp.base;
-    if (base!=null) base.mRedraw();
+    for (VirtualWindow vw : insp.vws) if (vw instanceof NodeVW) ((NodeVW) vw).base.mRedraw();
     insp.tools = null;
     openDevtools--;
   }
@@ -113,13 +120,15 @@ public class Devtools extends NodeWindow {
     Node cOpen = toOpen.getAndSet(null);
     if (cOpen!=null) {
       impl.focus();
+      NodeVW vw = cOpen.ctx.vw();
+      if (vw!=currVW) newVW(vw);
       focus(find(cOpen, true));
       pick = false;
     }
   
     Node nHL = null;
     if (pick) {
-      nHL = find(insp.mx, insp.my);
+      nHL = hoveredNode(hoveredVW());
     } else if (focusNode instanceof DTTNNode) {
       nHL = ((DTTNNode) focusNode).insp;
       if (!nHL.visible) nHL = null;
@@ -172,10 +181,10 @@ public class Devtools extends NodeWindow {
       g.translate(-p.x, -p.y);
     }
   }
-  public boolean mouseDownInsp(int x, int y, Click cl) {
+  public boolean mouseDownInsp(Click cl) {
     if (!pick || cl.btn!=Click.LEFT) return false;
     
-    toOpen.set(find(x, y));
+    toOpen.set(hoveredNode(hoveredVW()));
     return true;
   }
   public int redrawInsp() { // 0-nothing needed; 1-if redrawing, redraw all; 2-request redraw
@@ -272,7 +281,8 @@ public class Devtools extends NodeWindow {
   
   
   private XY screenPos(Node c) {
-    return c.relPos(null);
+    Rect vwr = c.ctx.vw().rect;
+    return c.relPos(null).add(vwr.sx, vwr.sy);
   }
   public DTTNNode find(Node n, boolean create) {
     Vec<Node> path = new Vec<>();
@@ -296,8 +306,13 @@ public class Devtools extends NodeWindow {
     }
     return c;
   }
-  public Node find(int x, int y) {
-    Node c = insp.base;
+  public NodeVW hoveredVW() {
+    return insp.hoveredVW instanceof NodeVW? (NodeVW) insp.hoveredVW : currVW;
+  }
+  public Node hoveredNode(NodeVW vw) {
+    Node c = vw.base;
+    int x = insp.mx - vw.rect.sx;
+    int y = insp.my - vw.rect.sy;
     while (true) {
       x-= c.dx;
       y-= c.dy;

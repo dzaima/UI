@@ -140,7 +140,7 @@ public class JWMWindow extends WindowImpl {
   
   
   public void newCanvas(Surface s) {
-    winG.init(s);
+    winG.setSurface(s);
     w.w = winG.w;
     w.h = winG.h;
   }
