@@ -64,7 +64,7 @@ public class JavaLang extends Lang {
           b[li] = 3;
           if      (n=='b') { i++; while (i<sz  &&  (p[i]=='0' | p[i]=='1')) i++; }
           else if (n=='x') { i++; while (i<sz  &&  (p[i]>='0' & p[i]<='9'  |  p[i]>='a' & p[i]<='f'  |  p[i]>='A' & p[i]<='F')) i++; }
-          else while (i<sz && p[i]>='0' & p[i]<='9' | p[i]=='.' | p[i]=='e' | p[i]=='-') i++;
+          else while (i<sz && p[i]>='0' & p[i]<='9' | p[i]=='.' | p[i]=='e' | p[i]=='E' | p[i]=='-') i++;
           if (i>=sz) return;
           c = p[i];
           if (c=='f' | c=='F' | c=='d' | c=='D' | c=='l' | c=='L') i++;
