@@ -1,6 +1,7 @@
 package dzaima.utils;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public class JSON {
   public static final Null NULL = new Null();
@@ -27,6 +28,10 @@ public class JSON {
     p.skip();
     if (p.i != s.length()) throw new JSONException("Input contained text after end");
     return r;
+  }
+  public static void fmtDouble(StringBuilder b, double val) {
+    String s = Double.toString(val);
+    b.append(s.endsWith(".0")? s.substring(0, s.length()-2) : s);
   }
   
   
@@ -56,10 +61,55 @@ public class JSON {
     }
   }
   
-  public static String format(Val v) {
-    StringBuilder r = new StringBuilder();
-    v.format(r);
-    return r.toString();
+  public static String format(Val v, int indent) {
+    String r = format0(v, indent);
+    if (!r.equals(format0(JSON.parse(r), indent))) throw new AssertionError();
+    return r;
+  }
+  private static String format0(Val v, int indent) {
+    Formatter f = new Formatter(indent);
+    f.add(v);
+    return f.b.toString();
+  }
+  private static class Formatter {
+    StringBuilder b = new StringBuilder();
+    final int indent;
+    final boolean mini;
+    public Formatter(int indent) { this.indent = indent>0? indent : 0; mini = indent<0; }
+    int ci;
+    void add(Val v) {
+      if (v instanceof Num) b.append(v.num());
+      else if (v instanceof Bool) b.append(v.bool());
+      else if (v instanceof Str) quote(b, v.str());
+      else if (v instanceof Null) b.append("null");
+      else if (v instanceof Arr) {
+        bulk('[', ']', v.arr().size(), v.arr(), c -> add(c));
+      } else if (v instanceof Obj) {
+        bulk('{', '}', v.obj().size(), v.obj().entries(), c -> {
+          quote(b, c.k);
+          b.append(mini? ":" : ": ");
+          add(c.v);
+        });
+      }
+    }
+    <T> void bulk(char s, char e, int sz, Iterable<T> it, Consumer<T> f) {
+      b.append(s);
+      int cind = sz>1? indent : 0;
+      ci+= cind;
+      if (sz>1) nl();
+      boolean first = true;
+      for (T t : it) {
+        if (first) first = false;
+        else { b.append(','); nl(); }
+        f.accept(t);
+      }
+      ci-= cind;
+      if (sz>1) nl();
+      b.append(e);
+    }
+    void nl() {
+      if (!mini) b.append('\n').append(Tools.repeat(' ', ci));
+    }
   }
   
   public static abstract class Val {
@@ -88,9 +138,8 @@ public class JSON {
     public long asLong() { return (long)num(); }
     public long asLong(long def) { return this instanceof Num? (long)((Num)this).val : def; }
     
-    abstract void format(StringBuilder b);
-    public String toString() { return JSON.format(this); }
-    public String toString(int indent) { return toString(); } // TODO formatting
+    public String toString() { return toString(-1); }
+    public String toString(int indent) { return JSON.format(this, indent); }
   }
   
   public static class Num extends Val {
@@ -100,7 +149,6 @@ public class JSON {
     
     public double num() { return val; }
     public double num(double def) { return val; }
-    void format(StringBuilder b) { String s = Double.toString(val); b.append(s.endsWith(".0")? s.substring(0, s.length()-2) : s); }
   }
   
   public static class Str extends Val {
@@ -110,7 +158,6 @@ public class JSON {
     
     public String str() { return val; }
     public String str(String def) { return val; }
-    void format(StringBuilder b) { quote(b, val); }
   }
   
   public static class Obj extends Val {
@@ -127,10 +174,15 @@ public class JSON {
       this.map = map;
     }
     public Obj() { this.map = new HashMap<>(); }
-  
-  
+    
+    
     public Obj obj() { return this; }
     public Obj obj(Obj def) { return this; }
+    
+    public int size() {
+      if (map!=null) return map.size();
+      return vs.length;
+    }
     
     public void toMap() {
       if (map!=null) return;
@@ -201,28 +253,6 @@ public class JSON {
     public static Obj objPath(Val c, Obj def, String... path) { return path(c, def, path).obj(def); }
     public static Arr arrPath(Val c, Arr def, String... path) { return path(c, def, path).arr(def); }
     
-    void format(StringBuilder b) {
-      b.append('{');
-      if (ks!=null) {
-        for (int i = 0; i < ks.length; i++) {
-          if (i != 0) b.append(',');
-          quote(b, ks[i]);
-          b.append(':');
-          vs[i].format(b);
-        }
-      } else {
-        boolean first = true;
-        for (Map.Entry<String, Val> e : map.entrySet()) {
-          if (first) first = false;
-          else b.append(",");
-          quote(b, e.getKey());
-          b.append(':');
-          e.getValue().format(b);
-        }
-      }
-      b.append('}');
-    }
-    
     // must be immediately used in a foreach and the entry object must not be stored, as the iterable, iterator, and entry are all the same object
     public Iterable<Entry> entries() {
       if (map!=null) {
@@ -275,15 +305,6 @@ public class JSON {
     public Obj      obj(int i) { return items[i].obj(); }
     public String   str(int i) { return items[i].str(); }
     
-    void format(StringBuilder b) {
-      b.append('[');
-      for (int i = 0; i < items.length; i++) {
-        if (i!=0) b.append(',');
-        items[i].format(b);
-      }
-      b.append(']');
-    }
-  
     public Iterator<Val> iterator() {
       return new Iterator<Val>() {
         int i = 0;
@@ -334,8 +355,6 @@ public class JSON {
     public Obj    obj(Obj    def) { return def; }
     public boolean bool(boolean def) { return def; }
     public boolean isNull() { return true; }
-  
-    void format(StringBuilder b) { b.append("null"); }
   }
   
   public static class Bool extends Val {
@@ -344,8 +363,6 @@ public class JSON {
     
     public boolean bool() { return val; }
     public boolean bool(boolean def) { return val; }
-    
-    void format(StringBuilder b) { b.append(val); }
     
     public static Bool of(boolean val) { return val? TRUE : FALSE; }
   }
