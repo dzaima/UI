@@ -48,6 +48,9 @@ public abstract class Popup {
     };
     m.open(gc, ctx, g);
   }
+  public static void rightClickMenu(GConfig gc, Ctx ctx, String path, Consumer<String> action) {
+    rightClickMenu(gc, ctx, gc.getProp(path).gr(), action);
+  }
   
   
   
