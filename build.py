@@ -9,6 +9,11 @@ lwjgl_version = "3.3.0"
 
 def mkdirs(path):
   os.makedirs(path, exist_ok=True)
+
+def call(cmd):
+  exit_code = subprocess.call(cmd)
+  if exit_code:
+    sys.exit(1)
   
 
 def maven_lib(base, name, version, dir, post = ""):
@@ -81,7 +86,7 @@ def jar(res, classpath, release = ""):
   
   if len(srcs)>0:
     # print(srcs)
-    subprocess.check_call([
+    call([
       "javac",
       *(["--release",release] if release else []),
       "-classpath", classpath+":"+':'.join(prev_classes),
@@ -89,7 +94,7 @@ def jar(res, classpath, release = ""):
       "-d", "classes",
       * srcs
     ])
-  subprocess.check_call(["jar", "cf", res, "-C", "classes", "."])
+  call(["jar", "cf", res, "-C", "classes", "."])
 
 def build_ui_lib(uiloc):
   mkdirs("lib/")
