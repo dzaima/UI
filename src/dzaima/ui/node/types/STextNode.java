@@ -43,7 +43,7 @@ public class STextNode extends TextNode implements Selectable {
   
   public void mouseStart(int x, int y, Click c) {
     super.mouseStart(x, y, c);
-    if (Key.none(c.mod)) c.register(this, x, y);
+    if (Key.none(c.mod) && c.bL()) c.register(this, x, y);
   }
   
   public void mouseDown(int x, int y, Click c) {
