@@ -90,6 +90,9 @@ public class Vec<T> implements Iterable<T> {
   public <Q extends T> void addAll(int i, Vec<Q> arr) {
     addAll(i, arr.arr, 0, arr.sz);
   }
+  public <Q extends T> void addAll(Vec<Q> arr) {
+    addAll(sz, arr.arr, 0, arr.sz);
+  }
   public <Q extends T> void addAll(int i, Q[] t, int s, int e) {
     int l = e-s;
     while (arr.length < sz+l) dcap();

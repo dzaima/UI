@@ -32,6 +32,10 @@ public class PNodeGroup extends PNode {
     this.ch = ch;
   }
   
+  public PNodeGroup copy() {
+    return new PNodeGroup(name, new Vec<>(props), new Vec<>(ch));
+  }
+  
   public String toString(String pad) {
     StringBuilder s = new StringBuilder(pad+name+" {\n");
     String cpad = pad+"  ";

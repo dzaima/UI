@@ -23,13 +23,9 @@ public class Rect {
     return new Rect(x, y, x+w, y+h);
   }
   
-  public int w() {
-    return ex-sx;
-  }
+  public int w() { return ex-sx; }
+  public int h() { return ey-sy; }
   
-  public int h() {
-    return ey-sy;
-  }
   public boolean intersects(Rect that) {
     return ex <= that.sx || that.ex <= sx || ey <= that.ex || that.ey <= ex;
   }

@@ -2,6 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.config.GConfig;
+import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.types.MenuNode;
@@ -12,7 +13,10 @@ import java.util.function.Consumer;
 public abstract class Popup {
   public Node node;
   public final NodeWindow pw;
+  
   private final int startX, startY;
+  private boolean closeRequested;
+  
   public Popup(NodeWindow pw) {
     this.pw = pw;
     startX = pw.mx;
@@ -20,9 +24,17 @@ public abstract class Popup {
   }
   
   protected abstract void unfocused();
+  protected abstract void setup();
   
-  private boolean closeRequested;
   protected void close() { closeRequested = true; }
+  protected XY pos() {
+    return new XY(startX, startY);
+  }
+  protected XY getSize() {
+    int w = node.minW();
+    int h = node.minH(w);
+    return new XY(w, h);
+  }
   
   public void menuItem(String id) {
     throw new RuntimeException("menuItem not overridden! (ID = \""+id+"\")");
@@ -33,23 +45,14 @@ public abstract class Popup {
     openVW(gc, ctx, g);
     // openWindow(gc, ctx, g);
     
-    if (node instanceof MenuNode) {
-      ((MenuNode) node).obj = this;
-    }
   }
-  public static void rightClickMenu(GConfig gc, Ctx ctx, PNodeGroup g, Consumer<String> action) {
-    Popup m = new Popup(ctx.win()) {
-      protected void unfocused() { close(); }
-    
-      public void menuItem(String id) {
-        action.accept(id);
-        close();
-      }
-    };
+  public static RightClickMenu rightClickMenu(GConfig gc, Ctx ctx, PNodeGroup g, Consumer<String> action) {
+    RightClickMenu m = new RightClickMenu(ctx, action);
     m.open(gc, ctx, g);
+    return m;
   }
-  public static void rightClickMenu(GConfig gc, Ctx ctx, String path, Consumer<String> action) {
-    rightClickMenu(gc, ctx, gc.getProp(path).gr(), action);
+  public static RightClickMenu rightClickMenu(GConfig gc, Ctx ctx, String path, Consumer<String> action) {
+    return rightClickMenu(gc, ctx, gc.getProp(path).gr(), action);
   }
   
   
@@ -58,6 +61,8 @@ public abstract class Popup {
     VirtualMenu vw = new VirtualMenu(gc, ctx, g, this);
     pw.addVW(vw);
     pw.focusVW(vw);
+    
+    setup();
   }
   
   public void openWindow(GConfig gc, Ctx ctx, PNodeGroup g) {
@@ -65,16 +70,40 @@ public abstract class Popup {
     Node base = win.base;
     
     base.shown(); // TODO this is a little annoying
-    int w = base.minW();
-    int h = base.minH(w);
     base.hidden();
     
+    XY sz = getSize();
+    XY sp = pos();
     XY wp = pw.windowPos();
-    win.impl.init.setWindowed(Rect.xywh(wp.x+ startX, wp.y+ startY, w, h));
+    win.impl.init.setWindowed(Rect.xywh(wp.x+sp.x, wp.y+sp.y, sz.x, sz.y));
     pw.impl.mgr.start(win);
+    
+    setup();
   }
   
   
+  
+  
+  
+  public static class RightClickMenu extends Popup {
+    private final Consumer<String> action;
+    
+    public RightClickMenu(Ctx ctx, Consumer<String> action) {
+      super(ctx.win());
+      this.action = action;
+    }
+  
+    protected void setup() { ((MenuNode) node).obj = this; }
+  
+    protected void unfocused() { close(); }
+    
+    public void menuItem(String id) {
+      action.accept(id);
+      close();
+    }
+    
+    public void takeClick(Click c) { }
+  }
   
   
   
@@ -113,9 +142,9 @@ public abstract class Popup {
     public boolean ownsXY(int x, int y) { return true; }
     
     protected Rect getSize(int pw, int ph) {
-      int w = base.minW();
-      int h = base.minH(w);
-      return Rect.xywh(m.startX, m.startY, w, h);
+      XY sz = m.getSize();
+      XY p = m.pos();
+      return Rect.xywh(p.x, p.y, sz.x, sz.y);
     }
     boolean lastFocused = true;
     public void tick() {

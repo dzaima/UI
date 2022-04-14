@@ -92,15 +92,7 @@ public class FRef {
     public void mouseDown(int x, int y, Click c) {
       if (c.bR()) {
         ctx.focus(this);
-        Popup m = new Popup(ctx.win()) {
-          protected void unfocused() { close(); }
-      
-          public void menuItem(String id) {
-            System.out.println(id);
-            close();
-          }
-        };
-        Popup.rightClickMenu(gc, ctx, gc.getProp("fmgr.fileMenuUI").gr(), id -> System.out.println("Action: "+id));
+        Popup.rightClickMenu(gc, ctx, "fmgr.fileMenuUI", id -> System.out.println("Action: "+id)).takeClick(c);
       }
     }
   
