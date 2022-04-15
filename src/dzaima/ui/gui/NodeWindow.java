@@ -143,6 +143,10 @@ public class NodeWindow extends Window {
     vws.filterInplace(c -> {
       if (c.shouldRemove()) {
         c.stopped();
+        if (focusedVW==c) {
+          focusedVW = vws.get(0);
+          if (focusNode!=null && focusNode.ctx.vw()==c) focus(null);
+        }
         requestDraw = true;
         return false;
       }

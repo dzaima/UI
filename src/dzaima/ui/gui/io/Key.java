@@ -138,6 +138,7 @@ public class Key {
     if (hasCtrl()) r.append("ctrl+");
     if (hasAlt()) r.append("alt+");
     if (hasShift()) r.append("shift+");
+    if (hasSuper()) r.append("super+");
     r.append(val.name.toLowerCase());
     return r.toString();
   }
@@ -160,6 +161,12 @@ public class Key {
     Key k = keyBase.get(parts[parts.length - 1]);
     if (k==null) return null;
     return new Key(k.val, mod|k.mod);
+  }
+  
+  public boolean equals(Object o) {
+    if (!(o instanceof Key)) return false;
+    Key that = (Key) o;
+    return this.val==that.val && this.mod==that.mod;
   }
   
   

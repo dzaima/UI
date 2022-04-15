@@ -2,7 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.config.GConfig;
-import dzaima.ui.gui.io.Click;
+import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.types.MenuNode;
@@ -28,13 +28,15 @@ public abstract class Popup {
   
   protected void close() { closeRequested = true; }
   protected XY pos() {
-    return new XY(startX, startY);
+    return new XY(startX, startY+1);
   }
   protected XY getSize() {
     int w = node.minW();
     int h = node.minH(w);
     return new XY(w, h);
   }
+  
+  protected boolean key(Key key, KeyAction a) { return false; }
   
   public void menuItem(String id) {
     throw new RuntimeException("menuItem not overridden! (ID = \""+id+"\")");
@@ -83,7 +85,14 @@ public abstract class Popup {
   
   
   
-  
+  public boolean defaultKeys(Key key, KeyAction a) {
+    switch (node.gc.keymap(key, a, "menu")) {
+      case "exit":
+        close();
+        return true;
+    }
+    return false;
+  }
   
   public static class RightClickMenu extends Popup implements Click.RequestImpl {
     private final Consumer<String> action;
@@ -93,7 +102,7 @@ public abstract class Popup {
       this.action = action;
     }
   
-    protected void setup() { ((MenuNode) node).obj = this; }
+    protected void setup() { ((MenuNode) node).obj = this; node.ctx.focus(node); }
   
     protected void unfocused() { close(); }
     
@@ -102,9 +111,9 @@ public abstract class Popup {
       close();
     }
     
-    public void takeClick(Click c) {
-      c.replace(this, 0, 0);
-    }
+    protected boolean key(Key key, KeyAction a) { return defaultKeys(key, a); }
+    
+    public void takeClick(Click c) { c.replace(this, 0, 0); }
     public void mouseDown(int x, int y, Click c) { }
     public void mouseTick(int x, int y, Click c) { }
     public void mouseUp(int x, int y, Click c) { }
@@ -134,6 +143,11 @@ public abstract class Popup {
       if (frameCount<60 && frameCount%20==5 && focused) impl.focus();
       if (m.closeRequested) closeOnNext();
     }
+    
+    public boolean key(Key key, int scancode, KeyAction a) {
+      if (m.key(key, a)) return true;
+      return super.key(key, scancode, a);
+    }
   }
   
   static class VirtualMenu extends NodeVW {
@@ -162,6 +176,11 @@ public abstract class Popup {
     
     public boolean shouldRemove() {
       return m.closeRequested;
+    }
+    
+    public boolean key(Key key, int scancode, KeyAction a) {
+      if (m.key(key, a)) return true;
+      return super.key(key, scancode, a);
     }
   }
 }

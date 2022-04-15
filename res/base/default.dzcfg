@@ -37,6 +37,9 @@ menu {
   shadowBlur = 0.6em
   shadowSpread = 0.1em
   shadowColor = #7f000000
+  keys {
+    exit = { "esc" }
+  }
 }
 
 tree.bg1 = bg.bg1
