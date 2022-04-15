@@ -41,7 +41,7 @@ public class MenuNode extends Node {
   }
   
   public boolean keyF(Key key, int scancode, KeyAction a) {
-    for (Node c : ch) {
+    if (a.press) for (Node c : ch) {
       if (c instanceof MINode) {
         Vec<PNode> keys = ((MINode) c).keys();
         if (keys==null) continue;
