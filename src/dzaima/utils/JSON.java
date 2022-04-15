@@ -398,7 +398,7 @@ public class JSON {
   char peek() { if (i>=s.length()) throw new JSONException("Input ended early"); return s.charAt(i); }
   char next() { if (i>=s.length()) throw new JSONException("Input ended early"); return s.charAt(i++); }
   Val get() {
-    if (i>=s.length()) throw new JSONException("Input ended early");
+    if (i>=s.length()) throw new JSONException(i==0? "Empty input" : "Input ended early");
     switch (s.charAt(i)) {
       case '{': {
         i++;

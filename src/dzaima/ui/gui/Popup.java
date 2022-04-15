@@ -28,11 +28,24 @@ public abstract class Popup {
   protected abstract void setup();
   
   protected void close() { closeRequested = true; }
+  
+  protected Rect fullRect() { return null; }
+  public Rect centered(VirtualWindow vw, double fx, double fy) {
+    Rect pr = vw.rect;
+    int w = Math.max(node.minW( ), (int) (pr.w()*fx));
+    int h = Math.max(node.minH(w), (int) (pr.h()*fy));
+    return pr.centered(w, h);
+  }
+  
   protected XY pos(XY size, Rect bounds) {
+    Rect r = fullRect();
+    if (r!=null) return new XY(r.sx, r.sy);
     return new XY(Math.max(0, Math.min(startX+1, bounds.ex-size.x)),
                   Math.max(0, Math.min(startY+1, bounds.ey-size.y)));
   }
   protected XY getSize() {
+    Rect r = fullRect();
+    if (r!=null) return new XY(r.w(), r.h());
     int w = node.minW();
     int h = node.minH(w);
     return new XY(w, h);
