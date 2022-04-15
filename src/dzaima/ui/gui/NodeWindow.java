@@ -154,7 +154,7 @@ public class NodeWindow extends Window {
     });
   }
   public void tick() {
-    gc.tick(impl.intentionallyLong()); // TODO this is messy
+    gc.tick(this, impl.intentionallyLong());
     for (VirtualWindow c : vws) c.tick();
   }
   

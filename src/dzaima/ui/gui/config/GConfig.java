@@ -70,7 +70,8 @@ public class GConfig {
     postReload.add(r);
   }
   
-  public void tick(boolean intentionallyLong) {
+  public void tick(NodeWindow w, boolean intentionallyLong) {
+    if (w != ws.peek()) return; // really bad way to ensure this is only called from one window; TODO don't
     long prevNs = lastNs;
     lastNs = System.nanoTime();
     deltaNs = lastNs-prevNs;

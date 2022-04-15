@@ -16,6 +16,7 @@ public abstract class Popup {
   
   private final int startX, startY;
   private boolean closeRequested;
+  protected boolean isVW;
   
   public Popup(NodeWindow pw) {
     this.pw = pw;
@@ -45,7 +46,7 @@ public abstract class Popup {
   
   public void open(GConfig gc, Ctx ctx, PNodeGroup g) {
     openVW(gc, ctx, g);
-    // openWindow(gc, ctx, g);
+    // openWindow(gc, ctx, g, null);
     
   }
   public static RightClickMenu rightClickMenu(GConfig gc, Ctx ctx, PNodeGroup g, Consumer<String> action) {
@@ -61,14 +62,15 @@ public abstract class Popup {
   
   public void openVW(GConfig gc, Ctx ctx, PNodeGroup g) {
     VirtualMenu vw = new VirtualMenu(gc, ctx, g, this);
+    isVW = true;
     pw.addVW(vw);
     pw.focusVW(vw);
     
     setup();
   }
   
-  public void openWindow(GConfig gc, Ctx ctx, PNodeGroup g) {
-    MenuWindow win = new MenuWindow(gc, ctx, g, this);
+  public void openWindow(GConfig gc, Ctx ctx, PNodeGroup g, String title) {
+    MenuWindow win = new MenuWindow(gc, ctx, g, title, this);
     Node base = win.base;
     
     base.shown(); // TODO this is a little annoying
@@ -126,8 +128,8 @@ public abstract class Popup {
   static class MenuWindow extends NodeWindow {
     private final Popup m;
     
-    public MenuWindow(GConfig gc, Ctx pctx, PNodeGroup g, Popup m) {
-      super(gc, pctx, g, new WindowInit("(menu)").setType(WindowType.POPUP).setVisible(true));
+    public MenuWindow(GConfig gc, Ctx pctx, PNodeGroup g, String title, Popup m) {
+      super(gc, pctx, g, new WindowInit(title==null? "(menu)" : title).setType(title==null? WindowType.POPUP : WindowType.NORMAL).setVisible(true));
       this.m = m;
       m.node = base;
     }
