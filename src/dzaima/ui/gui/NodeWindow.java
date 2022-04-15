@@ -131,6 +131,7 @@ public class NodeWindow extends Window {
   
   
   ///////// events \\\\\\\\\
+  private CursorType lastCursor = CursorType.REGULAR;
   public void eventTick() {
     for (int i = vws.size()-1; i>=0; i--) {
       VirtualWindow v = vws.get(i);
@@ -140,6 +141,11 @@ public class NodeWindow extends Window {
       }
     }
     for (VirtualWindow vw : vws) vw.eventTick();
+    CursorType nCursor = hoveredVW.cursorType();
+    if (nCursor!=lastCursor) {
+      setCursor(nCursor);
+      lastCursor = nCursor;
+    }
     vws.filterInplace(c -> {
       if (c.shouldRemove()) {
         c.stopped();

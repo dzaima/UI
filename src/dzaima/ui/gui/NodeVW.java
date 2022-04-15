@@ -76,6 +76,14 @@ public abstract class NodeVW extends VirtualWindow {
     pHover = nHover;
   }
   
+  private Vec<Window.CursorType> cursorStack = new Vec<>();
+  public void pushCursor(Window.CursorType t) { cursorStack.add(t); }
+  public void popCursor() { cursorStack.pop(); }
+  public Window.CursorType cursorType() {
+    return cursorStack.sz==0? Window.CursorType.REGULAR : cursorStack.peek();
+  }
+  
+  
   public void mouseStart(Click cl) { base.mouseStart(mx, my, cl); }
   public void initialMouseTick(Click c) { c.initialTick(mx, my); activeClicks.add(c); }
   public void scroll(float dx, float dy) { base.scroll(mx, my, dx, dy); }

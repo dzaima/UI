@@ -114,8 +114,8 @@ public class TextNode extends InlineNode {
     return w;
   }
   
-  public void hoverS() { if (hover) ctx.win().setCursor(Window.CursorType.HAND   ); }
-  public void hoverE() { if (hover) ctx.win().setCursor(Window.CursorType.REGULAR); }
+  public void hoverS() { if (hover) ctx.vw().pushCursor(Window.CursorType.HAND); }
+  public void hoverE() { if (hover) ctx.vw().popCursor(); }
   
   public void resized() {
     InlineSolver sv = new InlineSolver(w, gc, true);

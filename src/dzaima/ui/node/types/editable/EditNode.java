@@ -307,8 +307,8 @@ public class EditNode extends Node {
     isFocused = false;
   }
   
-  public void hoverS() { ctx.win().setCursor(Window.CursorType.IBEAM); }
-  public void hoverE() { ctx.win().setCursor(Window.CursorType.REGULAR); }
+  public void hoverS() { ctx.vw().pushCursor(Window.CursorType.IBEAM); }
+  public void hoverE() { ctx.vw().popCursor(); }
   
   public void mouseStart(int x, int y, Click c) {
     if (c.bL()) c.register(this, x, y);

@@ -70,6 +70,7 @@ public abstract class VirtualWindow {
   public abstract void eventTick();
   public abstract void tick();
   
+  public abstract Window.CursorType cursorType();
   
   public abstract boolean shouldRemove();
   public /*open*/ void stopped() {

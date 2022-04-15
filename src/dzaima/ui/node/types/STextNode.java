@@ -5,15 +5,16 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 
 public class STextNode extends TextNode implements Selectable {
   public STextNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
   }
-  public STextNode(Node n) {
-    super(n.ctx, KS_NONE, VS_NONE);
-    add(n);
+  private static String[] IBEAM_K = new String[]{"ibeam"};
+  private static Prop[] IBEAM_V = new Prop[]{new EnumProp("true")};
+  public STextNode(Ctx ctx, boolean ibeam) {
+    super(ctx, ibeam? IBEAM_K : KS_NONE, ibeam? IBEAM_V : VS_NONE);
   }
   
   public boolean selectS(Selection s) {
@@ -63,8 +64,8 @@ public class STextNode extends TextNode implements Selectable {
     }
   }
   
-  // public void hoverS() { ctx.win().setCursor(Window.CursorType.IBEAM); } // TODO re-enable when proper cursor stacking exists
-  // public void hoverE() { ctx.win().setCursor(Window.CursorType.REGULAR); }
+  public void hoverS() { if (gc.boolD(this, "ibeam", false)) ctx.vw().pushCursor(Window.CursorType.IBEAM); }
+  public void hoverE() { if (gc.boolD(this, "ibeam", false)) ctx.vw().popCursor(); }
   
   public boolean keyF(Key key, int scancode, KeyAction a) {
     switch (gc.keymap(key, a, "stext")) {
