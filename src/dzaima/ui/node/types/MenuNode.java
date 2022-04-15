@@ -63,7 +63,8 @@ public class MenuNode extends Node {
     
     Font f;
     String binds;
-    short padL, padR, padX, padU, bindW;
+    short padL, padR, padX, padU;
+    float bindW;
     public Vec<PNode> keys() {
       int ki = id("key");
       if (ki==-1) return null;
@@ -84,7 +85,7 @@ public class MenuNode extends Node {
           b.append(Objects.requireNonNull(Key.byName(((PNodeStr) n).s)).repr());
         }
         binds = b.length()==0? "(unassigned)" : b.toString();
-        bindW = (short) f.width(binds);
+        bindW = f.widthf(binds);
         padX+= bindW;
       } else {
         binds = null;

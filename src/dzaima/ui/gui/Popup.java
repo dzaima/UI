@@ -28,8 +28,9 @@ public abstract class Popup {
   protected abstract void setup();
   
   protected void close() { closeRequested = true; }
-  protected XY pos() {
-    return new XY(startX, startY+1);
+  protected XY pos(XY size, Rect bounds) {
+    return new XY(Math.max(0, Math.min(startX+1, bounds.ex-size.x)),
+                  Math.max(0, Math.min(startY+1, bounds.ey-size.y)));
   }
   protected XY getSize() {
     int w = node.minW();
@@ -47,7 +48,6 @@ public abstract class Popup {
   public void open(GConfig gc, Ctx ctx, PNodeGroup g) {
     openVW(gc, ctx, g);
     // openWindow(gc, ctx, g, null);
-    
   }
   public static RightClickMenu rightClickMenu(GConfig gc, Ctx ctx, PNodeGroup g, Consumer<String> action) {
     RightClickMenu m = new RightClickMenu(ctx, action);
@@ -77,7 +77,7 @@ public abstract class Popup {
     base.hidden();
     
     XY sz = getSize();
-    XY sp = pos();
+    XY sp = pos(sz, new Rect(-Tools.BIG, -Tools.BIG, Tools.BIG, Tools.BIG));
     XY wp = pw.windowPos();
     win.impl.init.setWindowed(Rect.xywh(wp.x+sp.x, wp.y+sp.y, sz.x, sz.y));
     pw.impl.mgr.start(win);
@@ -166,7 +166,7 @@ public abstract class Popup {
     
     protected Rect getSize(int pw, int ph) {
       XY sz = m.getSize();
-      XY p = m.pos();
+      XY p = m.pos(sz, new Rect(0, 0, m.pw.w, m.pw.h));
       return Rect.xywh(p.x, p.y, sz.x, sz.y);
     }
     boolean lastFocused = true;
