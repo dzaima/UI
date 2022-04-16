@@ -194,7 +194,7 @@ public class GConfig {
   
   public /*open*/ void openFile(Path p) {
     try {
-      new ProcessBuilder("xdg-open", p.toAbsolutePath().toString()).start();
+      new ProcessBuilder(getProp("open.file").str(), p.toAbsolutePath().toString()).start();
     } catch (IOException e) {
       System.err.println("Failed to open file:");
       e.printStackTrace();
@@ -202,7 +202,7 @@ public class GConfig {
   }
   public /*open*/ void openTerminal(Path p) {
     try {
-      new ProcessBuilder("/usr/bin/env", "x-terminal-emulator").directory(p.toFile()).start();
+      new ProcessBuilder(getProp("open.terminal").str()).directory(p.toFile()).start();
     } catch (IOException e) {
       System.err.println("Failed to launch terminal:");
       e.printStackTrace();
@@ -210,6 +210,12 @@ public class GConfig {
   }
   public /*open*/ void openLink(String s) {
     if (!s.startsWith("https://") && !s.startsWith("http://")) return; // don't try to open as file
+    switch (getProp("open.link").val()) { default: System.err.println("Invalid open.link value"); break;
+      case "xdg": openLinkXDG(s); break;
+      case "java": openLinkDesktop(s); break;
+    }
+  }
+  public void openLinkDesktop(String s) {
     Tools.thread(() -> { // start on a new thread because Desktop::browse likes to hang sometimes; TODO detect hanging & fall back
       if (Desktop.isDesktopSupported()) {
         Desktop d = Desktop.getDesktop();
@@ -224,13 +230,16 @@ public class GConfig {
         }
       }
       System.err.println("open link: fallback to xdg-open");
-      try {
-        new ProcessBuilder("xdg-open", s).start();
-      } catch (IOException e) {
-        System.err.println("Failed to open link:");
-        e.printStackTrace();
-      }
+      openLinkXDG(s);
     }, true);
+  }
+  public void openLinkXDG(String s) {
+    try {
+      new ProcessBuilder("xdg-open", s).start();
+    } catch (IOException e) {
+      System.err.println("Failed to open link:");
+      e.printStackTrace();
+    }
   }
   
   

@@ -8,6 +8,9 @@ text.bgSel = #df264C99
 stext.keys.copy = { "ctrl+c" "shift+ctrl+c" }
 
 icon.color = #CCC
+open.file = "xdg-open" // will be invoked with one argument of the path
+open.terminal = "x-terminal-emulator" // will be invoked in the directory to be opened in
+open.link = java // java, xdg; "java" uses java.awt.Desktop::browse, xdg invokes xdg-open
 
 bg.back   = #18181B
 bg.middle = #27272A
