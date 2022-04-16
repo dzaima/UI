@@ -27,10 +27,10 @@ public abstract class VirtualWindow {
   
   public final void newSurface(Surface s, int pw, int ph) {
     lastSurface = s;
-    newCanvas(getSize(pw, ph));
+    newCanvas(getSize(pw, ph), true);
   }
-  public final void newCanvas(Rect nr) {
-    if (!nr.equals(rect)) {
+  public final void newCanvas(Rect nr, boolean force) {
+    if (!nr.equals(rect) || force) {
       rect = nr;
       if (g!=null) g.close();
       ImageInfo ii = lastSurface.getImageInfo().withWidthHeight(Math.max(1, nr.w()), Math.max(1, nr.h()));
