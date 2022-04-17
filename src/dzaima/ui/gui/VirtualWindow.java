@@ -17,7 +17,7 @@ public abstract class VirtualWindow {
   
   public abstract boolean fullyOpaque(); // hint to allow skipping drawing things below this
   public abstract boolean drawShadow();
-  protected abstract Rect getSize(int pw, int ph);
+  protected abstract Rect getLocation(int pw, int ph);
   protected abstract void implDraw(Graphics g, boolean full);
   protected abstract boolean implRequiresRedraw();
   
@@ -27,7 +27,7 @@ public abstract class VirtualWindow {
   
   public final void newSurface(Surface s, int pw, int ph) {
     lastSurface = s;
-    newCanvas(getSize(pw, ph), true);
+    newCanvas(getLocation(pw, ph), true);
   }
   public final void newCanvas(Rect nr, boolean force) {
     if (!nr.equals(rect) || force) {
@@ -39,6 +39,9 @@ public abstract class VirtualWindow {
       newCanvas = true;
       newSize();
     }
+  }
+  public final void resizeCanvas() {
+    newCanvas(getLocation(w.w, w.h), false);
   }
   
   public final boolean draw() {

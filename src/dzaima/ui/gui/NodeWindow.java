@@ -33,7 +33,7 @@ public class NodeWindow extends Window {
       public boolean drawShadow() { return false; }
       public boolean ownsXY(int x, int y) { return true; }
       public boolean shouldRemove() { return false; }
-      public Rect getSize(int pw, int ph) { return new Rect(0, 0, pw, ph); }
+      public Rect getLocation(int pw, int ph) { return new Rect(0, 0, pw, ph); }
     };
     vws.add(baseVW);
     base = baseVW.base;
@@ -210,6 +210,7 @@ public class NodeWindow extends Window {
     int shColor = gc.getProp("menu.shadowColor").col();
     boolean any = requestDraw;
     for (VirtualWindow c : vws) {
+      if (c.shouldRemove()) continue;
       if (c.draw()) any = true;
       c.drawTo(g);
       if (c.drawShadow()) g.canvas.drawRectShadow(c.rect.skiaf().inflate(1), 0, 0, shBlur, shSpread, shColor);

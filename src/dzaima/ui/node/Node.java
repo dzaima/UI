@@ -317,6 +317,7 @@ public abstract class Node implements Click.RequestImpl {
   // may be called at any point in time! (except between resizing & drawing)
   public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this, ScrollNode.Mode.FULLY_OFFSCREEN, ScrollNode.Mode.FULLY_OFFSCREEN); }
   public /*open*/ void focusE() { mRedraw(); }
+  public final void focusMe() { ctx.focus(this); }
   
   public /*open*/ void typed(int codepoint) { }
   public /*open*/ boolean keyF(Key key, int scancode, KeyAction a) { return false; } // for the focused element

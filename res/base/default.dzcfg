@@ -43,6 +43,9 @@ menu {
   shadowColor = #7f000000
   keys {
     exit = menu.genericExit
+    prev = { "up" }
+    next = { "down" }
+    accept = { "tab" "space" "enter" }
   }
 }
 

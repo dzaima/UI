@@ -27,7 +27,7 @@ public abstract class Popup {
   protected abstract void unfocused();
   protected abstract void setup();
   
-  protected void close() { closeRequested = true; }
+  public void close() { closeRequested = true; }
   
   protected Rect fullRect() { return null; }
   public Rect centered(VirtualWindow vw, double fx, double fy) {
@@ -59,7 +59,7 @@ public abstract class Popup {
   
   
   public void open(GConfig gc, Ctx ctx, PNodeGroup g) {
-    openVW(gc, ctx, g);
+    openVW(gc, ctx, g, true);
     // openWindow(gc, ctx, g, null);
   }
   public static RightClickMenu rightClickMenu(GConfig gc, Ctx ctx, PNodeGroup g, Consumer<String> action) {
@@ -73,16 +73,17 @@ public abstract class Popup {
   
   
   
-  public void openVW(GConfig gc, Ctx ctx, PNodeGroup g) {
+  public VirtualMenu openVW(GConfig gc, Ctx ctx, PNodeGroup g, boolean focus) {
     VirtualMenu vw = new VirtualMenu(gc, ctx, g, this);
     isVW = true;
     pw.addVW(vw);
-    pw.focusVW(vw);
+    if (focus) pw.focusVW(vw);
     
     setup();
+    return vw;
   }
   
-  public void openWindow(GConfig gc, Ctx ctx, PNodeGroup g, String title) {
+  public MenuWindow openWindow(GConfig gc, Ctx ctx, PNodeGroup g, String title) {
     MenuWindow win = new MenuWindow(gc, ctx, g, title, this);
     Node base = win.base;
     
@@ -96,6 +97,7 @@ public abstract class Popup {
     pw.impl.mgr.start(win);
     
     setup();
+    return win;
   }
   
   
@@ -177,7 +179,7 @@ public abstract class Popup {
     public boolean drawShadow() { return true; }
     public boolean ownsXY(int x, int y) { return true; }
     
-    protected Rect getSize(int pw, int ph) {
+    protected Rect getLocation(int pw, int ph) {
       XY sz = m.getSize();
       XY p = m.pos(sz, new Rect(0, 0, m.pw.w, m.pw.h));
       return Rect.xywh(p.x, p.y, sz.x, sz.y);
