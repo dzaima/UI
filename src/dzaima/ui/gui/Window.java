@@ -94,8 +94,9 @@ public abstract class Window {
         setup();
       } catch (Throwable e) {
         System.err.println("Errored during setup:");
-        closeOnNext();
+        e.printStackTrace();
         setupDone = true;
+        closeOnNext();
         throw new RuntimeException(e);
       }
       setupDone = true;
