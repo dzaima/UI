@@ -174,6 +174,11 @@ public class GConfig {
     if (id>=0) return n.vs[id].i();
     return i;
   }
+  public float fD(Node n, String k, float f) {
+    int id = n.id(k);
+    if (id>=0) return n.vs[id].f();
+    return f;
+  }
   public boolean boolD(Node n, String k, boolean b) {
     int id = n.id(k);
     if (id>=0) return n.vs[id].b();

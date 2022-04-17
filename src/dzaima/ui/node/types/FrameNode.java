@@ -100,4 +100,7 @@ public abstract class FrameNode extends Node {
     assert s.equals("center");
     return 0;
   }
+  public static int align(int al, int tot, int sub) {
+    return al==-1? 0 : al==1? tot-sub : (tot-sub)/2;
+  }
 }

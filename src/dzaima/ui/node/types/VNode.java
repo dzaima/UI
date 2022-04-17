@@ -77,14 +77,14 @@ public class VNode extends FrameNode {
     int yal = yalign();
     int[] div = Solve.solve(ch, h - pad*(ch.sz-1), w, true);
     int th = pad*(ch.sz-1); for (int i=0; i<ch.sz; i++) th+= div[i];
-    int y = yal==-1? 0 : yal==1? h-th : (h-th)/2;
+    int y = align(yal, h, th);
     fillWC = 0;
     boolean r = th!=h;
     for (int i = 0; i < ch.sz; i++) {
       Node c = ch.get(i);
       int cminH = div[i];
       int nw = Math.min(c.maxW(), w);
-      int x = xal==-1? 0 : xal==1? w-nw : (w-nw)/2;
+      int x = align(xal, w, nw);
       c.resize(nw, cminH, x, y);
       r|= nw!=w;
       fillWC = Math.max(fillWC, c.minW());

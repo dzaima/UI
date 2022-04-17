@@ -37,14 +37,14 @@ public class HNode extends FrameNode {
     int padTotal = pad*(ch.sz-1);
     int[] div = Solve.solve(ch, w-padTotal, -1, false);
     int tw = pad*(ch.sz-1); for (int i=0; i<ch.sz; i++) tw+= div[i];
-    int x = xal==-1? 0 : xal==1? w-tw : (w-tw)/2;
+    int x = align(xal, w, tw);
     boolean r = tw!=w;
     for (int i = 0; i < ch.sz; i++) {
       Node c = ch.get(i);
       int cmaxH = c.maxH(div[i]);
       int nh = Math.min(cmaxH, h);
       r|= nh!=h; // TODO do this only when the used space differs from previous; same in VNode
-      int y = yal==-1? 0 : yal==1? h-nh : (h-nh)/2;
+      int y = align(yal, h, nh);
       c.resize(div[i], nh, x, y);
       x+= div[i]+pad;
     }
