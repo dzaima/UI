@@ -8,6 +8,7 @@ import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.types.*;
 import dzaima.utils.*;
+import io.github.humbleui.skija.impl.Stats;
 
 import java.io.*;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class Devtools extends NodeWindow {
     graph = (DTGraphNode) base.ctx.id("graph");
     graph.t = this;
     openDevtools++;
+    Stats.enabled = true;
     this.insp = insp;
   }
   
@@ -80,6 +82,7 @@ public class Devtools extends NodeWindow {
     ((BtnNode) base.ctx.id("pick")).setFn(b -> pick = true);
     ((BtnNode) base.ctx.id("hlInline")).setFn(b -> { hlInline^= true; newSel.set(true); });
     ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> { VirtualWindow.DEBUG_REDRAW^= true; });
+    ((BtnNode) base.ctx.id("gc")).setFn(b -> System.gc());
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));
     newVW(((NodeVW) insp.vws.get(0)));
@@ -97,6 +100,7 @@ public class Devtools extends NodeWindow {
     for (VirtualWindow vw : insp.vws) if (vw instanceof NodeVW) ((NodeVW) vw).base.mRedraw();
     insp.tools = null;
     openDevtools--;
+    if (openDevtools==0) Stats.enabled = false;
   }
   
   
@@ -224,6 +228,10 @@ public class Devtools extends NodeWindow {
     iC.add(new StringNode(iC.ctx, String.format(" draw %6.3fms", getTime("draw" )/1e6)));
     iC.add(new StringNode(iC.ctx, String.format("flush %6.3fms", getTime("flush")/1e6)));
     iC.add(new StringNode(iC.ctx, String.format(" wait %6.3fms", (getTime("frame")-getTime("all"))/1e6)));
+    final int[] sum = {0};
+    Stats.allocated.forEach((k, v)-> sum[0]+=v);
+    iC.add(new StringNode(iC.ctx, "Skija allocations: "+sum[0]));
+    iC.add(new StringNode(iC.ctx, "Skija native calls: "+Stats.nativeCalls));
     if (lastError!=null) iC.add(new StringNode(iC.ctx, lastError));
     
     

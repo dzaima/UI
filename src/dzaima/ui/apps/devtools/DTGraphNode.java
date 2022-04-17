@@ -1,6 +1,6 @@
 package dzaima.ui.apps.devtools;
 
-import dzaima.ui.gui.Graphics;
+import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
@@ -48,11 +48,15 @@ public class DTGraphNode extends Node {
   }
   
   private static final String[] ITEMS = {"event", "tick", "draw", "flush", "frame"};
+  private final Runtime rt = Runtime.getRuntime();
   public void drawC(Graphics g) {
-    g.push();
-    g.clip(0, 0, w, h);
+    int mH = (int) (gc.em*1.1); // memory bar height
+    int gH = h-mH; // graph height
     
-    float sc = h / (1e9f/20);
+    g.push();
+    g.translate(0, mH);
+    g.clip(0, 0, w, gH);
+    float sc = gH / (1e9f/20);
     int sw = Math.min(w, RotBuf.BUF_LEN);
     int off = w-sw;
     
@@ -60,18 +64,30 @@ public class DTGraphNode extends Node {
     for (Item c : items) c.s(t, sw);
     
     for (int i = 0; i < sw; i++) {
-      int cy = h;
+      int cy = gH;
       for (Item c : items) {
         int l = (int) (c.next()*sc);
-        int nl = c.isFr? h-l : cy-l;
+        int nl = c.isFr? gH-l : cy-l;
         g.line(i+off, nl, i+off, cy, c.col);
         cy = nl;
       }
     }
+    int l60 = gH - (int) (1e9/60*sc); g.line(0, l60, w, l60, lineCol);
+    int l30 = gH - (int) (1e9/30*sc); g.line(0, l30, w, l30, lineCol);
+    g.pop();
     
-    int l60 = h - (int) (1e9/60*sc); g.line(0, l60, w, l60, lineCol);
-    int l30 = h - (int) (1e9/30*sc); g.line(0, l30, w, l30, lineCol);
+  
+    long tot = rt.totalMemory();
+    long used = tot-rt.freeMemory();
+    g.push();
     
+    float frac = (float)used * w / tot;
+    g.rect(0, 0, frac, mH, gc.getProp("devtools.memUsed").col());
+    g.rect(frac, 0, w, mH, gc.getProp("devtools.memFree").col());
+    
+    long mb = 1024*1024;
+    Font f = gc.defFont;
+    g.text((used/mb)+" / "+(tot/mb)+"M", f, 0, f.ascI, gc.getProp("str.color").col());
     g.pop();
   }
   

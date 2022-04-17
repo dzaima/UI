@@ -28,6 +28,7 @@ scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
 menu {
+  genericExit = { "esc" }
   bg = bg.middle // background color of menus
   hover = bg.sel // color of hovered over item
   minWidth = 15em
@@ -41,7 +42,7 @@ menu {
   shadowSpread = 0.1em
   shadowColor = #7f000000
   keys {
-    exit = { "esc" }
+    exit = menu.genericExit
   }
 }
 
@@ -123,6 +124,7 @@ devtools {
       btn { style=rect "pick" id=pick }
       btn { style=rect "inline" id=hlInline }
       btn { style=rect "dbgRedraw" id=dbgRedraw }
+      btn { style=rect "GC" id=gc }
     }
     
     scroll { tempOverlap=true bg=bg.back
@@ -169,4 +171,6 @@ devtools {
     flushCol = #4080A080
     frameCol = #408080A0
   }
+  memUsed = #28282B
+  memFree = #151518
 }

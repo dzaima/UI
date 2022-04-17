@@ -88,9 +88,10 @@ public abstract class Graphics {
     xoff+= dx;
     yoff+= dy;
   }
-  public void scale(float x, float y) { // after this, clip is broken
-    canvas.scale(x, y);
-  }
+  
+  // these break clip bounds
+  public void translateLocal(float dx, float dy) { canvas.translate(dx, dy); }
+  public void scaleLocal(float x, float y) { canvas.scale(x, y); }
   
   public void clear(int col) {
     canvas.clear(col);
