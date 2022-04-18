@@ -49,10 +49,14 @@ public class ByteVec {
     sz+= am;
   }
   public void addAll(int i, byte[] t) {
-    while (sz+t.length > arr.length) dcap();
-    System.arraycopy(arr, i, arr, i+t.length, sz-i);
-    System.arraycopy(t, 0, arr, i, t.length);
-    sz+= t.length;
+    addAll(i, t, 0, t.length);
+  }
+  public void addAll(int i, byte[] t, int s, int e) {
+    int l = e-s;
+    while (sz+l > arr.length) dcap();
+    System.arraycopy(arr, i, arr, i+l, sz-i);
+    System.arraycopy(t, s, arr, i, l);
+    sz+= l;
   }
   
   
