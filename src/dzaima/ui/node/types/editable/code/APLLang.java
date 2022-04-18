@@ -50,8 +50,11 @@ public class APLLang extends Lang {
         else if (c=='⍺' | c=='⍵' | c=='⍶' | c=='⍶')  b[li] = 7;
         else if (c=='⋄' | c=='←' | c=='→')  b[li] = 8;
         else if (c=='#' | c=='⍬')  b[li] = 9;
-        else if (c=='\'') { b[li] = 2; while(i<sz && p[i]!='\'') i++; }
-        else if (fns.contains(c))  b[li] = 4;
+        else if (c=='\'') {
+          while (i<sz && p[i]!='\'') i++;
+          Arrays.fill(b, li, i>=sz? i : i+1, (byte) 2);
+          i++;
+        } else if (fns.contains(c))  b[li] = 4;
         else if (mops.contains(c)) b[li] = 5;
         else if (dops.contains(c)) b[li] = 6;
         else b[li] = 0;
