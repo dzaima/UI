@@ -118,9 +118,9 @@ public abstract class Popup {
       super(ctx.win());
       this.action = action;
     }
-  
+    
     protected void setup() { ((MenuNode) node).obj = this; node.ctx.focus(node); }
-  
+    
     protected void unfocused() { close(); }
     
     public void menuItem(String id) {

@@ -105,7 +105,7 @@ public class LwjglWindow extends WindowImpl {
     if (init.visible) glfwShowWindow(windowPtr);
     GL.createCapabilities();
     context = DirectContext.makeGL();
-  
+    
     glfwSetWindowSizeCallback(windowPtr, (cw, nw, nh) -> { // no need to queue, we got atomics
       if (state.get()!=1) return;
       w.updateSize.set(true);

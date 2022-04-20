@@ -76,7 +76,7 @@ public class DTGraphNode extends Node {
     int l30 = gH - (int) (1e9/30*sc); g.line(0, l30, w, l30, lineCol);
     g.pop();
     
-  
+    
     long tot = rt.totalMemory();
     long used = tot-rt.freeMemory();
     g.push();

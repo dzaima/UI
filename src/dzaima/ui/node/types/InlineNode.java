@@ -93,7 +93,7 @@ public abstract class InlineNode extends Node {
       a = na;
       b = nb;
     }
-  
+    
     void ab(int a, int b) {
       this.a = Math.max(this.a, a);
       this.b = Math.max(this.b, b);
@@ -169,7 +169,7 @@ public abstract class InlineNode extends Node {
     
     Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=gp) aC = aP.add(aC).p;
     Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=gp) bC = bP.add(bC).p;
-  
+    
     while (true) {
       if (aP.sz==0 || bP.sz==0) {
         int aN = s.aS.pos;

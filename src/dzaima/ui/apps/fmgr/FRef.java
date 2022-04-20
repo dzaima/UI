@@ -95,7 +95,7 @@ public class FRef {
         Popup.rightClickMenu(gc, ctx, "fmgr.fileMenuUI", id -> System.out.println("Action: "+id)).takeClick(c);
       }
     }
-  
+    
     public void mouseUp(int x, int y, Click c) {
       super.mouseUp(x, y, c);
     }

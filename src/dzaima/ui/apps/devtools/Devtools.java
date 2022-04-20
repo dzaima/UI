@@ -2,8 +2,8 @@ package dzaima.ui.apps.devtools;
 
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
-import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.config.GConfig;
+import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.types.*;
@@ -129,7 +129,7 @@ public class Devtools extends NodeWindow {
       focus(find(cOpen, true));
       pick = false;
     }
-  
+    
     Node nHL = null;
     if (pick) {
       nHL = hoveredNode(hoveredVW());
@@ -220,7 +220,7 @@ public class Devtools extends NodeWindow {
     Node iR = base.ctx.id("infoR");
     iR.clearCh();
     iR.add(new StringNode(iR.ctx, String.format("%s %.2f FPS", Windows.getManager(), 1e9/getTime("frame"))));
-  
+    
     Node iC = base.ctx.id("infoC");
     iC.clearCh();
     iC.add(new StringNode(iC.ctx, String.format("event %6.3fms", getTime("event")/1e6)));

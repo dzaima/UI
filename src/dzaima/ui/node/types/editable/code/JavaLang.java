@@ -94,7 +94,7 @@ public class JavaLang extends Lang {
         else if (c==')') parenDelta--; else if (c==']') bracketDelta--; else if (c=='}') depthDelta--;
       }
     }
-  
+    
     public boolean equals(Object o) { return o instanceof JavaState && mlc==((JavaState) o).mlc; }
     public int hashCode() { return mlc?314159265:0; }
   }

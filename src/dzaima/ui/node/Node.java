@@ -2,8 +2,8 @@ package dzaima.ui.node;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Graphics;
-import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.config.GConfig;
+import dzaima.ui.gui.io.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.ScrollNode;
@@ -160,7 +160,7 @@ public abstract class Node implements Click.RequestImpl {
       4. tick
       5. resize (yes, resize is called twice, to guarantee that before both tick and draw there's proper layouting; in most cases only one will be triggered, but not always)
       6. draw
-      
+    
     Override `drawC` with a function that draws foreground elements of this only
       Children drawing is done with drawCh, called separately
     Override `bg` with a function that draws the background of this only.

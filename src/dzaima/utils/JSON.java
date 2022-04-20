@@ -208,7 +208,7 @@ public class JSON {
       if (r == NOTFOUND) throw new RuntimeException("Key "+quote(k)+" not found");
       return r;
     }
-  
+    
     public double num(String k            ) { return get(k).num(); }
     public int getInt(String k            ) { return get(k).asInt(); }
     public String str(String k            ) { return get(k).str(); }
@@ -302,7 +302,7 @@ public class JSON {
     
     public int size() { return items.length; }
     public Val get(int i) { return items[i]; }
-  
+    
     public double   num(int i) { return items[i].num(); }
     public int   getInt(int i) { return items[i].asInt(); }
     public boolean bool(int i) { return items[i].bool(); }
@@ -317,7 +317,7 @@ public class JSON {
         public Val next() { return items[i++]; }
       };
     }
-  
+    
     // these must be used immediately in a foreach
     public Iterable<Double> nums() { return new ArrNumIter(); }
     public Iterable<String> strs() { return new ArrStrIter(); }

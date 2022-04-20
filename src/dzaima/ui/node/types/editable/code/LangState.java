@@ -15,14 +15,14 @@ public abstract class LangState<T extends LangState<T>> {
     public Keywords(String... ss) {
       for (String c : ss) add(new KW(c.toCharArray()));
     }
-  
+    
     public boolean has(char[] p, int s, int e) {
       return contains(new KW(Arrays.copyOfRange(p, s, e)));
     }
     public boolean has(char[] str) {
       return contains(new KW(str));
     }
-  
+    
     static class KW {
       char[] is;
       int hc;
@@ -30,12 +30,12 @@ public abstract class LangState<T extends LangState<T>> {
         this.is = is;
         hc = Arrays.hashCode(is);
       }
-  
+      
       @SuppressWarnings("EqualsWhichDoesntCheckParameterClass") // don't care
       public boolean equals(Object o) {
         return Arrays.equals(is, ((KW) o).is);
       }
-  
+      
       public int hashCode() {
         return hc;
       }

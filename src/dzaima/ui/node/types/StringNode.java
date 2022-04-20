@@ -257,16 +257,16 @@ public class StringNode extends InlineNode {
       this.s = s;
       this.flags = (byte)flags;
     }
-  
+    
     public Paragraph buildPara(StringNode n) {
       return n.buildPara(s);
     }
-  
+    
     public void setFont(Font f) {
       w = f.widthf(s);
     }
     public boolean f(byte f) { return (flags&f)!=0; }
-  
+    
     public void setFlag(byte f, boolean v) {
       if (v) flags|= f;
       else flags&= ~f;

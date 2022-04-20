@@ -1,10 +1,10 @@
 package dzaima.ui.gui.select;
 
-import dzaima.ui.gui.*;
+import dzaima.ui.gui.Font;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.StringNode.Word;
-import dzaima.utils.*;
+import dzaima.utils.Vec;
 import io.github.humbleui.skija.paragraph.Paragraph;
 
 public class Position {

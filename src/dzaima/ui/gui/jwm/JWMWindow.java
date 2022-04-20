@@ -1,7 +1,7 @@
 package dzaima.ui.gui.jwm;
 
-import dzaima.ui.gui.*;
 import dzaima.ui.gui.Window.DrawReq;
+import dzaima.ui.gui.*;
 import dzaima.ui.gui.lwjgl.LwjglWindow;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Window;
@@ -195,7 +195,7 @@ public class JWMWindow extends WindowImpl {
     
     if (DEBUG_UPDATES) System.out.println(Time.logStart(id)+"nextFrame("+onlyTick+"): drawRequest="+pdr+"→"+drawRequest);
     boolean draw = drawRequest!=DrawReq.NONE;
-  
+    
     intentionallyLong = !draw;
     if (draw) {
       jwmw.requestFrame();

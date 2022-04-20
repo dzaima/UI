@@ -165,7 +165,7 @@ public class CodeAreaNode extends EditNode {
       calcEnd(y);
       super.draw(g, gy, cit);
     }
-  
+    
     public TextStyle style(byte b) {
       return langInst.style(b);
     }
@@ -241,7 +241,7 @@ public class CodeAreaNode extends EditNode {
           Cursor last = cs.get(cs.sz-1);
           last.order();
           String val = getByCursor(last);
-    
+          
           XY pos = searchString(val, last.ex, last.ey, ln(lns.sz-1).sz(), lns.sz-1);
           if (pos==null) {
             int px = 0, py = 0;
@@ -252,7 +252,7 @@ public class CodeAreaNode extends EditNode {
               px = c.ex; py = c.ey;
             }
           }
-        
+          
           if (pos!=null) {
             Cursor c = addCursor(cs.sz, last);
             c.mv(pos.x, pos.y, last.sy==last.ey? pos.x+last.ex-last.sx : last.ex, pos.y + last.ey-last.sy);
@@ -262,6 +262,7 @@ public class CodeAreaNode extends EditNode {
         um.pop();
         return 1;
       }
+      
       case "duplicateSelection": {
         um.pushQ("duplicate selection");
         for (Cursor c : cs) {

@@ -99,7 +99,7 @@ public class MenuNode extends Node {
       padR = (short) gc.getProp("menu.padR").len();
       padU = (short) gc.getProp("menu.padY").len();
       padX = (short) (padL+padR);
-  
+      
       Vec<PNode> keys = keys();
       if (keys!=null) {
         f = gc.defFont.size(gc.getProp("menu.keybindSize").len());
@@ -115,7 +115,7 @@ public class MenuNode extends Node {
         binds = null;
       }
     }
-  
+    
     public boolean keyF(Key key, int scancode, KeyAction a) {
       switch (gc.keymap(key, a, "menu")) {
         case "prev": menu().focusPrev(); return true;
@@ -124,7 +124,7 @@ public class MenuNode extends Node {
       }
       return false;
     }
-  
+    
     public int maxW() { return Tools.BIG; }
     public int minW(     ) { return ch.get(0).minW()+padX; }
     public int minH(int w) { return ch.get(0).minH(w-padX) + 2*padU; }

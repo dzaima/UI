@@ -2,7 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.io.*;
-import dzaima.utils.*;
+import dzaima.utils.XY;
 import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
@@ -137,7 +137,7 @@ public abstract class Window {
     //
     // impl.endDraw(drawNeeded);
     // if (t!=null) t.time("flush");
-  
+    
     int toolsRedraw = t!=null? t.redrawInsp() : 0;
     boolean draw = resize || toolsRedraw==2 || requiresDraw();
     boolean full = resize || toolsRedraw!=0;
@@ -150,7 +150,7 @@ public abstract class Window {
     int prevCount = g.canvas.getSaveCount();
     boolean drew = draw(g, full);
     if (g.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
-  
+    
     if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
     else nodrawFrames++;
     if (t!=null) t.time("draw");

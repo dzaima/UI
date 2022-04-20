@@ -141,7 +141,7 @@ public class Click {
   public static class Request {
     public final RequestImpl n;
     public final int x, y;
-  
+    
     public Request(RequestImpl n, int x, int y) {
       this.n = n;
       this.x = x;

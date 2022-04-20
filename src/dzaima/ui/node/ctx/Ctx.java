@@ -107,10 +107,10 @@ public abstract class Ctx {
       super(p.gc);
       this.p = p;
     }
-  
+    
     public NodeWindow win() { return p.win(); }
     public NodeVW vw() { return p.vw(); }
-  
+    
     public NodeGen getGen(String name) {
       return p.getGen(name);
     }

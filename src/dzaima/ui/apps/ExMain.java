@@ -109,7 +109,7 @@ public class ExMain extends NodeWindow {
         if (selection.c instanceof InlineNode) s.append("selection: ").append(InlineNode.getSelection(selection)).append('\n');
         s.append("common depth: ").append(selection.depth).append('\n');
       }
-  
+      
       Position p = Position.getPosition(base, mx, my);
       s.append("n = ").append(Devtools.name(p.n, false)).append('\n');
       for (PosPart sp : p.ss) {
