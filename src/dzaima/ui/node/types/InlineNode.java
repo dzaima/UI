@@ -8,6 +8,8 @@ import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 
+import java.util.function.Consumer;
+
 public abstract class InlineNode extends Node {
   public InlineNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
@@ -157,10 +159,10 @@ public abstract class InlineNode extends Node {
     public abstract void addNode(Node nd);
   }
   
-  private static void selFull(Node n, SubSelConsumer ssc) {
+  public static void scanNode(Node n, SubSelConsumer ssc) {
     if (n instanceof StringNode) ssc.addString((StringNode) n, 0, ((StringNode) n).s.length());
     ssc.addNode(n);
-    if (n instanceof InlineNode) for (Node c : n.ch) selFull(c, ssc);
+    if (n instanceof InlineNode) for (Node c : n.ch) scanNode(c, ssc);
   }
   public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
     Node gp = (Node) s.c;
@@ -195,14 +197,14 @@ public abstract class InlineNode extends Node {
       // climb up to common node
       for (int i = 1; i < sP.sz; i++) {
         Node p=sP.get(i), c=sP.get(i-1);
-        for (int j = p.ch.indexOf(c)+1; j < p.ch.sz; j++) selFull(p.ch.get(j), ssc);
+        for (int j = p.ch.indexOf(c)+1; j < p.ch.sz; j++) scanNode(p.ch.get(j), ssc);
       }
       // all basic nodes in the middle
-      for (int i = sI+1; i < eI; i++) selFull(gp.ch.get(i), ssc);
+      for (int i = sI+1; i < eI; i++) scanNode(gp.ch.get(i), ssc);
       // climb down to ending
       for (int i = eP.sz-1; i >= 1; i--) {
         Node p=eP.get(i), c=eP.get(i-1);
-        for (int j = 0, e=p.ch.indexOf(c); j < e; j++) selFull(p.ch.get(j), ssc);
+        for (int j = 0, e=p.ch.indexOf(c); j < e; j++) scanNode(p.ch.get(j), ssc);
       }
       // ending substring
       if (eS.ln instanceof StringNode) ssc.addString((StringNode) eS.ln, 0, eS.pos);
@@ -211,12 +213,20 @@ public abstract class InlineNode extends Node {
       return ae;
     }
   }
-  public static String getSelection(Selection s) {
+  
+  public static String sscText(Consumer<SubSelConsumer> f) {
     StringBuilder res = new StringBuilder();
-    scanSelection(s, new SubSelConsumer() {
+    f.accept(new SubSelConsumer() {
       public void addString(StringNode nd, int s, int e) { res.append(nd.s, s, e); }
       public void addNode(Node nd) { if (nd instanceof StringifiableNode) res.append(((StringifiableNode) nd).asString()); }
     });
     return res.toString();
+  }
+  
+  public static String getSelection(Selection s) {
+    return sscText(ssc -> scanSelection(s, ssc));
+  }
+  public static String getNodeText(Node n) {
+    return sscText(ssc -> scanNode(n, ssc));
   }
 }

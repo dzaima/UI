@@ -232,6 +232,10 @@ public class NodeWindow extends Window {
     for (VirtualWindow vw : vws) vw.newSurface(s, w, h);
   }
   
+  public void openDevtoolsTo(Node n) { // for debugging
+    impl.createTools().toOpen.set(n);
+  }
+  
   
   
   public void cfgUpdated() {

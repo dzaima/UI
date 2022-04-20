@@ -57,6 +57,9 @@ public abstract class Graphics {
     canvas.clipRect(r.skiaf());
     clip = clip==null? r : clip.and(r);
   }
+  public void diffClipLocal(Rect r) { // doesn't count towards clip
+    canvas.clipRect(r.skiaf(), ClipMode.DIFFERENCE, false);
+  }
   
   public void rect(Rect r, int   fill) { rect(r.sx, r.sy, r.ex, r.ey, fill); }
   public void rect(Rect r, Paint fill) { rect(r.sx, r.sy, r.ex, r.ey, fill); }
