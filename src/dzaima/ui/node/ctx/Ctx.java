@@ -58,7 +58,7 @@ public abstract class Ctx {
     if (pn instanceof PNodeGroup) {
       PNodeGroup g = (PNodeGroup) pn;
       NodeGen nd = getGen(g.name);
-      if (nd==null) throw new Error("no node defined by name '"+g.name+"'");
+      if (nd==null) throw new Error(g.name==null? "Encountered node with no name" : "no node defined by name '"+g.name+"'");
       Prop[] vs = finishProps(g);
       Node res = nd.make(this, g.ks, vs);
       for (int i = 0; i < g.ks.length; i++) {
