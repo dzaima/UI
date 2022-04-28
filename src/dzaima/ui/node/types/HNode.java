@@ -48,7 +48,6 @@ public class HNode extends FrameNode {
       c.resize(div[i], nh, x, y);
       x+= div[i]+pad;
     }
-    fillWC = div[div.length-1]+padTotal;
     if (r) mRedraw();
   }
 }

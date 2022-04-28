@@ -78,7 +78,6 @@ public class VNode extends FrameNode {
     int[] div = Solve.solve(ch, h - pad*(ch.sz-1), w, true);
     int th = pad*(ch.sz-1); for (int i=0; i<ch.sz; i++) th+= div[i];
     int y = align(yal, h, th);
-    fillWC = 0;
     boolean r = th!=h;
     for (int i = 0; i < ch.sz; i++) {
       Node c = ch.get(i);
@@ -87,7 +86,6 @@ public class VNode extends FrameNode {
       int x = align(xal, w, nw);
       c.resize(nw, cminH, x, y);
       r|= nw!=w;
-      fillWC = Math.max(fillWC, c.minW());
       y+= cminH+pad;
     }
     if (r) mRedraw();

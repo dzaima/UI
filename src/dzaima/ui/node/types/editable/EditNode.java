@@ -261,7 +261,7 @@ public class EditNode extends Node {
     nw+= drawOffX+1; // TODO cursor width
     pw = nw;
     ph = nh;
-    mResize();
+    mResize(); // TODO this is bad and evil and wasted me hours
   }
   
   public int minW() { if(wrap) return f.hi*3; getSize(); return pw; }
