@@ -3,6 +3,7 @@ package dzaima.ui.gui.jwm;
 import dzaima.ui.gui.WindowImpl;
 import dzaima.ui.gui.io.*;
 import dzaima.utils.Time;
+import dzaima.utils.Log;
 import io.github.humbleui.jwm.Key;
 import io.github.humbleui.jwm.*;
 import io.github.humbleui.types.IRect;
@@ -28,7 +29,7 @@ public class JWMEventHandler implements Consumer<Event> {
   public void accept(Event ev) { // TODO this is willy nilly immediately invoking functions on the window without going through the event queue to execute at the proper time
     if (ev instanceof EventFrame) {
       if (w.visible) {
-        if (JWMWindow.DEBUG_UPDATES) System.out.println(Time.logStart(w.id)+"EventFrame");
+        if (JWMWindow.DEBUG_UPDATES) Log.info(Time.logStart(w.id)+"EventFrame");
         paint();
       }
     } else if (ev instanceof EventWindowScreenChange) {
@@ -110,8 +111,7 @@ public class JWMEventHandler implements Consumer<Event> {
     } else if (ev instanceof EventWindowClose) {
       w.requestTick();
     } else {
-      System.out.println("Got event "+(ev==null? "null" : ev.getClass().getSimpleName())+":");
-      System.out.println(ev);
+      Log.info("JWM", "Unhandled JWM event "+(ev==null? "null" : ev.getClass().getSimpleName())+":\n"+ev);
     }
   }
   

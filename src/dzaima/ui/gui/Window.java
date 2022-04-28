@@ -2,7 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.io.*;
-import dzaima.utils.XY;
+import dzaima.utils.*;
 import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
@@ -93,7 +93,7 @@ public abstract class Window {
       try {
         setup();
       } catch (Throwable e) {
-        System.err.println("Errored during setup:");
+        Log.error("ui", "Errored during setup:");
         e.printStackTrace();
         setupDone = true;
         closeOnNext();

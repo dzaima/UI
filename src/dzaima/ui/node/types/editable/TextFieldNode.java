@@ -3,6 +3,7 @@ package dzaima.ui.node.types.editable;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
+import dzaima.utils.Log;
 
 public class TextFieldNode extends EditNode {
   
@@ -16,7 +17,7 @@ public class TextFieldNode extends EditNode {
     drawOffY = padY = gc.len(this, "padY", "textfield.padY");
     radius = gc.lenF(this, "radius", "textfield.radius");
     bgCol = gc.col(this, "bg", "textfield.bg");
-    if (id("bgCol")!=-1) System.err.println("warning: using old bgCol property");
+    if (id("bgCol")!=-1) Log.warn("warning: using old bgCol property");
   }
   
   

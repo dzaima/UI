@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 
 public class PadNode extends Node {
   
@@ -14,7 +14,7 @@ public class PadNode extends Node {
   }
   public void propsUpd() { super.propsUpd();
     bgCol = gc.colD(this, "bg", 0);
-    if (id("bgCol")!=-1) System.err.println("warning: using old bgCol property");
+    if (id("bgCol")!=-1) Log.warn("warning: using old bgCol property");
     int all = gc.pxD(this, "all", 0);
     int l = gc.pxD(this, "l", 0);
     int r = gc.pxD(this, "r", 0);

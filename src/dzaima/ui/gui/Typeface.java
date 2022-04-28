@@ -1,5 +1,6 @@
 package dzaima.ui.gui;
 
+import dzaima.utils.Log;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.skija.paragraph.FontCollection;
 
@@ -37,7 +38,7 @@ public class Typeface {
   private static io.github.humbleui.skija.Typeface n(String name, FontStyle s) {
     io.github.humbleui.skija.Typeface r = fontMgr.matchFamilyStyle(name, s);
     if (r==null) {
-      System.err.println("Warning: Font \""+name+"\" not found; using fallback..");
+      Log.warn("Warning: Font \""+name+"\" not found; using fallback..");
       return fontCol.defaultFallback();
     }
     return r;

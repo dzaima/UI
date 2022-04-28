@@ -189,7 +189,7 @@ public class LwjglWindow extends WindowImpl {
           // case GLFW_KEY_WORLD_1:      k=Key.world_1; break;
           // case GLFW_KEY_WORLD_2:      k=Key.world_2; break;
           default:
-            System.err.println("Unhandled key "+key);
+            Log.warn("LWJGL", "Unhandled key "+key);
             kv=KeyVal.unknown;
       }
       if (!w.key(new Key(kv, kmod), scancode, action==GLFW_PRESS? KeyAction.PRESS : action==GLFW_RELEASE? KeyAction.RELEASE : KeyAction.REPEAT)) {

@@ -249,10 +249,10 @@ public abstract class Node implements Click.RequestImpl {
     this.w = w; this.h = h;
     resized();
     flags&= ~(RS_ME|RS_CH);
-    assert minW( )<=w : "Wanted width " +w+" less than the minimum "+minW( );
-    assert minH(w)<=h : "Wanted height "+h+" less than the minimum "+minH(w);
+    assert minW( )<=w : "Wanted width " +w+" less than the minimum "+minW( )+" for "+Devtools.debugMe(this);
+    assert minH(w)<=h : "Wanted height "+h+" less than the minimum "+minH(w)+" for "+Devtools.debugMe(this);
   }
-  protected /*open*/ void resized() { assert ch.sz==0 : "No resized() for "+getClass().getSimpleName()+" (doesn't expect children)"; } // called when w/h have been updated; should resize children if applicable
+  protected /*open*/ void resized() { assert ch.sz==0 : "No resized() for "+Devtools.debugMe(this)+" (doesn't expect children)"; } // called when w/h have been updated; should resize children if applicable
   public /*open*/ int minW() { return 0; }
   public /*open*/ int minH(int w) { return 0; }
   public /*open*/ int maxW() { return Tools.BIG; }

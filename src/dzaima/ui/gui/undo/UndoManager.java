@@ -1,7 +1,7 @@
 package dzaima.ui.gui.undo;
 
 import dzaima.ui.gui.config.GConfig;
-import dzaima.utils.Vec;
+import dzaima.utils.*;
 
 public class UndoManager {
   public GConfig gc;
@@ -47,7 +47,7 @@ public class UndoManager {
   
   public <T> void add(UndoR<T> u) {
     if (groupDepth==0) {
-      System.out.println("you forgot to start a group!!");
+      Log.error("UndoManager", "you forgot to start a group!!");
       new Error().printStackTrace();
       System.out.flush(); System.err.flush();
     }

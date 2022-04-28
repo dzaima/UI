@@ -53,7 +53,7 @@ public class Solve {
       } else {
         for (int i = 0; i < l; i++) if (!done[i]) {
           int n = (int) (lx/wgtSum*wgt[i]);
-          if (n>max[i] || min[i]>n) { System.err.println("oh no :'("); continue loop; }
+          if (n>max[i] || min[i]>n) { Log.warn("solver", "Solver failed"); continue loop; }
           lx-= min[i] = max[i] = n;
           done[i] = true; doneCount++; wgtSum-= wgt[i];
         }

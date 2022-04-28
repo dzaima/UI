@@ -4,6 +4,7 @@ import dzaima.ui.gui.Window.DrawReq;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.lwjgl.LwjglWindow;
 import dzaima.utils.*;
+import dzaima.utils.Log;
 import io.github.humbleui.jwm.Window;
 import io.github.humbleui.jwm.*;
 import io.github.humbleui.skija.Surface;
@@ -28,6 +29,11 @@ public class JWMWindow extends WindowImpl {
   public JWMWindow(dzaima.ui.gui.Window w, WindowInit init) {
     super(w, init, false);
     id = idCounter.getAndIncrement();
+  }
+  
+  static {
+    io.github.humbleui.jwm.Log.setLogger(o -> Log.info("JWM", Objects.toString(o)));
+    Log.onLogLevelChanged(() -> io.github.humbleui.jwm.Log.setVerbose(Log.level.i <= Log.Level.FINE.i));
   }
   
   public void setTitle(String s) {

@@ -510,7 +510,7 @@ public class EditNode extends Node {
   
   public XY searchString(String s, int sx, int sy, int ex, int ey) { // incl ey, excl ex
     if (s.contains("\n")) {
-      System.out.println("TODO multiline search");
+      Log.warn("TODO multiline search");
       return null;
     }
     if (sy==ey) {
@@ -655,7 +655,7 @@ public class EditNode extends Node {
       }
       TextBox[] rs = bp.getRectsForRange(x0, x1, RectHeightMode.MAX, RectWidthMode.TIGHT);
       if (rs.length!=1) {
-        System.err.println("No bounding box for character found: "+(int)c);
+        Log.warn("No bounding box for character found: "+(int)c);
         return XY.ZERO;
       }
       io.github.humbleui.types.Rect r = rs[0].getRect();

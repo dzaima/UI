@@ -78,6 +78,11 @@ public class Devtools extends NodeWindow {
     return text;
   }
   
+  public static String debugMe(Node n) {
+    n.ctx.win().openDevtoolsTo(n);
+    return n.getClass().getSimpleName();
+  }
+  
   public void setup() { super.setup();
     ((BtnNode) base.ctx.id("pick")).setFn(b -> pick = true);
     ((BtnNode) base.ctx.id("hlInline")).setFn(b -> { hlInline^= true; newSel.set(true); });

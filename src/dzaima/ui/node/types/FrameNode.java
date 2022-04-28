@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 
 public abstract class FrameNode extends Node {
   protected byte W_PR, H_PR, XA_PR, YA_PR;
@@ -12,12 +12,12 @@ public abstract class FrameNode extends Node {
     super(ctx, ks, vs);
     W_PR = byteID("w");
     H_PR = byteID("h");
-    if (W_PR==-1) { W_PR = byteID("width"); if(W_PR!=-1) System.err.println("warning: using old width property"); }
-    if (H_PR==-1) { H_PR = byteID("height"); if(H_PR!=-1) System.err.println("warning: using old height property"); }
+    if (W_PR==-1) { W_PR = byteID("width"); if(W_PR!=-1) Log.warn("warning: using old width property"); }
+    if (H_PR==-1) { H_PR = byteID("height"); if(H_PR!=-1) Log.warn("warning: using old height property"); }
     XA_PR = byteID("alX");
     YA_PR = byteID("alY");
-    if (XA_PR==-1) { XA_PR = byteID("xalign"); if(XA_PR!=-1) System.err.println("warning: using old xalign property"); }
-    if (YA_PR==-1) { YA_PR = byteID("yalign"); if(YA_PR!=-1) System.err.println("warning: using old yalign property"); }
+    if (XA_PR==-1) { XA_PR = byteID("xalign"); if(XA_PR!=-1) Log.warn("warning: using old xalign property"); }
+    if (YA_PR==-1) { YA_PR = byteID("yalign"); if(YA_PR!=-1) Log.warn("warning: using old yalign property"); }
   }
   byte byteID(String s) {
     int id = id(s);
@@ -27,7 +27,7 @@ public abstract class FrameNode extends Node {
   
   public void bg(Graphics g, boolean full) {
     int p = id("bg");
-    if (p==-1) { p=id("bgCol"); if(p!=-1)System.err.println("warning: using old bgCol property"); }
+    if (p==-1) { p=id("bgCol"); if(p!=-1) Log.warn("warning: using old bgCol property"); }
     int col = p<0? 0 : vs[p].col();
     if (Tools.st(col)) pbg(g, full);
     if (Tools.vs(col)) g.rect(0, 0, w, h, col);
