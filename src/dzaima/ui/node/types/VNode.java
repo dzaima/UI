@@ -1,6 +1,6 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.gui.Graphics;
+import dzaima.ui.gui.*;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
@@ -18,21 +18,17 @@ public class VNode extends FrameNode {
   
   public int fillW() {
     if (ch.sz==0) return 0;
-    int w = 0;
-    for (Node c : ch) w = Math.max(w, c.minW());
-    return w;
+    return Solve.vMinW(ch);
   }
   
   public int fillH(int w) {
     if (ch.sz==0) return 0;
-    int h = 0;
-    for (Node c : ch) h+= c.minH(w);
-    return h + pad*(ch.sz-1);
+    return Solve.vMinH(ch, w) + pad*(ch.sz-1);
   }
   
   public void drawCh(Graphics g, boolean full) {
     if (g.clip==null || ch.sz<10) { super.drawCh(g, full); return; }
-    for (int i = s2(ch, g.clip.sy); i<ch.sz; i++) {
+    for (int i = Solve.vBinSearch(ch, g.clip.sy); i<ch.sz; i++) {
       Node c = ch.get(i);
       if (c.dy+c.h < g.clip.sy) continue;
       if (c.dy > g.clip.ey) break;
@@ -41,42 +37,23 @@ public class VNode extends FrameNode {
   }
   public Node findCh(int x, int y) {
     if (ch.sz<20) return super.findCh(x, y);
-    Node c = ch.get(s2(ch, y));
+    Node c = ch.get(Solve.vBinSearch(ch, y));
     if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
     return null;
   }
   
-  public static int s2(Vec<Node> ch, int y) {
-    int s = 0;
-    int e = ch.sz;
-    while (s+1<e) {
-      int m = (s+e)/2;
-      Node c = ch.get(m);
-      if (y>c.dy) s=m;
-      else e=m;
-    }
-    return s;
-  }
-  
   public Node nearestCh(int x, int y) {
-    if (ch.sz<20) return super.nearestCh(x, y);
-    int p = s2(ch, y);
-    int min = Integer.MAX_VALUE, curr;
-    Node best = null;
-    for (int i = Math.max(0, p-2); i < Math.min(p+2, ch.sz); i++) {
-      Node c = ch.get(i);
-      if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
-    }
-    if (best==null) return super.nearestCh(x, y); // fallback for w==-1
-    return best;
+    return Solve.vFindNearest(ch, x, y);
   }
   
   public void resized() {
     if (ch.sz==0) return;
+    
     int xal = xalign();
     int yal = yalign();
-    int[] div = Solve.solve(ch, h - pad*(ch.sz-1), w, true);
-    int th = pad*(ch.sz-1); for (int i=0; i<ch.sz; i++) th+= div[i];
+    int padTotal = pad*(ch.sz - 1);
+    int[] div = Solve.solve(ch, h-padTotal, w, true);
+    int th = padTotal; for (int i = 0; i<ch.sz; i++) th+= div[i];
     int y = align(yal, h, th);
     boolean r = th!=h;
     for (int i = 0; i < ch.sz; i++) {

@@ -111,4 +111,30 @@ public class Solve {
     for (Node c : nds) r = Math.max(c.maxH(w), r);
     return r;
   }
+  
+  
+  
+  public static int vBinSearch(Vec<Node> nds, int y) {
+    int s = 0;
+    int e = nds.sz;
+    while (s+1<e) {
+      int m = (s+e) / 2;
+      Node c = nds.get(m);
+      if (c.dy<=y) s = m;
+      else e = m;
+    }
+    return s;
+  }
+  
+  public static Node findNearestLinear(Vec<Node> nds, int x, int y) {
+    if (nds.sz<2) return nds.sz==0 || nds.get(0).w==-1? null : nds.get(0);
+    int min = Integer.MAX_VALUE, curr;
+    Node best = null;
+    for (Node c : nds) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
+    return best;
+  }
+  public static Node vFindNearest(Vec<Node> nds, int x, int y) {
+    if (nds.sz<20) return findNearestLinear(nds, x, y);
+    return nds.get(vBinSearch(nds, y));
+  }
 }

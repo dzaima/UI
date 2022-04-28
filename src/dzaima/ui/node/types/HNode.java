@@ -16,14 +16,12 @@ public class HNode extends FrameNode {
   
   public int fillW() {
     if (ch.sz==0) return 0;
-    int w = 0;
-    for (Node c : ch) w+= c.minW();
-    return w + pad*(ch.sz-1);
+    return Solve.hMinW(ch) + pad*(ch.sz-1);
   }
   public int fillH(int w) {
     if (ch.sz==0) return 0;
     int h = 0;
-    int[] div = Solve.solve(ch, w-pad*(ch.sz-1), -1, false); // maybe or maybe not worth caching? (same thing will possibly be used in `resized()`)
+    int[] div = Solve.solve(ch, w-pad*(ch.sz-1), -1, false); // may or may not worth caching? (same thing will possibly be used in `resized()`)
     for (int i = 0; i < ch.sz; i++) h = Math.max(h, ch.get(i).minH(div[i]));
     return h;
   }
@@ -36,7 +34,7 @@ public class HNode extends FrameNode {
     int yal = yalign();
     int padTotal = pad*(ch.sz-1);
     int[] div = Solve.solve(ch, w-padTotal, -1, false);
-    int tw = pad*(ch.sz-1); for (int i=0; i<ch.sz; i++) tw+= div[i];
+    int tw = padTotal; for (int i=0; i<ch.sz; i++) tw+= div[i];
     int x = align(xal, w, tw);
     boolean r = tw!=w;
     for (int i = 0; i < ch.sz; i++) {
