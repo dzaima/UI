@@ -17,6 +17,7 @@ public class StringNode extends InlineNode {
   
   public StringNode(Ctx ctx, String s) {
     super(ctx, KS_NONE, VS_NONE);
+    assert s!=null;
     this.s = s;
   }
   
