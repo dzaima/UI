@@ -53,7 +53,11 @@ public class ReorderableNode extends FrameNode {
   
   public void mouseStart(int x, int y, Click c) {
     super.mouseStart(x, y, c);
-    assert currIdx==-1;
+    if (reVW!=null) {
+      Log.error("ReorderableNode", "Reordering while already reordering");
+      cancelInAnyWay();
+      return;
+    }
     if (mode!=0 && c.bL()) c.register(this, x, y);
   }
   

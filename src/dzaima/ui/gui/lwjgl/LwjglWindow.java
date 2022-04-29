@@ -54,8 +54,6 @@ public class LwjglWindow extends WindowImpl {
           nextFrame();
         } catch (Throwable t) {
           Tools.sleep(1000/60);
-          Log.error("ui", "Error during frame:");
-          Log.stacktrace("ui", t);
           Window.onFrameError(w, t);
         }
       }

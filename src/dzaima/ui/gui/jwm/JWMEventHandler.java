@@ -29,7 +29,7 @@ public class JWMEventHandler implements Consumer<Event> {
   public void accept(Event ev) {
     try {
       accept0(ev);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       dzaima.ui.gui.Window.onFrameError(ww, e);
     }
   }

@@ -6,6 +6,7 @@ import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.StringNode;
 import dzaima.ui.node.types.tree.TNNode;
+import dzaima.utils.Log;
 
 import java.util.HashMap;
 
@@ -57,7 +58,19 @@ public class DTTNNode extends TNNode { // devtools tree node node
     if (a.release) return false;
     if (key.k_del()) {
       if (insp.p==null || !up()) return false;
-      insp.ctx.win().enqueue(() -> insp.p.remove(insp));
+      insp.ctx.win().enqueue(() -> {
+        int i = insp.p.ch.indexOf(insp);
+        if (i!=-1) {
+          try {
+            insp.p.remove(i, i+1);
+          } catch (Throwable t) {
+            Log.error("devtools", "Error while removing node; forcibly removing");
+            i = insp.p.ch.indexOf(insp);
+            if(i!=-1) insp.p.ch.remove(i, i+1);
+          }
+        }
+        else Log.warn("devtools", "Node to be removed not found");
+      });
       return true;
     }
     return super.keyF(key, scancode, a);

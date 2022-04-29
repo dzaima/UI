@@ -1,5 +1,6 @@
 package dzaima.ui.gui;
 
+import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
@@ -233,7 +234,8 @@ public class NodeWindow extends Window {
   }
   
   public void openDevtoolsTo(Node n) { // for debugging
-    impl.createTools().toOpen.set(n);
+    Devtools t = impl.createTools();
+    if (t!=null) t.toOpen.set(n);
   }
   
   

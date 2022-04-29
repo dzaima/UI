@@ -200,7 +200,7 @@ public class JWMWindow extends WindowImpl {
     if (drawRequest==null) {
       try {
         drawRequest = w.nextTick();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         dzaima.ui.gui.Window.onFrameError(w, e);
         return;
       }
@@ -215,7 +215,7 @@ public class JWMWindow extends WindowImpl {
         jwmw.requestFrame();
         if (onlyTick) return; // and have next run through nextFrame continue to postDraw
         w.nextDraw(winG, drawRequest==DrawReq.FULL);
-      } catch (Exception e) {
+      } catch (Throwable e) {
         dzaima.ui.gui.Window.onFrameError(w, e);
       }
     } else {

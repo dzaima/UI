@@ -7,7 +7,7 @@ import dzaima.ui.node.prop.Prop;
 import dzaima.utils.Tools;
 import io.github.humbleui.skija.Image;
 
-public class ImgNode extends Node {
+public class ImgNode extends Node { // TODO remove
   private String url;
   private float sc;
   public ImgNode(Ctx ctx, String[] ks, Prop[] vs) {
@@ -27,7 +27,7 @@ public class ImgNode extends Node {
       img = Image.makeFromEncoded(data); // TODO async
       iw = img.getWidth();
       ih = img.getHeight();
-    } catch (Exception e) {
+    } catch (Throwable e) {
       img = null;
       iw = ih = 10;
     }

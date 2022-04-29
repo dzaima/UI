@@ -123,11 +123,13 @@ textfield.radius = .2em
 
 devtools {
   ui = v {
-    h { h=min bg=bg.header pad=0.2em
+    h { h=min bg=bg.header pad=0.2em // TODO move some of these buttons to a more debuggy place
       btn { style=rect "pick" id=pick }
       btn { style=rect "inline" id=hlInline }
       btn { style=rect "dbgRedraw" id=dbgRedraw }
       btn { style=rect "GC" id=gc }
+      btn { style=rect "frame" id=requestFrame }
+      btn { style=rect "reset tree state" id=resetTreeState }
     }
     
     scroll { tempOverlap=true bg=bg.back

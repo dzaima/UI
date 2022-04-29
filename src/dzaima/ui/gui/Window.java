@@ -152,14 +152,17 @@ public abstract class Window {
   public void nextDraw(Graphics g, boolean full) {
     Devtools t = tools;
     impl.startDraw(true);
-    int prevCount = g.canvas.getSaveCount();
-    boolean drew = draw(g, full);
-    if (g.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
-    
-    if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
-    else nodrawFrames++;
-    if (t!=null) t.time("draw");
-    impl.endDraw(true);
+    try {
+      int prevCount = g.canvas.getSaveCount();
+      boolean drew = draw(g, full);
+      if (g.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
+      
+      if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
+      else nodrawFrames++;
+      if (t!=null) t.time("draw");
+    } finally {
+      impl.endDraw(true);
+    }
   }
   public void postDraw(boolean didDraw, long sns) {
     frameCount++;
@@ -176,6 +179,9 @@ public abstract class Window {
   
   public static void onFrameError(Window w, Throwable t) {
     try {
+      Log.error("ui", "Error during frame:");
+      Log.stacktrace("ui", t);
+      Tools.sleep(1000/60);
       if (w!=null) w.onFrameError(t);
     } catch (Throwable t2) {
       Log.error("ui", "Error during onFrameError:");

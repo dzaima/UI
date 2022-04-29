@@ -13,6 +13,9 @@ public class DTGraphNode extends Node {
     super(ctx, ks, vs);
   }
   
+  public int minH(int w) {
+    return gc.em*5;
+  }
   
   private static final RotBuf tmpBuf = new RotBuf();
   static class Item {

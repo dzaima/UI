@@ -4,6 +4,7 @@ import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
+import dzaima.ui.gui.jwm.JWMWindow;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.types.*;
@@ -86,11 +87,40 @@ public class Devtools extends NodeWindow {
   public void setup() { super.setup();
     ((BtnNode) base.ctx.id("pick")).setFn(b -> pick = true);
     ((BtnNode) base.ctx.id("hlInline")).setFn(b -> { hlInline^= true; newSel.set(true); });
-    ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> { VirtualWindow.DEBUG_REDRAW^= true; });
+    ((BtnNode) base.ctx.id("dbgRedraw")).setFn(b -> VirtualWindow.DEBUG_REDRAW^= true);
     ((BtnNode) base.ctx.id("gc")).setFn(b -> System.gc());
+    ((BtnNode) base.ctx.id("requestFrame")).setFn(b -> {
+      try {
+        if (insp.impl instanceof JWMWindow) ((JWMWindow) insp.impl).jwmw.requestFrame();
+      } catch (Throwable t) {
+        errorReport(t);
+      }
+    });
+    ((BtnNode) base.ctx.id("resetTreeState")).setFn(b -> resetTreeState(new Vec<>(), currVW.base));
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));
     newVW(((NodeVW) insp.vws.get(0)));
+  }
+  
+  private void resetTreeState(Vec<Node> path, Node p) {
+    p.ch.filterInplace((c) -> {
+      if (c==null) {
+        Log.warn("removed null child within "+path(path));
+        return false;
+      }
+      path.add(c);
+      if (c.p!=p) {
+        Log.warn("Set proper parent for "+path(path)); // TODO write some pretty log of these that can be goto-ed in devtools
+        c.p = p;
+      }
+      if (!c.visible) {
+        Log.warn("Set visible to true for "+path(path));
+        c.visible = true;
+      }
+      resetTreeState(path, c);
+      path.pop();
+      return true;
+    });
   }
   
   public void newVW(NodeVW vw) {
@@ -113,8 +143,11 @@ public class Devtools extends NodeWindow {
     Vec<Node> v = new Vec<>();
     Node c = n;
     while (c!=null) { v.add(c); c = c.p; }
+    return path(v);
+  }
+  public static String path(Vec<Node> reversePath) {
     StringBuilder b = new StringBuilder();
-    for (int i = v.sz-1; i >= 0; i--) b.append(name(v.get(i), false)).append(i==0? "" : " → ");
+    for (int i = reversePath.sz-1; i >= 0; i--) b.append(name(reversePath.get(i), false)).append(i==0? "" : " → ");
     return b.toString();
   }
   
