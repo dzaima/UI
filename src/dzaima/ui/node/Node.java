@@ -6,7 +6,7 @@ import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.ui.node.types.ScrollNode;
+import dzaima.ui.node.types.*;
 import dzaima.utils.*;
 
 import java.util.function.Function;
@@ -46,6 +46,7 @@ public abstract class Node implements Click.RequestImpl {
   public void add(Node n) {
     assert !n.visible;
     n.p = this;
+    basicPos(n, ch.sz-1);
     ch.add(n);
     if (visible) { n.shown(); mMod(); }
   }
@@ -69,6 +70,7 @@ public abstract class Node implements Click.RequestImpl {
     for (Node n : nds) {
       assert !n.visible;
       n.p = this;
+      basicPos(n, i-1);
       if (visible) n.shown();
     }
     ch.insert(i, nds);
@@ -78,11 +80,14 @@ public abstract class Node implements Click.RequestImpl {
     assert !n.visible;
     n.p = this;
     if (visible) n.shown();
+    basicPos(n, i-1);
     ch.insert(i, n);
     if (visible) mMod();
   }
   public void replace(int i, Node n) {
-    if (visible) ch.get(i).hidden();
+    Node p = ch.get(i);
+    if (visible) p.hidden();
+    n.dx = p.dx; n.dy = p.dy; // basicPos replacement
     ch.set(i, n);
     n.p = this;
     if (visible) { n.shown(); mMod(); }
@@ -91,24 +96,32 @@ public abstract class Node implements Click.RequestImpl {
     Node p = ch.get(i);
     if (visible) p.hidden();
     Node n = f.apply(p);
+    n.dx = p.dx; n.dy = p.dy; // basicPos replacement
     ch.set(i, n);
     n.p = this;
     if (visible) { n.shown(); mMod(); }
   }
   public void swap(int i, int j) {
     if (i==j) return;
-    Node ci = ch.get(i);
-    Node cj = ch.get(j);
-    ch.set(j, ci);
-    ch.set(i, cj);
+    Node ci = ch.get(i); int ix=ci.dx, iy=ci.dy;
+    Node cj = ch.get(j); int jx=cj.dx, jy=cj.dy;
+    ch.set(j, ci); ci.dx=jx; ci.dy=jy;
+    ch.set(i, cj); cj.dx=ix; cj.dy=iy;
     if (visible) mMod();
   }
   private void mMod() {
+    assert visible;
     mResize();
     if (!Tools.DBG) return;
-    if (!visible) return;
     Devtools d = Devtools.getDevtools(this);
     if (d!=null) d.modified(this);
+  }
+  private void basicPos(Node n, int i) { // make binary searches over just modified nodes not _completely_ break
+    if (ch.sz>0) {
+      Node p = ch.get(Math.min(Math.max(i, 0), ch.sz));
+      n.dx = p.dx;
+      n.dy = p.dy;
+    } else n.dx = n.dy = 0;
   }
   
   public void shown() {
@@ -290,7 +303,7 @@ public abstract class Node implements Click.RequestImpl {
   public /*open*/ Node nearestProperCh(int x, int y) { // return child that should handle incoming mouse events at x/y
     return findCh(x, y);
   }
-  public /*open*/ Node nearestCh(int x, int y) { // must not return nodes with width -1, i.e. ones that haven't come from previous resize
+  public /*open*/ Node nearestCh(int x, int y) {
     if (ch.sz<2) return ch.sz==0 || ch.get(0).w==-1? null : ch.get(0);
     int min = Integer.MAX_VALUE, curr;
     Node best = null;

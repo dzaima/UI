@@ -1,7 +1,7 @@
 package dzaima.ui.gui;
 
 import dzaima.ui.gui.io.*;
-import dzaima.utils.Rect;
+import dzaima.utils.*;
 import io.github.humbleui.skija.*;
 
 public abstract class VirtualWindow {
@@ -27,21 +27,24 @@ public abstract class VirtualWindow {
   
   public final void newSurface(Surface s, int pw, int ph) {
     lastSurface = s;
-    newCanvas(getLocation(pw, ph), true);
+    newRect(getLocation(pw, ph), true);
   }
-  public final void newCanvas(Rect nr, boolean force) {
-    if (!nr.equals(rect) || force) {
+  public final void newRect(Rect nr, boolean newCanvas) {
+    Rect pr = rect;
+    if (newCanvas || !nr.equals(pr)) {
       rect = nr;
-      if (g!=null) g.close();
-      ImageInfo ii = lastSurface.getImageInfo().withWidthHeight(Math.max(1, nr.w()), Math.max(1, nr.h()));
-      if (fullyOpaque()) ii = ii.withColorAlphaType(ColorAlphaType.OPAQUE);
-      g = new OffscreenGraphics(lastSurface, ii);
-      newCanvas = true;
-      newSize();
+      if (pr==null || pr.w()!=nr.w() || pr.h()!=nr.h() || newCanvas) {
+        if (g!=null) g.close();
+        ImageInfo ii = lastSurface.getImageInfo().withWidthHeight(Math.max(1, nr.w()), Math.max(1, nr.h()));
+        if (fullyOpaque()) ii = ii.withColorAlphaType(ColorAlphaType.OPAQUE);
+        g = new OffscreenGraphics(lastSurface, ii);
+        this.newCanvas = true;
+        newSize();
+      }
     }
   }
-  public final void resizeCanvas() {
-    newCanvas(getLocation(w.w, w.h), false);
+  public final void newRect() {
+    newRect(getLocation(w.w, w.h), false);
   }
   
   public final boolean draw() {
