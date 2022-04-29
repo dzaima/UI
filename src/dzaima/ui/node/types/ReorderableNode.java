@@ -12,6 +12,7 @@ public class ReorderableNode extends FrameNode {
     super(ctx, ks, vs);
   }
   
+  public /*open*/ boolean shouldReorder(int idx, Node n) { return true; }
   public /*open*/ void reorderStarted(Node n) { }
   public /*open*/ void reorderEnded(int oldIdx, int newIdx, Node n) { }
   public boolean reordering() { return reVW!=null; }
@@ -75,12 +76,14 @@ public class ReorderableNode extends FrameNode {
     if (!c.bL() || canceled) return;
     if (reVW==null && (mode==2 || !gc.isClick(c))) {
       origIdx = currIdx = ch.indexOf(takenNode);
-      replace(currIdx, p1 -> new PlaceholderNode(ctx, p1));
-      ctx.win().addVW(reVW = new ReVW(takenNode));
-      reorderStarted(takenNode);
+      if (shouldReorder(currIdx, takenNode)) {
+        replace(currIdx, p1 -> new PlaceholderNode(ctx, p1));
+        ctx.win().addVW(reVW = new ReVW(takenNode));
+        reorderStarted(takenNode);
+      } else canceled = true;
     }
     
-    if (currIdx!=-1) {
+    if (reVW!=null) {
       XY pos = relPos(null);
       int nw = takenNode.w;
       int nh = takenNode.h;
