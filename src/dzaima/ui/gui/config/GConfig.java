@@ -202,7 +202,7 @@ public class GConfig {
       new ProcessBuilder(getProp("open.file").str(), p.toAbsolutePath().toString()).start();
     } catch (IOException e) {
       Log.warn("Failed to open file:");
-      e.printStackTrace();
+      Log.stacktrace("GConfig", e);
     }
   }
   public /*open*/ void openTerminal(Path p) {
@@ -210,7 +210,7 @@ public class GConfig {
       new ProcessBuilder(getProp("open.terminal").str()).directory(p.toFile()).start();
     } catch (IOException e) {
       Log.warn("Failed to launch terminal:");
-      e.printStackTrace();
+      Log.stacktrace("GConfig", e);
     }
   }
   public /*open*/ void openLink(String s) {
@@ -230,7 +230,7 @@ public class GConfig {
             return;
           } catch (IOException | URISyntaxException e) {
             Log.warn("Error on using Desktop::browse or URI::new");
-            e.printStackTrace(); // TODO
+            Log.stacktrace("GConfig", e); // TODO
           };
         }
       }
@@ -243,7 +243,7 @@ public class GConfig {
       new ProcessBuilder("xdg-open", s).start();
     } catch (IOException e) {
       Log.warn("Failed to open link:");
-      e.printStackTrace();
+      Log.stacktrace("GConfig", e);
     }
   }
   

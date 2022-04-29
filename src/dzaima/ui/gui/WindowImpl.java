@@ -74,7 +74,7 @@ public abstract class WindowImpl {
       return dt;
     } catch (Throwable t) {
       Log.error("WindowImpl", "Failed creating devtools:");
-      t.printStackTrace();
+      Log.stacktrace("WindowImpl", t);
       return null;
     }
   }

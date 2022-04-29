@@ -26,7 +26,14 @@ public class JWMEventHandler implements Consumer<Event> {
     running = true;
   }
   
-  public void accept(Event ev) { // TODO this is willy nilly immediately invoking functions on the window without going through the event queue to execute at the proper time
+  public void accept(Event ev) {
+    try {
+      accept0(ev);
+    } catch (Exception e) {
+      dzaima.ui.gui.Window.onFrameError(ww, e);
+    }
+  }
+  private void accept0(Event ev) { // TODO this is willy nilly immediately invoking functions on the window without going through the event queue to execute at the proper time
     if (ev instanceof EventFrame) {
       if (w.visible) {
         if (JWMWindow.DEBUG_UPDATES) Log.info(Time.logStart(w.id)+"EventFrame");

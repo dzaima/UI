@@ -197,16 +197,27 @@ public class JWMWindow extends WindowImpl {
     if (!onlyTick) cancelTickRequest(); // something force-called a draw while a tick request is active; ¯\_(ツ)_/¯
     
     DrawReq pdr = drawRequest;
-    if (drawRequest==null) drawRequest = w.nextTick();
+    if (drawRequest==null) {
+      try {
+        drawRequest = w.nextTick();
+      } catch (Exception e) {
+        dzaima.ui.gui.Window.onFrameError(w, e);
+        return;
+      }
+    }
     
     if (DEBUG_UPDATES) System.out.println(Time.logStart(id)+"nextFrame("+onlyTick+"): drawRequest="+pdr+"→"+drawRequest);
     boolean draw = drawRequest!=DrawReq.NONE;
     
     intentionallyLong = !draw;
     if (draw) {
-      jwmw.requestFrame();
-      if (onlyTick) return; // and have next run through nextFrame continue to postDraw
-      w.nextDraw(winG, drawRequest==DrawReq.FULL);
+      try {
+        jwmw.requestFrame();
+        if (onlyTick) return; // and have next run through nextFrame continue to postDraw
+        w.nextDraw(winG, drawRequest==DrawReq.FULL);
+      } catch (Exception e) {
+        dzaima.ui.gui.Window.onFrameError(w, e);
+      }
     } else {
       requestTick(false);
     }

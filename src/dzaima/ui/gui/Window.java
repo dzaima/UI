@@ -37,6 +37,11 @@ public abstract class Window {
   public /*open*/ void unfocused() { focused = false; }
   public /*open*/ void hints() { }
   public /*open*/ boolean requiresDraw() { return true; } // just a hint
+  protected /*open*/ void onFrameError(Throwable e) {
+    createTools();
+    if (tools!=null) tools.errorReport(e);
+    else closeOnNext();
+  }
   
   public Click[] btns = new Click[]{new Click(Click.LEFT), new Click(Click.RIGHT), new Click(Click.CENTER), new Click(Click.BACK), new Click(Click.FORWARD)};
   public abstract void mouseDown(Click c);
@@ -94,7 +99,7 @@ public abstract class Window {
         setup();
       } catch (Throwable e) {
         Log.error("ui", "Errored during setup:");
-        e.printStackTrace();
+        Log.stacktrace("ui", e);
         setupDone = true;
         closeOnNext();
         throw new RuntimeException(e);
@@ -164,6 +169,17 @@ public abstract class Window {
       if (!didDraw) t.timeDirect("draw", 0);
       t.time("flush");
       t.time("all", sns);
+    }
+  }
+  
+  
+  
+  public static void onFrameError(Window w, Throwable t) {
+    try {
+      if (w!=null) w.onFrameError(t);
+    } catch (Throwable t2) {
+      Log.error("ui", "Error during onFrameError:");
+      Log.stacktrace("ui", t2);
     }
   }
   

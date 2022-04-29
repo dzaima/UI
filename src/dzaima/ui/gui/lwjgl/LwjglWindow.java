@@ -54,9 +54,9 @@ public class LwjglWindow extends WindowImpl {
           nextFrame();
         } catch (Throwable t) {
           Tools.sleep(1000/60);
-          t.printStackTrace();
-          createTools();
-          if (w.tools!=null) w.tools.errorReport(t);
+          Log.error("ui", "Error during frame:");
+          Log.stacktrace("ui", t);
+          Window.onFrameError(w, t);
         }
       }
       stop();
@@ -374,7 +374,7 @@ public class LwjglWindow extends WindowImpl {
         Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
         f.accept((String) cb.getData(DataFlavor.stringFlavor));
       } catch (Exception e) {
-        e.printStackTrace();
+        Log.stacktrace("LWJGL pasteString", e);
         f.accept(null);
       }
   }

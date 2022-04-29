@@ -1,9 +1,11 @@
 package dzaima.utils;
 
+import java.io.*;
 import java.time.Instant;
 
 public class Log {
   public static LogConsumer _logger = new StdoutLogger();
+  
   
   public enum Level {
     FINE(0), INFO(1), WARN(2), ERROR(3);
@@ -27,6 +29,14 @@ public class Log {
   public static void warn (String component, String msg) { log(Level.WARN,  component, msg); }
   public static void error(String component, String msg) { log(Level.ERROR, component, msg); }
   
+  public static void stacktrace(String component, Throwable e) {
+    StringWriter w = new StringWriter();
+    e.printStackTrace(new PrintWriter(w));
+    error(component, w.toString());
+  }
+  public static void stacktraceHere(String component) {
+    stacktrace(component, new Throwable());
+  }
   
   private static Vec<Runnable> onLogLevelChange;
   public static void setLogLevel(Level l) {

@@ -48,7 +48,7 @@ public class UndoManager {
   public <T> void add(UndoR<T> u) {
     if (groupDepth==0) {
       Log.error("UndoManager", "you forgot to start a group!!");
-      new Error().printStackTrace();
+      Log.stacktraceHere("UndoManager");
       System.out.flush(); System.err.flush();
     }
     curr.is.add(u);
