@@ -17,7 +17,7 @@ public class Tokenizer {
       if (c=='{' | c=='}' | c==':' | c=='=') {
         depth+= (c=='{'?1:0)-(c=='}'?1:0);
         res.add(new Token(i, c));
-      } else if (dig(c) | (c=='.' & i<s.length() && dig(s.charAt(i)))) {
+      } else if (dig(c) | (c=='.' & i<s.length() && dig(s.charAt(i))) | c=='-') {
         int li = i-1;
         while (i<s.length() && dig(s.charAt(i))) i++;
         if (i<s.length() && s.charAt(i)=='.') {
