@@ -275,8 +275,8 @@ public class StringNode extends InlineNode {
   }
   
   public Paragraph buildPara(String s) {
-    Graphics.tmpStyle.setTextStyle(f.textStyle(colFG));
-    ParagraphBuilder b = new ParagraphBuilder(Graphics.tmpStyle, Typeface.fontCol);
+    Graphics.tmpParaStyle.setTextStyle(f.textStyle(colFG));
+    ParagraphBuilder b = new ParagraphBuilder(Graphics.tmpParaStyle, Typeface.fontCol);
     b.addText(s);
     Paragraph r = b.build();
     r.layout(Float.POSITIVE_INFINITY);

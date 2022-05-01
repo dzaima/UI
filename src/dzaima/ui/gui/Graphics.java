@@ -1,5 +1,7 @@
 package dzaima.ui.gui;
 
+import dzaima.ui.eval.*;
+import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.skija.impl.Native;
@@ -123,20 +125,43 @@ public abstract class Graphics {
       rect(x, sy-Math.max(1,f.strikeH), x+f.width(s), sy, p);
     }
   }
-  public static ParagraphStyle tmpStyle = new ParagraphStyle();
+  public static ParagraphStyle tmpParaStyle = new ParagraphStyle();
   public void textP(String s, Font f, float x, float y, int col) {
     if (f.hasAll(s)) text(s, f, x, y, col);
     else textPimpl(s, f, x, y, col);
   }
   public void textPimpl(String s, Font f, float x, float y, int col) {
-    tmpStyle.setTextStyle(f.textStyle(col));
-    ParagraphBuilder b = new ParagraphBuilder(tmpStyle, Typeface.fontCol);
+    tmpParaStyle.setTextStyle(f.textStyle(col));
+    ParagraphBuilder b = new ParagraphBuilder(tmpParaStyle, Typeface.fontCol);
     b.addText(s);
     Paragraph r = b.build();
     r.layout(Float.POSITIVE_INFINITY);
     b.close();
     r.paint(canvas, x, y-f.asc);
     r.close();
+  }
+  
+  public static TextStyle textStyle(Prop family, int col, float sz) {
+    if (family.type()=='{') {
+      Vec<PNode> ch = family.gr().ch;
+      String[] families = new String[ch.sz];
+      for (int i = 0; i < ch.sz; i++) families[i] = ((PNodeStr) ch.get(i)).s;
+      tmpTextStyle.setFontFamilies(families);
+    } else {
+      tmpTextStyle.setFontFamily(family.str());
+    }
+    tmpTextStyle.setFontSize(sz).setColor(col);
+    return tmpTextStyle;
+  }
+  
+  public static TextStyle tmpTextStyle = new TextStyle();
+  public static Paragraph paragraph(TextStyle style, String text) {
+    ParagraphBuilder pb = new ParagraphBuilder(tmpParaStyle.setTextStyle(style), Typeface.fontCol);
+    pb.addText(text);
+    Paragraph r = pb.build();
+    r.layout(Float.POSITIVE_INFINITY);
+    pb.close();
+    return r;
   }
   
   public void image(Image i, int x, int y) {
