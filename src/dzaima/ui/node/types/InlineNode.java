@@ -141,9 +141,10 @@ public abstract class InlineNode extends Node {
       Node c = ch.get(0);
       sX = 0; eX = (short) w;
       sY1 = eY1 = (short) sv.y;
-      c.resize(sv.w, c.minH(sv.w), (int)sv.x, sv.y);
-      sv.a = 0; sv.b = 0;
+      c.resize(sv.w, c.minH(sv.w), 0, sv.y);
       sv.y+= c.h;
+      sv.h = sv.a = sv.b = 0;
+      sv.x = sv.w;
       sY2 = eY2 = (short) sv.y;
     }
     protected void baseline(int asc, int dsc) { }
