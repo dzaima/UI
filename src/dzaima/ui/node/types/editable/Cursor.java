@@ -167,12 +167,12 @@ public class Cursor extends Pointer implements Comparable<Cursor> {
   
   
   // graphics
-  public void draw(Graphics g) {
+  public void draw(int width, int color, Graphics g) {
     EditNode.Line ln = e.ln(ey);
     XY r = ln.real(ex);
     int h = e.f.hi;
     int y = ln.yw*h + r.y;
-    g.rect(r.x, y, r.x+1, y+h, 0xffD2D2D2); // TODO theme (both color & width)
+    g.rect(r.x, y, r.x+width, y+h, color); // TODO theme (both color & width)
   }
   
   public int ym() { return Math.min(sy, ey); }

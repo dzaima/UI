@@ -22,7 +22,7 @@ public class EditNode extends Node {
   public final boolean multiline;
   public boolean wrap;
   
-  public int bgSel, bgSelU;
+  public int bgSel, bgSelU, textCol;
   public int drawOffX, drawOffY;
   public int tsz;
   public boolean cursorWhenUnfocused;
@@ -55,12 +55,15 @@ public class EditNode extends Node {
     tsz = gc.len(this, "tsz", "textarea.tsz");
     if (tsz!=ptsz && f!=null) setFamily(f.tf.name);
     
+    bgSel  = gc.col(this, "bgSel" , "textarea.bgSel");
+    bgSelU = gc.col(this, "bgSelU", "textarea.bgSelU");
+    textCol = gc. col(this, "color", "str.color");
+    
     defTStyle.setFontSize(f.sz);
     defTStyle.setTypeface(f.tf.tf);
     defTStyle.setFontFamily(f.tf.name);
+    defTStyle.setColor(textCol);
     defPStyle.setStrutStyle(new StrutStyle().setFontSize(1).setHeight(f.hi).setHeightOverridden(true).setHeightForced(true).setEnabled(true));
-    bgSel  = gc.col(this, "bgSel" , "textarea.bgSel");
-    bgSelU = gc.col(this, "bgSelU", "textarea.bgSelU");
     cursorWhenUnfocused = gc.boolD(this, "cursorWhenUnfocused", false);
     for (Line c : lns) { c.clearPara(); c.cw = -1; }
     pw = -1; ph = -1;
@@ -242,7 +245,7 @@ public class EditNode extends Node {
       
       y+= lh;
     }
-    if (drawCursor) for (Cursor c : cs) c.draw(g);
+    if (drawCursor) for (Cursor c : cs) c.draw(1, textCol, g); // TODO theme width
     g.pop();
   }
   
