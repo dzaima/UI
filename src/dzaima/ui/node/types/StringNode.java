@@ -32,6 +32,7 @@ public class StringNode extends InlineNode {
     if (p instanceof InlineNode) {
       Font cf = ((InlineNode) p).getFont();
       if (words==null) words = words(s);
+      else for (Word w : words) w.overkill = null;
       maxW = 0;
       int lnW = 0;
       for (Word c : words) {
