@@ -61,7 +61,13 @@ public abstract class Window {
   public /*open*/ int tickDelta() { return 1000/60; } // milliseconds to wait between ticks; shouldn't be less than framerate (aka, tps≤fps)
   
   
-  public enum CursorType { REGULAR, HAND, IBEAM }
+  public enum CursorType {
+    REGULAR, HAND, IBEAM,
+    N_RESIZE, E_RESIZE, S_RESIZE, W_RESIZE,
+    NE_RESIZE, NW_RESIZE, SE_RESIZE, SW_RESIZE,
+    EW_RESIZE, NS_RESIZE,
+    NESW_RESIZE, NWSE_RESIZE,
+  }
   public void setCursor(CursorType c) { impl.setCursor(c); }
   
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { impl.openFile(filter, initial, onResult); }

@@ -53,9 +53,14 @@ public class JWMWindow extends WindowImpl {
   
   public void setCursor(dzaima.ui.gui.Window.CursorType c) {
     switch (c) {
+      default:
       case REGULAR:
         jwmw.setMouseCursor(MouseCursor.ARROW);
         break;
+      case N_RESIZE: case E_RESIZE: case S_RESIZE: case W_RESIZE:
+      case NE_RESIZE: case NW_RESIZE: case SE_RESIZE: case SW_RESIZE:
+      case EW_RESIZE: case NS_RESIZE:
+      case NESW_RESIZE: case NWSE_RESIZE:
       case HAND:
         jwmw.setMouseCursor(MouseCursor.POINTING_HAND);
         break;

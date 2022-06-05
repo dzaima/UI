@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.nio.file.Path;
 import java.nio.file.*;
+import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -97,7 +98,6 @@ public class LwjglWindow extends WindowImpl {
     
     glfwSetWindowPos(windowPtr, r.sx, r.sy);
     
-    initCursors();
     glfwMakeContextCurrent(windowPtr);
     glfwSwapInterval(vsync? 1 : 0);
     if (init.visible) glfwShowWindow(windowPtr);
@@ -306,15 +306,6 @@ public class LwjglWindow extends WindowImpl {
   }
   
   
-  public long C_REGULAR;
-  public long C_HAND;
-  public long C_IBEAM;
-  private void initCursors() {
-    C_REGULAR = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-    C_HAND = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-    C_IBEAM = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
-  }
-  
   
   public void setTitle(String s) {
     if (!s.equals(title)) {
@@ -331,13 +322,28 @@ public class LwjglWindow extends WindowImpl {
     else glfwHideWindow(windowPtr);
   }
   
+  public final HashMap<Window.CursorType, Long> cursors = new HashMap<>();
   public void setCursor(Window.CursorType c) {
-    switch (c) {
-      case REGULAR: GLFW.glfwSetCursor(windowPtr, C_REGULAR); break;
-      case IBEAM:   GLFW.glfwSetCursor(windowPtr, C_IBEAM  ); break;
-      case HAND:    GLFW.glfwSetCursor(windowPtr, C_HAND   ); break;
+    Long p;
+    p = cursors.get(c);
+    if (p==null) {
+      int t;
+      switch (c) {
+        default:
+        case REGULAR: t = GLFW_ARROW_CURSOR; break;
+        case HAND: t = GLFW_HAND_CURSOR; break;
+        case IBEAM: t = GLFW_IBEAM_CURSOR; break;
+        case E_RESIZE: case W_RESIZE: case EW_RESIZE: t = GLFW_RESIZE_EW_CURSOR; break;
+        case N_RESIZE: case S_RESIZE: case NS_RESIZE: t = GLFW_RESIZE_NS_CURSOR; break;
+        case NW_RESIZE: case SE_RESIZE: case NWSE_RESIZE: t = GLFW_RESIZE_NWSE_CURSOR; break;
+        case NE_RESIZE: case SW_RESIZE: case NESW_RESIZE: t = GLFW_RESIZE_NESW_CURSOR; break;
+      }
+      p = glfwCreateStandardCursor(t);
+      cursors.put(c, p);
     }
+    GLFW.glfwSetCursor(windowPtr, p);
   }
+  
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { openFileStatic(filter, initial, onResult); }
   public void saveFile(String filter, Path initial, Consumer<Path> onResult) { saveFileStatic(filter, initial, onResult); }
   public static void openFileStatic(String filter, Path initial, Consumer<Path> onResult) {
