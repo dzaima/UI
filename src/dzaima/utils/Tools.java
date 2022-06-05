@@ -84,6 +84,11 @@ public class Tools {
     return (f-s)/(e-s)*(ne-ns)+ns;
   }
   
+  public static int constrain(int i, int s, int e) {
+    assert s<=e;
+    return Math.min(Math.max(i, s), e);
+  }
+  
   public static boolean vs(int col) { return col>>>24 != 0;   } // alpha≠0; is visible
   public static boolean st(int col) { return col>>>24 != 255; } // is see-through
   

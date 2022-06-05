@@ -32,8 +32,10 @@ public class EditNode extends Node {
     aTick();
     this.um = um;
     this.multiline = multiline;
-    
-    setFamily(vs[id("family")].str());
+  
+    int family = id("family");
+    assert family!=-1 : "No font family specified for editable";
+    setFamily(vs[family].str());
     
     lns.add(createLine(new char[0], 0));
     initCursor();
@@ -113,7 +115,7 @@ public class EditNode extends Node {
         insert(x+i-p, y, '\n', false);
         p = i+1;
         x = 0;
-        y++;
+        if (multiline) y++;
       }
     }
     insert(x, y, Tools.get(s, p, s.length()));

@@ -30,7 +30,7 @@ public class Langs {
   }
   
   public Language fromNameNullable(String name) {
-    return nameMap.get(name.toLowerCase());
+    return name==null? null : nameMap.get(name.toLowerCase());
   }
   public Language fromName(String name) {
     Language r = fromNameNullable(name);
@@ -39,7 +39,7 @@ public class Langs {
   }
   
   public Language fromFilename(String filename) {
-    int d = filename.indexOf('.');
+    int d = filename.lastIndexOf('.');
     if (d!=-1) filename = filename.substring(d+1).toLowerCase();
     Language l = extMap.get(filename);
     if (l==null) return defLang;

@@ -71,7 +71,7 @@ public class CodeAreaNode extends EditNode {
       for (int i = 0; i < lns.sz; i++) {
         String s = (i+1) + "";
         int y = ln(i).yw*f.hi;
-        if (g.clip!=null && y>g.clip.ey) break;
+        if (g.clip!=null && y>g.clip.ey) break; // TODO clip from start
         g.text(s, f, drawOffX-lnR-f.width(s), y+dy, lnCol);
       }
     }

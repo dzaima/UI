@@ -27,17 +27,17 @@ public class XY {
     return new XY(Math.max(x, x2), Math.max(y, y2));
   }
   
-  public static int dist(int x, int y, int x0, int y0, int w, int h) {
-    x-= x0; int xd = x<0? -x : x>w? x-w : 0;
-    y-= y0; int yd = y<0? -y : y>h? y-h : 0;
-    return Math.max(xd, yd);
-  }
-  
   public String toString() {
     return "("+x+" "+y+")";
   }
   
   public XY add(int dx, int dy) {
     return new XY(x+dx, y+dy);
+  }
+  
+  public static int dist(int x, int y, int x0, int y0, int w, int h) {
+    x-= x0; int xd = x<0? -x : x>w? x-w : 0;
+    y-= y0; int yd = y<0? -y : y>h? y-h : 0;
+    return Math.max(xd, yd);
   }
 }

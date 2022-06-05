@@ -31,12 +31,14 @@ public class BtnNode extends Node {
     
     if (styleS.equals("rect")) {
       style = 1;
+      radius = 0;
       bRad = gc.len(this, "borderRadius", "btn.rect.borderRadius");
       bgOn = gc.col(this, "bg", "btn.rect.bg");
       bcolL = gc.col(this, "borderL", "btn.rect.borderL");
       bcolD = gc.col(this, "borderD", "btn.rect.borderD");
     } else if (styleS.equals("round")) {
       style = 2;
+      bRad = 0;
       radius = gc.len(this, "radius", "btn.round.radius");
       bgOff   = gc.col(this, "bgOff", "btn.round.bgOff");
       bgOn    = gc.col(this, "bgOn", "btn.round.bgOn");
@@ -65,17 +67,14 @@ public class BtnNode extends Node {
     }
   }
   
-  public Node ch() {
-    return ch.get(0);
-  }
-  
+  public Node ch() { return ch.get(0); }
   public int minW(     ) { return ch().minW(               )+(bRad+padX)*2; }
   public int minH(int w) { return ch().minH(w-(bRad+padX)*2)+(bRad+padY)*2; }
   public int maxW(     ) { return minW( ); }
   public int maxH(int w) { return minH(w); }
   
   public void resized() {
-    ch().resize(w-(bRad+padX)*2, h - (bRad+padY)*2, bRad+padX, bRad+padY);
+    ch().resize(w - (bRad+padX)*2, h - (bRad+padY)*2, bRad+padX, bRad+padY);
   }
   
   public void mouseStart(int x, int y, Click c) {

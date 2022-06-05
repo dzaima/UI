@@ -81,7 +81,9 @@ public class Devtools extends NodeWindow {
   
   public static String debugMe(Node n) {
     n.ctx.win().openDevtoolsTo(n);
-    return n.getClass().getSimpleName();
+    String sn = n.getClass().getSimpleName();
+    if (!sn.isEmpty()) return sn;
+    return n.getClass().getName();
   }
   
   public void setup() { super.setup();
@@ -288,6 +290,7 @@ public class Devtools extends NodeWindow {
       // addRow(infoT, "flag:props"    , Boolean.toString((insp.flags&Node.PROPS)!=0));
       // addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
       // addRow(infoT, "field:ctx"     , insp.ctx+"");
+      if (!insp.visible) addRow(infoT, "visible", "false");
       addRow(infoT, "actual width"  , insp.w+"px");
       addRow(infoT, "actual height" , insp.h+"px");
       addRow(infoT, "position X"    , pos.x+"px");

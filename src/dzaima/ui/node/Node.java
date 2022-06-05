@@ -38,7 +38,7 @@ public abstract class Node implements Click.RequestImpl {
     this.gc = ctx.gc;
     this.ks = ks;
     this.vs = vs;
-    this.ch = new Vec<>();
+    this.ch = new Vec<>(); // TODO maybe have a global empty Vec such that this isn't a wasted allocation?
   }
   
   
@@ -197,7 +197,9 @@ public abstract class Node implements Click.RequestImpl {
   public int w=-1, h=-1, dx=0, dy=0;
   public /*open*/ void bg(Graphics g, boolean full) { pbg(g, full); } // draw background; by default, fall back to parent; TODO this assumes clipping
   public /*open*/ void drawC(Graphics g) { } // draw self foreground
-  public /*open*/ void drawCh(Graphics g, boolean full) { for (Node n : ch) { n.draw(g, full); assert n.p==this; } }
+  public /*open*/ void drawCh(Graphics g, boolean full) {
+    for (Node n : ch) { n.draw(g, full); assert n.p==this : "No parent set for "+ch.indexOf(n)+" in "+Devtools.debugMe(this); }
+  }
   public /*open*/ void tickC() { } // anyone overriding this should also call aTick() in its constructor (or carefully use mTick())
   public /*open*/ void over(Graphics g) { }
   
@@ -236,7 +238,7 @@ public abstract class Node implements Click.RequestImpl {
       if ((f0&ATICK) != 0) anyc();
       tickC();
     }
-    if ((f0&ANYCT) != 0)for (Node c : ch) c.tick();
+    if ((f0&ANYCT) != 0) for (Node c : ch) c.tick();
   }
   public final void aTick() { flags|= ATICK; anyc(); }
   public final void mTick() { flags|= MTICK; anyc(); }
@@ -258,8 +260,8 @@ public abstract class Node implements Click.RequestImpl {
     
     if (!rsCH && samePos) return;
     if (rsME) mRedraw();
-    this.dx = dx; this.dy = dy;
-    this.w = w; this.h = h;
+    this.dx = dx; this.w = w;
+    this.dy = dy; this.h = h;
     resized();
     flags&= ~(RS_ME|RS_CH);
     assert minW( )<=w : "Wanted width " +w+" less than the minimum "+minW( )+" for "+Devtools.debugMe(this);

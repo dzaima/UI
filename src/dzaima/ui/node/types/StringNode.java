@@ -151,9 +151,9 @@ public class StringNode extends InlineNode {
     return ce;
   }
   
-  public int minW(     ) { return sz.x; }
-  public int maxW(     ) { return maxW; }
-  public int minH(int w) { return sz.y; }
+  public int minW(     ) { assert visible; return sz.x; }
+  public int maxW(     ) { assert visible; return maxW; }
+  public int minH(int w) { assert visible; return sz.y; }
   
   public void addInline(InlineSolver sv) { // TODO this probably deserves to be optimized a lot
     boolean mut = sv.resize;

@@ -37,6 +37,9 @@ public class IntVec {
   public int[] get(int s, int e) {
     return Arrays.copyOfRange(arr, s, e);
   }
+  public int[] get() {
+    return Arrays.copyOf(arr, sz);
+  }
   public void remove(int s, int e) {
     System.arraycopy(arr, e, arr, s, sz-e);
     sz-= e-s;
