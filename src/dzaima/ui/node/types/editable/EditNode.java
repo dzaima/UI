@@ -6,6 +6,7 @@ import dzaima.ui.gui.undo.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.*;
 
@@ -533,6 +534,9 @@ public class EditNode extends Node {
     return null;
   }
   
+  public void scrollToLine(int ln, ScrollNode.Mode yMode) {
+    ScrollNode.scrollTo(this, ScrollNode.Mode.NONE, yMode, 0, f.hi*ln);
+  }
   
   public int action(Key key, KeyAction a) { // 0-unused; 1-used; 2-won't use
     switch (gc.keymap(key, a, "textarea")) {
@@ -590,6 +594,7 @@ public class EditNode extends Node {
     else if (key.k_down     ()) { um.pushU("move cursor"); for (Cursor c : cs) c.down (key.mod); sortCursors(); um.pop(); }
     else if (key.k_end      ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.end (key.mod); sortCursors(); um.pop(); }
     else if (key.k_home     ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.home(key.mod); sortCursors(); um.pop(); }
+    else return false;
     return true;
   }
   

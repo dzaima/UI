@@ -10,6 +10,9 @@ public class ByteVec {
   public byte get(int i) {
     return arr[i];
   }
+  public byte[] get() {
+    return Arrays.copyOf(arr, sz);
+  }
   
   public void add(byte t) {
     if (sz < arr.length) {

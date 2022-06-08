@@ -6,11 +6,13 @@ import io.github.humbleui.skija.paragraph.TextStyle;
 import java.util.Arrays;
 public class CLang extends Lang {
   public static LangState.Keywords keyw = new LangState.Keywords(
+    "_Alignas","_Alignof","_Atomic","_Generic","_Noreturn","_Static_assert","_Thread_local",
     "auto","break","case","const","continue","default","do","else","enum",
-    "extern","for","goto","if","register","return","sizeof",
+    "extern","for","goto","if","inline","register","restrict","return","sizeof",
     "static","struct","switch","typedef","union","volatile","while"
   );
   public static LangState.Keywords types = new LangState.Keywords(
+    "_Bool","_Complex","_Decimal128","_Decimal32","_Decimal64","_Imaginary",
     "signed","unsigned","void","char","short","int","long","double","float",
     "bool","i8","i16","i32","i64","u8","u16","u32","u64","f32","f64"
   );

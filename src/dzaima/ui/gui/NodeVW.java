@@ -68,6 +68,7 @@ public abstract class NodeVW extends VirtualWindow {
         }
         c.hoverS();
       }
+      c.hoverT(cx, cy);
       
       c = c.findCh(cx, cy);
       i++;
@@ -76,18 +77,21 @@ public abstract class NodeVW extends VirtualWindow {
     pHover = nHover;
   }
   
-  private Vec<Window.CursorType> cursorStack = new Vec<>();
-  public void pushCursor(Window.CursorType t) { cursorStack.add(t); }
+  private final Vec<Window.CursorType> cursorStack = new Vec<>();
+  public short pushCursor(Window.CursorType t) { cursorStack.add(t); return (short) (cursorStack.sz-1); }
   public void popCursor() { cursorStack.pop(); }
+  public void replaceCursor(short pos, Window.CursorType t) { cursorStack.set(pos, t); }
   public Window.CursorType cursorType() {
-    return cursorStack.sz==0? Window.CursorType.REGULAR : cursorStack.peek();
+    int i = cursorStack.sz;
+    while (--i >= 0) if (cursorStack.get(i) != null) return cursorStack.get(i);
+    return Window.CursorType.REGULAR;
   }
-  
   
   public void mouseStart(Click cl) { base.mouseStart(mx, my, cl); }
   public void initialMouseTick(Click c) { c.initialTick(mx, my); activeClicks.add(c); }
   public void scroll(float dx, float dy) { base.scroll(mx, my, dx, dy); }
   public boolean key(Key key, int scancode, KeyAction a) { return base.key(mx, my, key, scancode, a); }
+  
   public void typed(int p) { base.typed(p); }
   
   public void tick() {
