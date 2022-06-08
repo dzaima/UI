@@ -154,6 +154,7 @@ public abstract class Ctx {
     map.put("overlap", OverlapNode::new);
     map.put("menu", MenuNode::new);
     map.put("mi", MenuNode.MINode::new);
+    map.put("weighed", WeighedNode::new);
     return new BaseCtx(map);
   }
 }

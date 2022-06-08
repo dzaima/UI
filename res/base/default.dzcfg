@@ -27,6 +27,8 @@ scroll.thumbCol = #666 // main color
 scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
+uw.handleWidth = 0.3em
+
 menu {
   genericExit = { "esc" }
   bg = bg.middle // background color of menus
