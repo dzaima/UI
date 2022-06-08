@@ -202,7 +202,7 @@ public class CodeAreaNode extends EditNode {
         return 1;
       }
       
-      case "indentInc":
+      case "indentInc": if (!mutable) return 1;
         um.pushQ("change indent");
         for (Cursor c : cs) for (int y = c.ym(); y <= c.yM(); y++) {
           insert(0, y, langInst.indent(1));
@@ -210,7 +210,7 @@ public class CodeAreaNode extends EditNode {
         um.pop();
         return 1;
       
-      case "indentDec":
+      case "indentDec": if (!mutable) return 1;
         um.pushQ("change indent");
         for (Cursor c : cs) for (int y = c.ym(); y <= c.yM(); y++) {
           if (ln(y).leadingWs()>=langInst.indentLen) remove(0, y, langInst.indentLen, y);
@@ -263,7 +263,7 @@ public class CodeAreaNode extends EditNode {
         return 1;
       }
       
-      case "duplicateSelection": {
+      case "duplicateSelection": { if (!mutable) return 1;
         um.pushQ("duplicate selection");
         for (Cursor c : cs) {
           String s = getByCursor(c);
@@ -274,7 +274,7 @@ public class CodeAreaNode extends EditNode {
         return 1;
       }
       
-      case "deleteLineBack": case "deleteLineNext": {
+      case "deleteLineBack": case "deleteLineNext": { if (!mutable) return 1;
         um.pushQ("delete line");
         for (Cursor c : cs) {
           c.order();
@@ -294,7 +294,7 @@ public class CodeAreaNode extends EditNode {
         return 1;
       }
       
-      case "align": {
+      case "align": { if (!mutable) return 1;
         um.pushL("align cursors");
         align: {
           int py = -1;
@@ -328,7 +328,7 @@ public class CodeAreaNode extends EditNode {
   
   public void typed(int codepoint) {
     // TODO be nice around typing closing half
-    if (anySel()) {
+    if (anySel() && mutable) {
       String wr = customWrapPairs!=null? customWrapPairs : defWrapPairs;
       for (int i=0, j=0; i < wr.length();) {
         int p = wr.codePointAt(i);

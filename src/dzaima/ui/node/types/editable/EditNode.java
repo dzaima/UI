@@ -21,6 +21,7 @@ public class EditNode extends Node {
   public Font f;
   public long cursorTime;
   public final boolean multiline;
+  public boolean mutable = true;
   public boolean wrap;
   
   public int bgSel, bgSelU, textCol;
@@ -451,6 +452,7 @@ public class EditNode extends Node {
   }
   
   public void typed(int codepoint) {
+    if (!mutable) return;
     um.pushQ("type");
     for (Cursor c : cs) c.typed(codepoint);
     um.pop();
@@ -541,8 +543,9 @@ public class EditNode extends Node {
   public int action(Key key, KeyAction a) { // 0-unused; 1-used; 2-won't use
     switch (gc.keymap(key, a, "textarea")) {
       case "copy": copy(); return 1;
-      case "paste": um.pushQ("paste"); paste(); um.pop(); return 1;
+      case "paste": if (mutable) { um.pushQ("paste"); paste(); um.pop(); } return 1;
       case "cut":
+        if (!mutable) return 1;
         um.pushQ("cut");
         boolean b = copy();
         for (Cursor c : cs) c.clearSel();
@@ -556,8 +559,8 @@ public class EditNode extends Node {
         cs.get(0).mv(0,0, ln(lns.sz-1).sz(), lns.sz-1);
         um.pop();
         return 1;
-      case "undo": um.undo(); return 1;
-      case "redo": um.redo(); return 1;
+      case "undo": if (mutable) um.undo(); return 1;
+      case "redo": if (mutable) um.redo(); return 1;
       case "keepFirst":
         if (cs.sz > 1) { collapseCursors(true); return 1; }
         if (cs.peek().sel()) { um.pushQ("keep first"); cs.peek().mv(cs.peek().ex, cs.peek().ey); um.pop(); return 1; }
@@ -581,19 +584,19 @@ public class EditNode extends Node {
     
     if (key.k_enter()) {
       if (enter(key.mod)) return true;
-      if (!multiline) return true;
+      if (!multiline || !mutable) return true;
       um.pushQ("new line"); for (Cursor c : cs) c.typed(10); sortCursors(); um.pop();
-    } else if ((key.k_backspace() || key.k_del()) && anySel()) {
+    } else if ((key.k_backspace() || key.k_del()) && mutable && anySel()) {
       um.pushQ("delete selection"); for (Cursor c : cs) c.clearSel(); sortCursors(); um.pop();
     }
-    else if (key.k_backspace()) { um.pushQ("delete char"); for (Cursor c : cs) c.delL (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_del      ()) { um.pushQ("delete char"); for (Cursor c : cs) c.delR (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_left     ()) { um.pushU("move cursor"); for (Cursor c : cs) c.left (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_right    ()) { um.pushU("move cursor"); for (Cursor c : cs) c.right(key.mod); sortCursors(); um.pop(); }
-    else if (key.k_up       ()) { um.pushU("move cursor"); for (Cursor c : cs) c.up   (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_down     ()) { um.pushU("move cursor"); for (Cursor c : cs) c.down (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_end      ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.end (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_home     ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.home(key.mod); sortCursors(); um.pop(); }
+    else if (key.k_backspace()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delL(key.mod); sortCursors(); um.pop(); }
+    else if (key.k_del      ()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delR(key.mod); sortCursors(); um.pop(); }
+    else if (key.k_left ()) { um.pushU("move cursor"); for (Cursor c : cs) c.left (key.mod); sortCursors(); um.pop(); }
+    else if (key.k_right()) { um.pushU("move cursor"); for (Cursor c : cs) c.right(key.mod); sortCursors(); um.pop(); }
+    else if (key.k_up   ()) { um.pushU("move cursor"); for (Cursor c : cs) c.up   (key.mod); sortCursors(); um.pop(); }
+    else if (key.k_down ()) { um.pushU("move cursor"); for (Cursor c : cs) c.down (key.mod); sortCursors(); um.pop(); }
+    else if (key.k_end  ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.end (key.mod); sortCursors(); um.pop(); }
+    else if (key.k_home ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.home(key.mod); sortCursors(); um.pop(); }
     else return false;
     return true;
   }
