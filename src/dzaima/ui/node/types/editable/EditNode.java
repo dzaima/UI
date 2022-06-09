@@ -467,6 +467,7 @@ public class EditNode extends Node {
     um.pushQ("type");
     for (Cursor c : cs) c.typed(codepoint);
     um.pop();
+    scrollToVis();
   }
   
   
