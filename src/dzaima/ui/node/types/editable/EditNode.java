@@ -121,6 +121,7 @@ public class EditNode extends Node {
       }
     }
     insert(x, y, Tools.get(s, p, s.length()));
+    scrollToVis();
   }
   
   public /*open*/ void remove(int sx, int sy, int ex, int ey) {
@@ -137,10 +138,12 @@ public class EditNode extends Node {
         public void redo() {
           lns.remove(sy+1, ey+1);
           modFrom(sy+1, sy-ey);
+          scrollToVis();
         }
         public void undo() {
           modFrom(sy+1, ey-sy);
           lns.addAll(sy+1, r);
+          scrollToVis();
         }
       });
     }
@@ -178,10 +181,12 @@ public class EditNode extends Node {
         public void redo() {
           lns.insert(y+1, l2);
           modFrom(y+2, 1);
+          scrollToVis();
         }
         public void undo() {
           modFrom(y+2, -1);
           lns.removeAt(y+1);
+          scrollToVis();
         }
       });
       for (Pointer c : ps) c.ln(x, y);
@@ -337,7 +342,9 @@ public class EditNode extends Node {
       um.pop();
     } else {
       um.pushU("move cursor mouse");
+      tmpNoScroll = true;
       collapseCursors(true);
+      tmpNoScroll = false;
       if (!Key.shift(c.mod)) cs.get(0).mv(l.x, l.y);
       movedCursor = cs.get(0);
       movedCursorPos = 0;
@@ -366,17 +373,19 @@ public class EditNode extends Node {
       u(new Undo() {
         Cursor[] t;
         public void redo() {
-          mRedraw();
           final int s = first? 1 : 0;
           int e = first? cs.sz : cs.sz-1;
           t = cs.get(s, e, Cursor[].class);
           for (Cursor c : t) ps.remove(c);
           cs.remove(s, e);
+          mRedraw();
+          scrollToVis();
         }
         public void undo() {
           if (first) { cs.addAll(cs.sz, t); ps.addAll(ps.sz, t); }
           else       { cs.addAll(0,     t); ps.addAll(0,     t); }
           mRedraw();
+          scrollToVis();
         }
       });
       um.pop();
@@ -393,7 +402,7 @@ public class EditNode extends Node {
         for (Cursor c : t) ps.remove(c);
         cs.remove(1, cs.sz);
       }
-      public void undo() { cs.addAll(cs.sz, t); ps.addAll(ps.sz, t); mRedraw(); }
+      public void undo() { cs.addAll(cs.sz, t); ps.addAll(ps.sz, t); mRedraw(); scrollToVis(); }
     });
     um.pop();
   }
@@ -402,11 +411,12 @@ public class EditNode extends Node {
     u(new Undo() {
       private final Cursor[] prevCursors = cs.toArray(new Cursor[0]);
       public void redo() {
-        mRedraw();
         for (Cursor c : cs) ps.remove(c);
         cs.clear();
         cs.addAll(0, newCursors);
         ps.addAll(0, newCursors);
+        mRedraw();
+        scrollToVis();
       }
       public void undo() {
         for (Cursor c : cs) ps.remove(c);
@@ -414,6 +424,7 @@ public class EditNode extends Node {
         cs.addAll(0, prevCursors);
         ps.addAll(0, prevCursors);
         mRedraw();
+        scrollToVis();
       }
     });
     um.pop();
@@ -536,8 +547,44 @@ public class EditNode extends Node {
     return null;
   }
   
-  public void scrollToLine(int ln, ScrollNode.Mode yMode) {
-    ScrollNode.scrollTo(this, ScrollNode.Mode.NONE, yMode, 0, f.hi*ln);
+  private boolean tmpNoScroll = false;
+  public void scrollToLine(int ln) {
+    scrollTo(-1, ln, ScrollNode.Mode.PARTLY_OFFSCREEN);
+  }
+  public void scrollToVis() {
+    scrollToVis(cs.peek());
+  }
+  public void scrollToVis(Cursor c) {
+    scrollTo(c.sx, c.sy, ScrollNode.Mode.PARTLY_OFFSCREEN);
+  }
+  public void scrollTo(int xi, int yi, ScrollNode.Mode mode) {
+    if (tmpNoScroll) return;
+    getSize();
+    yi = Tools.constrain(yi, 0, lns.sz-1);
+    Node sc0 = p;
+    while (!(sc0 instanceof ScrollNode) && sc0!=null) sc0 = sc0.p;
+    if (sc0==null) return;
+    ScrollNode sc = (ScrollNode) sc0;
+    Line ln = lns.get(yi);
+    int y = ln.yw*f.hi;
+    int x = -1;
+    if (xi!=-1) {
+      ln.buildPara();
+      XY pos = ln.real(xi);
+      y+= pos.y;
+      x = pos.x;
+    }
+    if (mode==ScrollNode.Mode.FULLY_OFFSCREEN || mode==ScrollNode.Mode.PARTLY_OFFSCREEN) {
+      int csy = sc.clipSY-sc.oy;
+      int cey = sc.clipEY-sc.oy;
+      if (y > csy  &&  y+f.hi < cey) return;
+      int mid = (csy+cey)/2;
+      if (y>mid) y+= f.hi;
+      mode = ScrollNode.Mode.SMOOTH;
+      ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, (y<csy? y-csy : y-cey) + mid);
+    } else {
+      ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, y);
+    }
   }
   
   public int action(Key key, KeyAction a) { // 0-unused; 1-used; 2-won't use
@@ -563,11 +610,11 @@ public class EditNode extends Node {
       case "redo": if (mutable) um.redo(); return 1;
       case "keepFirst":
         if (cs.sz > 1) { collapseCursors(true); return 1; }
-        if (cs.peek().sel()) { um.pushQ("keep first"); cs.peek().mv(cs.peek().ex, cs.peek().ey); um.pop(); return 1; }
+        if (cs.peek().sel()) { um.pushQ("keep first"); cs.peek().mv(cs.peek().ex, cs.peek().ey); um.pop(); scrollToVis(); return 1; }
         return 2;
       case "keepLast":
         if (cs.sz > 1) { collapseCursors(false); return 1; }
-        if (cs.peek().sel()) { um.pushQ("keep last"); cs.peek().mv(cs.peek().sx, cs.peek().sy); um.pop(); return 1; }
+        if (cs.peek().sel()) { um.pushQ("keep last"); cs.peek().mv(cs.peek().sx, cs.peek().sy); um.pop(); scrollToVis(); return 1; }
         return 2;
       default: return 0;
     }
@@ -585,18 +632,18 @@ public class EditNode extends Node {
     if (key.k_enter()) {
       if (enter(key.mod)) return true;
       if (!multiline || !mutable) return true;
-      um.pushQ("new line"); for (Cursor c : cs) c.typed(10); sortCursors(); um.pop();
+      um.pushQ("new line"); for (Cursor c : cs) c.typed(10); sortCursors(); um.pop(); scrollToVis();
     } else if ((key.k_backspace() || key.k_del()) && mutable && anySel()) {
-      um.pushQ("delete selection"); for (Cursor c : cs) c.clearSel(); sortCursors(); um.pop();
+      um.pushQ("delete selection"); for (Cursor c : cs) c.clearSel(); sortCursors(); um.pop(); scrollToVis();
     }
-    else if (key.k_backspace()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delL(key.mod); sortCursors(); um.pop(); }
-    else if (key.k_del      ()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delR(key.mod); sortCursors(); um.pop(); }
-    else if (key.k_left ()) { um.pushU("move cursor"); for (Cursor c : cs) c.left (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_right()) { um.pushU("move cursor"); for (Cursor c : cs) c.right(key.mod); sortCursors(); um.pop(); }
-    else if (key.k_up   ()) { um.pushU("move cursor"); for (Cursor c : cs) c.up   (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_down ()) { um.pushU("move cursor"); for (Cursor c : cs) c.down (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_end  ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.end (key.mod); sortCursors(); um.pop(); }
-    else if (key.k_home ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.home(key.mod); sortCursors(); um.pop(); }
+    else if (key.k_backspace()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delL(key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_del      ()&&mutable) { um.pushQ("delete char"); for (Cursor c : cs) c.delR(key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_left ()) { um.pushU("move cursor"); for (Cursor c : cs) c.left (key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_right()) { um.pushU("move cursor"); for (Cursor c : cs) c.right(key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_up   ()) { um.pushU("move cursor"); for (Cursor c : cs) c.up   (key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_down ()) { um.pushU("move cursor"); for (Cursor c : cs) c.down (key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_end  ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.end (key.mod); sortCursors(); um.pop(); scrollToVis(); }
+    else if (key.k_home ()) { um.pushU(key.hasCtrl()?"move cursor far":"move cursor"); for (Cursor c : cs) c.home(key.mod); sortCursors(); um.pop(); scrollToVis(); }
     else return false;
     return true;
   }

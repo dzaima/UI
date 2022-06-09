@@ -191,6 +191,7 @@ public class CodeAreaNode extends EditNode {
         Cursor n = addCursor(cs.sz, cs.peek());
         n.down(0);
         um.pop();
+        scrollToVis(n);
         return 1;
       }
       case "cursorUp": {
@@ -199,6 +200,7 @@ public class CodeAreaNode extends EditNode {
         n.up(0);
         sortCursors();
         um.pop();
+        scrollToVis(n);
         return 1;
       }
       
@@ -257,6 +259,7 @@ public class CodeAreaNode extends EditNode {
             Cursor c = addCursor(cs.sz, last);
             c.mv(pos.x, pos.y, last.sy==last.ey? pos.x+last.ex-last.sx : last.ex, pos.y + last.ey-last.sy);
             sortCursors();
+            scrollToVis(c);
           }
         }
         um.pop();
@@ -271,6 +274,7 @@ public class CodeAreaNode extends EditNode {
           replaceByCursor(c, s);
         }
         um.pop();
+        scrollToVis();
         return 1;
       }
       

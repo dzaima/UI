@@ -18,7 +18,7 @@ public class ScrollNode extends FrameNode {
     aTick();
   }
   
-  public enum Mode { NONE, PARTLY_OFFSCREEN, FULLY_OFFSCREEN, SMOOTH, INSTANT }
+  public enum Mode { NONE, PARTLY_OFFSCREEN, FULLY_OFFSCREEN, SMOOTH, INSTANT } // TODO split into two, to allow smooth & instant variations of only-on-offscreen
   private Node stNode;
   private Mode stX, stY;
   private int offX, offY;
@@ -137,14 +137,28 @@ public class ScrollNode extends FrameNode {
     ih = hVis? h-barSize : h;
   }
   
+  private void processToLast() {
+    isz();
+    if (toLastState!=0) {
+      oy = ih-chH;
+      ox = 0;
+      limit();
+      if (toLastState==2) {
+        ch().dy = oy;
+        ch().dx = 0;
+      }
+      toLastState = 0;
+    }
+  }
   public void drawCh(Graphics g, boolean full) {
+    processToLast();
     g.push();
     g.clip(0, 0, iw, ih);
     ch().draw(g, full);
     g.pop();
   }
   
-  private int clipSY, clipEY, clipSX, clipEX;
+  public int clipSY, clipEY, clipSX, clipEX;
   public void drawC(Graphics g) {
     assert ch.sz==1 : "scroll should have only 1 child node";
     Node c = ch();
@@ -154,17 +168,8 @@ public class ScrollNode extends FrameNode {
     clipSY = Math.max(g.clip==null? 0   : g.clip.sy,  0);
     clipEY = Math.min(g.clip==null? g.h : g.clip.ey, ih);
     
+    processToLast();
     isz();
-    if (toLastState!=0) {
-      oy = ih-chH;
-      ox = 0;
-      limit();
-      if (toLastState==2) {
-        c.dy = oy;
-        c.dx = 0;
-      }
-      toLastState = 0;
-    }
     if (toRight) {
       ox = iw-chW;
       limit();
