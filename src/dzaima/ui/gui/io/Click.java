@@ -1,11 +1,14 @@
 package dzaima.ui.gui.io;
 
+import dzaima.ui.apps.devtools.Devtools;
+import dzaima.ui.gui.Window;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;
 import dzaima.utils.*;
 
 public class Click {
-  public int btn;
+  public final Window w;
+  public final int btn;
   public static final int LEFT    = 0;
   public static final int RIGHT   = 1;
   public static final int CENTER  = 2;
@@ -21,7 +24,8 @@ public class Click {
   public long prevMs; // previous click start ms
   public long startMs; // current click start ms; will be set to 0 in onDoubleClick
   
-  public Click(int btn) {
+  public Click(Window w, int btn) {
+    this.w = w;
     this.btn = btn;
   }
   
@@ -86,23 +90,35 @@ public class Click {
   }
   void tickClick() {
     Request r = current();
-    if (r==null) return;
-    XY np = r.n.relPos(null);
-    r.n.mouseTick(cx-np.x, cy-np.y, this);
+    try {
+      if (r==null) return;
+      XY np = r.n.relPos(null);
+      r.n.mouseTick(cx-np.x, cy-np.y, this);
+    } catch (Throwable t) {
+      onClickError(t, r);
+    }
   }
   public void endClick() {
     if (state!=1) return; // in case window didn't call corresponding mouseDown
     state = 2;
     Request r = current();
-    if (r!=null) {
-      XY np = r.n.relPos(null);
-      int x = cx - np.x;
-      int y = cy - np.y;
-      r.n.mouseTick(x, y, this);
-      r = current(); // reloading current as mouseTick may cause it to end
-      if (r!=null) r.n.mouseUp(x, y, this);
+    try {
+      if (r!=null) {
+        XY np = r.n.relPos(null);
+        int x = cx - np.x;
+        int y = cy - np.y;
+        r.n.mouseTick(x, y, this);
+        r = current(); // reloading current as mouseTick may cause it to end
+        if (r!=null) r.n.mouseUp(x, y, this);
+      }
+    } catch (Throwable t) {
+      onClickError(t, r);
     }
     state = 0;
+  }
+  private void onClickError(Throwable t, Request r) {
+    Log.error("click", "Error while executing click event:");
+    Window.onError(w, t, "click", r.n instanceof Node? (Node) r.n : null);
   }
   
   

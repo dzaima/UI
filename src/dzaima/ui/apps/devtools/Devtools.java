@@ -19,13 +19,13 @@ import java.util.concurrent.atomic.*;
 public class Devtools extends NodeWindow {
   public static int openDevtools = 0;
   
-  public final NodeWindow insp;
+  public final Window insp;
   public NodeVW currVW;
   public boolean pick;
   public boolean hlInline = true;
   DTGraphNode graph;
   
-  public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, NodeWindow insp, Rect r) {
+  public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, Window insp, Rect r) {
     super(gc, pctx, g, new WindowInit("Devtools", r));
     graph = (DTGraphNode) base.ctx.id("graph");
     graph.t = this;
@@ -34,7 +34,7 @@ public class Devtools extends NodeWindow {
     this.insp = insp;
   }
   
-  public static Devtools create(NodeWindow w) {
+  public static Devtools create(Window w) { // untested if w isn't a NodeWindow
     GConfig gc = GConfig.newConfig();
     BaseCtx ctx = Ctx.newCtx();
     ctx.put("dtgraph", DTGraphNode::new);
@@ -98,10 +98,12 @@ public class Devtools extends NodeWindow {
         errorReport(t);
       }
     });
-    ((BtnNode) base.ctx.id("resetTreeState")).setFn(b -> resetTreeState(new Vec<>(), currVW.base));
+    ((BtnNode) base.ctx.id("resetTreeState")).setFn(b -> {
+      if (currVW!=null) resetTreeState(new Vec<>(), currVW.base);
+    });
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));
-    newVW(((NodeVW) insp.vws.get(0)));
+    if (insp instanceof NodeWindow) newVW(((NodeVW) ((NodeWindow) insp).vws.get(0)));
   }
   
   private void resetTreeState(Vec<Node> path, Node p) {
@@ -129,12 +131,12 @@ public class Devtools extends NodeWindow {
     currVW = vw;
     Node tree = base.ctx.id("main");
     tree.clearCh();
-    tree.add(new DTTNNode(this, base.ctx, vw.base));
+    if (vw!=null) tree.add(new DTTNNode(this, base.ctx, vw.base));
     focus(tree);
   }
   
   public void stopped() { super.stopped();
-    for (VirtualWindow vw : insp.vws) if (vw instanceof NodeVW) ((NodeVW) vw).base.mRedraw();
+    if (insp instanceof NodeWindow) for (VirtualWindow vw : ((NodeWindow) insp).vws) if (vw instanceof NodeVW) ((NodeVW) vw).base.mRedraw();
     insp.tools = null;
     openDevtools--;
     if (openDevtools==0) Stats.enabled = false;
@@ -356,9 +358,12 @@ public class Devtools extends NodeWindow {
     return c;
   }
   public NodeVW hoveredVW() {
-    return insp.hoveredVW instanceof NodeVW? (NodeVW) insp.hoveredVW : currVW;
+    if (!(insp instanceof NodeWindow)) return null;
+    VirtualWindow vw = ((NodeWindow) insp).hoveredVW;
+    return vw instanceof NodeVW? (NodeVW) vw : currVW;
   }
   public Node hoveredNode(NodeVW vw) {
+    if (vw==null) return null;
     Node c = vw.base;
     int x = insp.mx - vw.rect.sx;
     int y = insp.my - vw.rect.sy;

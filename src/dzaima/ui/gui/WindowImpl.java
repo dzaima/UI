@@ -68,8 +68,8 @@ public abstract class WindowImpl {
   
   public final Devtools createTools() {
     try {
-      if (w.tools!=null || !(w instanceof NodeWindow) || w instanceof Devtools) return w.tools;
-      Devtools dt = Devtools.create((NodeWindow) w);
+      if (w.tools!=null || w instanceof Devtools) return w.tools;
+      Devtools dt = Devtools.create(w);
       mgr.start(dt);
       return dt;
     } catch (Throwable t) {

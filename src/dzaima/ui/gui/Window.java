@@ -2,6 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.io.*;
+import dzaima.ui.node.Node;
 import dzaima.utils.*;
 import io.github.humbleui.skija.Surface;
 
@@ -43,7 +44,7 @@ public abstract class Window {
     else closeOnNext();
   }
   
-  public Click[] btns = new Click[]{new Click(Click.LEFT), new Click(Click.RIGHT), new Click(Click.CENTER), new Click(Click.BACK), new Click(Click.FORWARD)};
+  public Click[] btns = new Click[]{new Click(this, Click.LEFT), new Click(this, Click.RIGHT), new Click(this, Click.CENTER), new Click(this, Click.BACK), new Click(this, Click.FORWARD)};
   public abstract void mouseDown(Click c);
   public abstract void mouseUp(int x, int y, Click c);
   public abstract void scroll(float dx, float dy, boolean shift);
@@ -184,14 +185,18 @@ public abstract class Window {
   
   
   public static void onFrameError(Window w, Throwable t) {
+    Log.error("ui", "Error during frame:");
+    onError(w, t, "ui", null);
+  }
+  public static void onError(Window w, Throwable t, String type, Node n) {
     try {
-      Log.error("ui", "Error during frame:");
-      Log.stacktrace("ui", t);
+      Log.stacktrace(type, t);
       Tools.sleep(1000/60);
       if (w!=null) w.onFrameError(t);
+      if (n!=null) Devtools.debugMe(n);
     } catch (Throwable t2) {
-      Log.error("ui", "Error during onFrameError:");
-      Log.stacktrace("ui", t2);
+      Log.error(type, "Error during onError:");
+      Log.stacktrace(type, t2);
     }
   }
   
