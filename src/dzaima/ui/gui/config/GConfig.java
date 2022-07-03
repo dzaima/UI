@@ -50,15 +50,14 @@ public class GConfig {
   public Vec<Supplier<String>> configs = new Vec<>();
   public void addCfg(Supplier<String> src) {
     configs.add(src);
-    nextCfg(src.get());
-  }
-  private void nextCfg(String src) {
-    cfg = Cfg.add(this, cfg, src);
   }
   public void reloadCfg() {
-    cfg = null;
-    for (Supplier<String> c : configs) nextCfg(c.get());
+    CfgBuilder curr = new CfgBuilder(this);
+    for (Supplier<String> c : configs) curr.addSrc(c.get());
+    cfg = curr.complete();
+    
     if (postReload!=null) for (Runnable c : postReload) c.run();
+    
     for (Map.Entry<String, CfgProp> c : cfgMap.entrySet()) {
       c.getValue().init(getProp(c.getKey()));
     }
@@ -90,12 +89,14 @@ public class GConfig {
   ///////// themes \\\\\\\\\
   public static GConfig newConfig() {
     GConfig r = new GConfig();
+    r.reloadCfg();
     r.initialLoaded();
     return r;
   }
   public static GConfig newConfig(Consumer<GConfig> init) { // put initial addCfg-s here so they may contribute to one-time initialized things
     GConfig r = new GConfig();
     init.accept(r);
+    r.reloadCfg();
     r.initialLoaded();
     return r;
   }
@@ -250,7 +251,8 @@ public class GConfig {
   
   public String keymap(Key key, KeyAction a, String root) { // returns empty string if none
     if (!a.typed) return "";
-    CfgTree tree = cfg.propTree.getTreePath(root);
+    Cfg tree = cfg.getSubByPath(root, false);
+    if (tree==null) throw new RuntimeException("Didn't find path '"+root+"' for keymap");
     String r = tree.action(key.repr());
     if (r==null) return "";
     return r;

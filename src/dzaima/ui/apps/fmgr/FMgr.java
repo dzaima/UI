@@ -143,6 +143,7 @@ public class FMgr extends NodeWindow {
   
   public static NodeWindow create(GConfig gc, Path path) {
     gc.addCfg(() -> Tools.readRes("fmgr.dzcfg"));
+    gc.reloadCfg();
     return new FMgr(gc, Ctx.newCtx(), gc.getProp("fmgr.ui").gr(), path);
   }
   
