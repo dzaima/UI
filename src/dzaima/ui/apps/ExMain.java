@@ -2,6 +2,7 @@ package dzaima.ui.apps;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.apps.fmgr.FMgr;
+import dzaima.ui.apps.examples.TabExampleMain;
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
@@ -65,6 +66,7 @@ public class ExMain extends NodeWindow {
   public static void main(String[] args) {
     Windows.setManager(Windows.Manager.JWM);
     Windows.start(ExMain::run);
+    // Windows.start(TabExampleMain::run);
   }
   
   public boolean key(Key key, int scancode, KeyAction a) {
