@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 public abstract class Window {
   public final WindowImpl impl;
   public boolean focused = true;
+  public Hijack hijack;
   public Devtools tools;
   
   public int w, h;
@@ -150,7 +151,7 @@ public abstract class Window {
     // impl.endDraw(drawNeeded);
     // if (t!=null) t.time("flush");
     
-    int toolsRedraw = t!=null? t.redrawInsp() : 0;
+    int toolsRedraw = hijack!=null? hijack.hRedraw() : 0;
     boolean draw = resize || toolsRedraw==2 || requiresDraw();
     boolean full = resize || toolsRedraw!=0;
     

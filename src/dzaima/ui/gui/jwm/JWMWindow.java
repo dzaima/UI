@@ -133,7 +133,7 @@ public class JWMWindow extends WindowImpl {
     setType(init.type);
     Rect r = init.rect;
     if (r==null) {
-      Rect d = Windows.defaultWindowRect();
+      Rect d = WindowInit.defaultExtraRect();
       jwmw.setWindowPosition(d.sx, d.sy);
       jwmw.setWindowSize(d.w(), d.h());
       jwmw.maximize();
@@ -285,7 +285,7 @@ public class JWMWindow extends WindowImpl {
   public void stop() {
     if (stopped) return;
     stopped = true;
-    if (w.tools!=null) w.tools.stoppedInsp();
+    if (w.hijack!=null) w.hijack.hStopped();
     setVisible(false);
     startDraw(true);
     w.stopped();

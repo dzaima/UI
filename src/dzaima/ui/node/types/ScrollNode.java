@@ -86,17 +86,17 @@ public class ScrollNode extends FrameNode {
   }
   
   
+  public void toXS(boolean instant) { ox = 0; if (instant) ch().dx = 0; ignoreFocus(true); }
+  public void toYS(boolean instant) { oy = 0; if (instant) ch().dy = 0; ignoreFocus(true); }
+  public void toFirst(boolean instant) { toXS(instant); toYS(instant); }
+  
   public int toLastState = 0; // 0-none; 1-smooth; 2-instant
   public void toLast(boolean instant) {
     mRedraw();
     toLastState = Math.max(toLastState, instant?2:1);
   }
-  public void toFirst(boolean quiet) {
-    ox = oy = 0;
-    if (quiet) ch().dy = ch().dx = 0;
-  }
   private boolean toRight;
-  public void toRight() { mRedraw(); toRight = true; }
+  public void toXE() { mRedraw(); toRight = true; }
   
   
   public int fillW() {

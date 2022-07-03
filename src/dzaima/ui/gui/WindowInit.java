@@ -35,4 +35,17 @@ public class WindowInit {
     this.rect = null;
     return this;
   }
+  
+  
+  
+  public static Rect defaultExtraRect() {
+    Rect d = Windows.primaryDisplay();
+    return d.centered(d.w()/2, d.h()*9/10);
+  }
+  public static WindowInit defaultForMain(String name) {
+    return new WindowInit(name);
+  }
+  public static WindowInit defaultForExtra(String name) {
+    return new WindowInit(name, defaultExtraRect());
+  }
 }

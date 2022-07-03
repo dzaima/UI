@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 
 public class Windows {
   public static int MAX_WINDOWS = 10;
+  private Windows() { }
   
   final Vec<Window> ws = new Vec<>();
   
@@ -33,10 +34,6 @@ public class Windows {
       case JWM:
         return JWMWindow.primaryDisplay();
     }
-  }
-  public static Rect defaultWindowRect() {
-    Rect d = primaryDisplay();
-    return d.centered(d.w()/2, d.h()*9/10);
   }
   
   public static WindowImpl makeWindowImpl(Window w, WindowInit init) {

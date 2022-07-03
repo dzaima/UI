@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.*;
 
-public class Devtools extends NodeWindow {
+public class Devtools extends NodeWindow implements Hijack {
   public static int openDevtools = 0;
   
   public final Window insp;
@@ -25,20 +25,21 @@ public class Devtools extends NodeWindow {
   public boolean hlInline = true;
   DTGraphNode graph;
   
-  public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, Window insp, Rect r) {
-    super(gc, pctx, g, new WindowInit("Devtools", r));
+  public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, Window insp, WindowInit i) {
+    super(gc, pctx, g, i);
     graph = (DTGraphNode) base.ctx.id("graph");
     graph.t = this;
     openDevtools++;
     Stats.enabled = true;
     this.insp = insp;
+    Hijack.set(insp, this);
   }
   
   public static Devtools create(Window w) { // untested if w isn't a NodeWindow
     GConfig gc = GConfig.newConfig();
     BaseCtx ctx = Ctx.newCtx();
     ctx.put("dtgraph", DTGraphNode::new);
-    Devtools dt = new Devtools(gc, ctx, gc.getProp("devtools.ui").gr(), w, Windows.defaultWindowRect());
+    Devtools dt = new Devtools(gc, ctx, gc.getProp("devtools.ui").gr(), w, WindowInit.defaultForExtra("Devtools"));
     w.tools = dt;
     return dt;
   }
@@ -137,7 +138,8 @@ public class Devtools extends NodeWindow {
   
   public void stopped() { super.stopped();
     if (insp instanceof NodeWindow) for (VirtualWindow vw : ((NodeWindow) insp).vws) if (vw instanceof NodeVW) ((NodeVW) vw).base.mRedraw();
-    insp.tools = null;
+    if (insp.tools==this) insp.tools = null;
+    Hijack.clear(insp, this);
     openDevtools--;
     if (openDevtools==0) Stats.enabled = false;
   }
@@ -185,7 +187,7 @@ public class Devtools extends NodeWindow {
       Node path = base.ctx.id("path"); path.clearCh();
       if (nSel!=null && nSel.visible) {
         path.add(new StringNode(base.ctx, path(nSel)));
-        ((ScrollNode) base.ctx.id("pathScroll")).toRight();
+        ((ScrollNode) base.ctx.id("pathScroll")).toXE();
       } else path.add(new StringNode(base.ctx, ""));
     }
     highlight = nHL;
@@ -227,22 +229,23 @@ public class Devtools extends NodeWindow {
       g.translate(-p.x, -p.y);
     }
   }
-  public boolean mouseDownInsp(Click cl) {
+  public boolean hMouseDown(Click cl) {
     if (!pick || cl.btn!=Click.LEFT) return false;
     
     toOpen.set(hoveredNode(hoveredVW()));
     return true;
   }
-  public int redrawInsp() { // 0-nothing needed; 1-if redrawing, redraw all; 2-request redraw
+  public int hRedraw() { // 0-nothing needed; 1-if redrawing, redraw all; 2-request redraw
     if (newSel.get()) {
       newSel.set(false);
       return 2;
     }
     return pick? 2 : highlight!=null? 1 : 0;
   }
-  public void stoppedInsp() {
+  public void hStopped() {
     closeOnNext();
   }
+  
   public void modified(Node n) {
     modified.add(n); // TODO maybe read updated children here, instead of during devtools tick?
   }
@@ -287,11 +290,12 @@ public class Devtools extends NodeWindow {
       // ks.add(new StringNode(base.ctx, "self:openable" )); vs.add(new StringNode(base.ctx, ((DTTNNode) focusNode).openable+""));
       // ks.add(new StringNode(base.ctx, "self:ch.sz"    )); vs.add(new StringNode(base.ctx, focusNode.ch.sz+""));
       
-      // addRow(infoT, "flag:mtick"    , Boolean.toString((insp.flags&Node.MTICK)!=0));
-      // addRow(infoT, "flag:atick"    , Boolean.toString((insp.flags&Node.ATICK)!=0));
-      // addRow(infoT, "flag:props"    , Boolean.toString((insp.flags&Node.PROPS)!=0));
-      // addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
-      // addRow(infoT, "field:ctx"     , insp.ctx+"");
+      addRow(infoT, "flag:mtick"    , Boolean.toString((insp.flags&Node.MTICK)!=0));
+      addRow(infoT, "flag:atick"    , Boolean.toString((insp.flags&Node.ATICK)!=0));
+      addRow(infoT, "flag:anyct"    , Boolean.toString((insp.flags&Node.ANYCT)!=0));
+      addRow(infoT, "flag:props"    , Boolean.toString((insp.flags&Node.PROPS)!=0));
+      addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
+      addRow(infoT, "field:ctx"     , insp.ctx+"");
       if (!insp.visible) addRow(infoT, "visible", "false");
       addRow(infoT, "actual width"  , insp.w+"px");
       addRow(infoT, "actual height" , insp.h+"px");
@@ -318,16 +322,13 @@ public class Devtools extends NodeWindow {
   }
   
   private void addRow(Node table, String k, String v) {
-    Node r = table.ctx.make(row);
-    r.ctx.id("k").add(new StringNode(table.ctx, k));
-    r.ctx.id("v").add(new StringNode(table.ctx, v));
-    table.add(r);
+    try {
+      Node r = table.ctx.make(gc.getProp("devtools.row").gr());
+      r.ctx.id("k").add(new StringNode(table.ctx, k));
+      r.ctx.id("v").add(new StringNode(table.ctx, v));
+      table.add(r);
+    } catch (Throwable t) { t.printStackTrace(); }
   }
-  PNodeGroup row = Prs.parseNode(
-    "tr {" +
-    "  pad { id=k l=.5em y=.1em family=\"DejaVu Sans Mono\" }" +
-    "  pad { id=v r=.5em y=.1em family=\"DejaVu Sans Mono\" }" +
-    "}");
   
   
   
@@ -364,17 +365,7 @@ public class Devtools extends NodeWindow {
   }
   public Node hoveredNode(NodeVW vw) {
     if (vw==null) return null;
-    Node c = vw.base;
-    int x = insp.mx - vw.rect.sx;
-    int y = insp.my - vw.rect.sy;
-    while (true) {
-      x-= c.dx;
-      y-= c.dy;
-      Node n = c.findCh(x, y);
-      if (n==null) break;
-      c = n;
-    }
-    return c;
+    return Hijack.hoveredNode(vw);
   }
   
   public boolean key(Key key, int scancode, KeyAction a) {

@@ -166,7 +166,7 @@ public class NodeWindow extends Window {
   }
   
   public void mouseDown(Click cl) {
-    if (tools!=null && tools.mouseDownInsp(cl)) return;
+    if (hijack!=null && hijack.hMouseDown(cl)) return;
     focusedVW = hoveredVW;
     cl.startClick();
     focusedVW.mouseStart(cl);

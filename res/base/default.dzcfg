@@ -29,6 +29,12 @@ scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
 uw.handleWidth = 0.3em
 
+tabbed.bgOff = #3C3D37
+tabbed.bgOn = #282923
+tabbed.radius = 0.2em
+tabbed.barBg = #484944
+tabbed.bar = scroll { y=off x=hidden reorderable { id=r dir=h mode=drag } }
+
 menu {
   genericExit = { "esc" }
   bg = bg.middle // background color of menus
@@ -167,6 +173,11 @@ devtools {
         h { id=infoR alX=right }
       }
     }
+  }
+  
+  row = tr {
+    pad { id=k l=.5em y=.1em family="DejaVu Sans Mono" }
+    pad { id=v r=.5em y=.1em family="DejaVu Sans Mono" }
   }
   
   graph {

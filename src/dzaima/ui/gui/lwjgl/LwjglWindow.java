@@ -297,7 +297,7 @@ public class LwjglWindow extends WindowImpl {
   }
   
   public void stop() {
-    if (w.tools!=null) w.tools.stoppedInsp();
+    if (w.hijack!=null) w.hijack.hStopped();
     glfwMakeContextCurrent(windowPtr);
     w.stopped(); // TODO this calls Windows::remove, which isn't synchronized
     glfwDestroyWindow(windowPtr);

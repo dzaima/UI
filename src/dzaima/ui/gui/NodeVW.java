@@ -56,7 +56,7 @@ public abstract class NodeVW extends VirtualWindow {
     int cy = my;
     Vec<Node> nHover = new Vec<>();
     int i = 0;
-    if (mIn) while (c!=null) {
+    if (mIn && (w.hijack==null || w.hijack.hDoHover())) while (c!=null) {
       cx-= c.dx;
       cy-= c.dy;
       nHover.add(c);
