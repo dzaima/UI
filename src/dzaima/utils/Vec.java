@@ -174,6 +174,12 @@ public class Vec<T> implements Iterable<T> {
   public static <T> Vec<T> of(T... is) {
     return new Vec<>(is);
   }
+  public static <T> Vec<T> ofReuse(T[] vs) {
+    return new Vec<>(vs);
+  }
+  public static <T> Vec<T> ofNew(T[] vs) {
+    return new Vec<>(Arrays.copyOf(vs, vs.length));
+  }
   
   public void clear() {
     arr = (T[]) EMPTY;

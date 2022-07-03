@@ -57,6 +57,7 @@ public abstract class Node implements Click.RequestImpl {
   }
   public void remove(int s, int e) {
     if (s==e) return;
+    assert s>=0 && s<ch.sz : "Couldn't remove elements "+s+" to "+e+" in "+Devtools.debugMe(this);
     if (visible) for (int i = s; i < e; i++) ch.get(i).hidden();
     ch.remove(s, e);
     if (visible) mMod();
@@ -67,6 +68,7 @@ public abstract class Node implements Click.RequestImpl {
     if (visible) mMod();
   }
   public void insert(int i, Vec<Node> nds) {
+    assert i>=0 && i<=ch.sz : "Couldn't insert element at "+i+" in "+Devtools.debugMe(this);
     for (Node n : nds) {
       assert !n.visible;
       n.p = this;
@@ -341,5 +343,9 @@ public abstract class Node implements Click.RequestImpl {
     Node c = findCh(x, y);
     if (c!=null) return c.key(x-c.dx, y-c.dy, key, scancode, a);
     return false;
+  }
+  
+  public Vec<Prop> getProps() {
+    return Vec.ofNew(vs);
   }
 }
