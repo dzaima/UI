@@ -54,19 +54,13 @@ public class JWMWindow extends WindowImpl {
   public void setCursor(dzaima.ui.gui.Window.CursorType c) {
     switch (c) {
       default:
-      case REGULAR:
-        jwmw.setMouseCursor(MouseCursor.ARROW);
-        break;
-      case N_RESIZE: case E_RESIZE: case S_RESIZE: case W_RESIZE:
-      case NE_RESIZE: case NW_RESIZE: case SE_RESIZE: case SW_RESIZE:
-      case EW_RESIZE: case NS_RESIZE:
-      case NESW_RESIZE: case NWSE_RESIZE:
-      case HAND:
-        jwmw.setMouseCursor(MouseCursor.POINTING_HAND);
-        break;
-      case IBEAM:
-        jwmw.setMouseCursor(MouseCursor.IBEAM);
-        break;
+      case REGULAR: jwmw.setMouseCursor(MouseCursor.ARROW); break;
+      case HAND: jwmw.setMouseCursor(MouseCursor.POINTING_HAND); break;
+      case IBEAM: jwmw.setMouseCursor(MouseCursor.IBEAM); break;
+      case E_RESIZE: case W_RESIZE: case EW_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_WE); break;
+      case N_RESIZE: case S_RESIZE: case NS_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_NS); break;
+      case NE_RESIZE: case SW_RESIZE: case NESW_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_NESW); break;
+      case NW_RESIZE: case SE_RESIZE: case NWSE_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_NWSE); break;
     }
   }
   // TODO don't use LWJGL for this
