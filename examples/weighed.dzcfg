@@ -1,0 +1,17 @@
+v { bg=#333
+  weighed { dir=h weight=.58
+    pad=.1em padCol=#111
+    weighed { dir=v weight=.75
+      pad=2px padCol=#111
+      text { "Et itaque aspernatur deserunt odit. Est nulla soluta quis enim possimus. Magni accusantium ipsum quaerat illum magnam.\nAnimi similique consequuntur qui. Natus quo ad est quas odio inventore nisi. Rerum dolores id illo rem ipsum. Nesciunt et illo vitae veritatis quae et mollitia. Possimus enim dolor et odio.\nBlanditiis sapiente sed et aut molestiae alias suscipit.\n"}
+      weighed { dir=h weight=.5
+        pad=2px padCol=#111
+        scroll { v { "foo" "bar" "baz" "foo" "bar" "baz" "foo" "bar" "baz" "foo" "bar" "baz" "foo" "bar" "baz" "foo" "bar" "baz" "foo" "bar" "baz" } }
+        v { alX=center alY=center "this bit of text is centered" }
+      }
+    }
+    pad { all=0.5em
+      "hi"
+    }
+  }
+}
