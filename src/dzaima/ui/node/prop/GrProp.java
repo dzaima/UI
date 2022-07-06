@@ -18,4 +18,6 @@ public class GrProp extends PropI {
   public String toString() {
     return "(group)";
   }
+  
+  public boolean equals(Object o) { return o instanceof GrProp && val.equals(((GrProp) o).val); }
 }

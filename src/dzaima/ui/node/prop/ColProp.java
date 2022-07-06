@@ -13,4 +13,6 @@ public class ColProp extends PropI {
   public int col() { return c; }
   
   public String toString() { return ColorUtils.format(c); }
+  
+  public boolean equals(Object o) { return o instanceof ColProp && c==((ColProp) o).c; }
 }

@@ -6,9 +6,9 @@ import dzaima.utils.Tools;
 public class RangeProp extends PropI {
   private final double s, e;
   private final int pxS, pxE;
-  private String t;
-  public boolean needsEm;
-  private GConfig gc;
+  private final String t;
+  public final boolean needsEm;
+  private final GConfig gc;
   
   
   public RangeProp(GConfig gc, double s, double e, String t) {
@@ -31,5 +31,10 @@ public class RangeProp extends PropI {
   public String toString() {
     if (t.equals("px")) return s+t+":"+e+t;
     return s+t+":"+e+t+" = "+lenS()+"px:"+lenE()+"px";
+  }
+  public boolean equals(Object o0) {
+    if (!(o0 instanceof RangeProp)) return false;
+    RangeProp o = (RangeProp) o0;
+    return s==o.s && e==o.e && t.equals(o.t);
   }
 }

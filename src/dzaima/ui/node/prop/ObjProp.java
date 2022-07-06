@@ -14,4 +14,6 @@ public class ObjProp extends PropI {
   public String toString() {
     return o.toString();
   }
+  
+  public boolean equals(Object t) { return t instanceof ObjProp && ((ObjProp) t).o==o; }
 }

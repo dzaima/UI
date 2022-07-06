@@ -11,4 +11,6 @@ public class NumProp extends PropI {
   public double d() { return d; }
   
   public String toString() { return String.valueOf(d); }
+  
+  public boolean equals(Object o) { return o instanceof NumProp && d==((NumProp) o).d; }
 }

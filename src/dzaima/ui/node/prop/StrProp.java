@@ -15,4 +15,5 @@ public class StrProp extends PropI {
   public String toString() {
     return JSON.quote(s);
   }
+  public boolean equals(Object o) { return o instanceof StrProp && s.equals(((StrProp) o).s); }
 }

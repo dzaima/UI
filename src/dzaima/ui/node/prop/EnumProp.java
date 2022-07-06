@@ -20,4 +20,5 @@ public class EnumProp extends PropI {
   }
   public static EnumProp TRUE = new EnumProp("true");
   public static EnumProp FALSE = new EnumProp("false");
+  public boolean equals(Object o) { return o instanceof EnumProp && s.equals(((EnumProp) o).s); }
 }
