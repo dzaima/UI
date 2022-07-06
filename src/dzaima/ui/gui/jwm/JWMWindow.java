@@ -57,6 +57,7 @@ public class JWMWindow extends WindowImpl {
       case REGULAR: jwmw.setMouseCursor(MouseCursor.ARROW); break;
       case HAND: jwmw.setMouseCursor(MouseCursor.POINTING_HAND); break;
       case IBEAM: jwmw.setMouseCursor(MouseCursor.IBEAM); break;
+      case CROSSHAIR: jwmw.setMouseCursor(MouseCursor.CROSSHAIR); break;
       case E_RESIZE: case W_RESIZE: case EW_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_WE); break;
       case N_RESIZE: case S_RESIZE: case NS_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_NS); break;
       case NE_RESIZE: case SW_RESIZE: case NESW_RESIZE: jwmw.setMouseCursor(MouseCursor.RESIZE_NESW); break;

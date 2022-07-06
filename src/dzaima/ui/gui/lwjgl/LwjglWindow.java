@@ -333,6 +333,7 @@ public class LwjglWindow extends WindowImpl {
         case REGULAR: t = GLFW_ARROW_CURSOR; break;
         case HAND: t = GLFW_HAND_CURSOR; break;
         case IBEAM: t = GLFW_IBEAM_CURSOR; break;
+        case CROSSHAIR: t = GLFW_CROSSHAIR_CURSOR; break;
         case E_RESIZE: case W_RESIZE: case EW_RESIZE: t = GLFW_RESIZE_EW_CURSOR; break;
         case N_RESIZE: case S_RESIZE: case NS_RESIZE: t = GLFW_RESIZE_NS_CURSOR; break;
         case NW_RESIZE: case SE_RESIZE: case NWSE_RESIZE: t = GLFW_RESIZE_NWSE_CURSOR; break;

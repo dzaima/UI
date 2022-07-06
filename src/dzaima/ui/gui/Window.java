@@ -64,7 +64,7 @@ public abstract class Window {
   
   
   public enum CursorType {
-    REGULAR, HAND, IBEAM,
+    REGULAR, HAND, IBEAM, CROSSHAIR,
     N_RESIZE, E_RESIZE, S_RESIZE, W_RESIZE,
     NE_RESIZE, NW_RESIZE, SE_RESIZE, SW_RESIZE,
     EW_RESIZE, NS_RESIZE,
