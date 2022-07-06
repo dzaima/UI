@@ -1,6 +1,6 @@
 package dzaima.ui.node.prop;
 
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 
 public class ColProp extends PropI {
   
@@ -12,5 +12,5 @@ public class ColProp extends PropI {
   public char type() { return '#'; }
   public int col() { return c; }
   
-  public String toString() { return Tools.fmtColor(c); }
+  public String toString() { return ColorUtils.format(c); }
 }

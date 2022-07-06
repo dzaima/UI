@@ -65,13 +65,6 @@ public class Tools {
     throw new RuntimeException();
   }
   
-  public static String fmtColor(int c) {
-    String s = Integer.toUnsignedString(c, 16);
-    if (s.length()<8) s = repeat('0', 8-s.length()) + s;
-    else if (s.startsWith("ff")) s = s.substring(2);
-    return "#"+s;
-  }
-  
   public static String repeat(char c, int i) {
     char[] cs = new char[i];
     Arrays.fill(cs, c);
@@ -87,6 +80,10 @@ public class Tools {
   public static int constrain(int i, int s, int e) {
     assert s<=e;
     return Math.min(Math.max(i, s), e);
+  }
+  public static float constrain(float f, float s, float e) {
+    assert s<=e;
+    return Math.min(Math.max(f, s), e);
   }
   
   public static boolean vs(int col) { return col>>>24 != 0;   } // alpha≠0; is visible

@@ -11,7 +11,7 @@ public abstract class PrsField {
   public static class ColFld extends PrsField {
     public final int c;
     public ColFld(String n, int c) { super(n); this.c = c; }
-    public String toString() { return name+" = "+Tools.fmtColor(c); }
+    public String toString() { return name+" = "+ColorUtils.format(c); }
   }
   
   public static class NameFld extends PrsField {

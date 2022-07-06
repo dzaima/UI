@@ -10,13 +10,13 @@ public interface Hijack {
   default boolean hDoHover() { return true; }
   
   
+  
   static void set(Window base, Hijack h) {
     base.hijack = h;
   }
   static void clear(Window base, Hijack h) {
     if (base.hijack==h) base.hijack = null;
   }
-  
   static Node hoveredNode(NodeVW vw) {
     Node c = vw.base;
     int x = vw.w.mx - vw.rect.sx;

@@ -1,5 +1,7 @@
 package dzaima.ui.eval;
 
+import dzaima.utils.ColorUtils;
+
 public class Token {
   public final char type; // v-var/name; s-string; n-number; t-typed; #-color; \0 - EOF
   public final int off;
@@ -25,29 +27,9 @@ public class Token {
     public ColorTok(int o, String s) {
       super(o, '#');
       this.s = s;
-      Integer got = parse(s);
+      Integer got = ColorUtils.parse(s);
       if (got==null) throw new RuntimeException("Bad color: #"+s);
       this.c = got;
-    }
-    
-    public static Integer parsePrefixed(String s) {
-      if (s.startsWith("#")) return parse(s.substring(1));
-      else return parse(s);
-    }
-    public static Integer parse(String s) { // doesn't expect a starting '#'
-      try {
-        int p = Integer.parseUnsignedInt(s, 16);
-        if (s.length()==8) return p;
-        if (s.length()==7) return p|p>>>24<<28;
-        if (s.length()==6) return p|0xff000000;
-        if (s.length()==3) p|= 0xf000;
-        if (s.length()==3 || s.length()==4) return ((p>>12&15)<<24 | (p>>8&15)<<16 | (p>>4&15)<<8 | (p&15)) * 0x11;
-        if (s.length()==2) return p*0x010101 | 0xff000000;
-        if (s.length()==1) return p*0x111111 | 0xff000000;
-        return null;
-      } catch (Throwable t) {
-        return null;
-      }
     }
     
     public String toString() { return "Col(#\""+c+"\")"; }

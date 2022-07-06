@@ -1,6 +1,5 @@
 package dzaima.ui.gui.io;
 
-import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Window;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.node.Node;

@@ -92,10 +92,10 @@ public class Cfg {
   }
   
   private static void updateField(Cfg parent, CfgBuilder b, PrsField f) {
+    String fullPath = parent.subpathName(f.name);
     String[] p = Tools.split(f.name, '.');
     Cfg c = parent.getSubByPath(p, 1, true);
     String last = p[p.length - 1];
-    String fullPath = c.subpathName(last);
     if (!b.currentlyAdded.add(fullPath)) throw new RuntimeException("Duplicate config key '"+fullPath+"'");
     if (f instanceof PrsField.NameFld && ((PrsField.NameFld) f).cfg) {
       b.toMap.put(fullPath, ((PrsField.NameFld) f).s);

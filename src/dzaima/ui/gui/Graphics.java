@@ -87,6 +87,10 @@ public abstract class Graphics {
     poly(new float[]{x0, y0, x1, y1, x2, y2}, fill);
   }
   
+  public void circle(float x, float y, float r, Paint color) {
+    canvas.drawCircle(x, y, r, color);
+  }
+  
   public void translate(int dx, int dy) {
     canvas.translate(dx, dy);
     if (clip!=null) clip = clip.minus(dx, dy);
