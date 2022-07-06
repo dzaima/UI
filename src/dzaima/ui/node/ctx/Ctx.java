@@ -134,6 +134,7 @@ public abstract class Ctx {
     map.put("hl", HlNode::new);
     map.put("vl", VlNode::new);
     map.put("btn", BtnNode::new);
+    map.put("checkbox", CheckboxNode::new);
     map.put("pad", PadNode::new);
     map.put("svgicon", SvgIconNode::new);
     map.put("textarea", TextAreaNode::new);

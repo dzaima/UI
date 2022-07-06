@@ -90,6 +90,18 @@ btn {
   padY = .1em
 }
 
+checkbox {
+  size = 1em
+  colOff = #545454
+  colHover = #5E5E5E
+  colOn = #4772B3
+  borderCol = #4E4E4E
+  borderW = .05em
+  round = .15em
+  path = "M0.201,0.536L0.267,0.471L0.423,0.623L0.771,0.226L0.847,0.291L0.423,0.762"
+  pathCol = #EEE
+}
+
 codearea.lnCol = str.colorDisabled
 codearea.lnBg = #0000
 
