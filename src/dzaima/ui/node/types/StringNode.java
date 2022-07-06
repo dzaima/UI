@@ -3,6 +3,7 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
+import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.*;
 
@@ -310,5 +311,9 @@ public class StringNode extends InlineNode {
   
   public void resized() {
     assert !(p instanceof InlineNode);
+  }
+  
+  public Vec<Prop> getProps() {
+    return addProps(super.getProps(), p instanceof InlineNode || id("color")==-1? "str.color" : null);
   }
 }

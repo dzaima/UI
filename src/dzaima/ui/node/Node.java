@@ -348,4 +348,8 @@ public abstract class Node implements Click.RequestImpl {
   public Vec<Prop> getProps() {
     return Vec.ofNew(vs);
   }
+  public final Vec<Prop> addProps(Vec<Prop> prev, String... names) {
+    for (String n : names) if (n!=null) prev.add(gc.getCfgProp(n));
+    return prev;
+  }
 }

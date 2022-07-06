@@ -26,6 +26,7 @@ public abstract class Popup {
   
   protected abstract void unfocused();
   protected abstract void setup();
+  protected void preSetup() { } // maybe can just move setup to the place of preSetup?
   
   public void close() { closeRequested = true; } // request to be closed
   public void stopped() { } // invoked once when closing for any reason
@@ -77,6 +78,7 @@ public abstract class Popup {
   public VirtualMenu openVW(GConfig gc, Ctx ctx, PNodeGroup g, boolean focus) {
     VirtualMenu vw = new VirtualMenu(gc, ctx, g, this);
     isVW = true;
+    preSetup();
     pw.addVW(vw);
     if (focus) pw.focusVW(vw);
     
@@ -125,7 +127,7 @@ public abstract class Popup {
     protected void unfocused() { close(); }
     
     public void stopped() { action.accept("(closed)"); }
-  
+    
     public void menuItem(String id) {
       action.accept(id);
       close();
@@ -163,12 +165,12 @@ public abstract class Popup {
       if (frameCount<60 && frameCount%20==5 && focused) impl.focus();
       if (m.closeRequested) closeOnNext();
     }
-  
+    
     public void stopped() {
       super.stopped();
       m.stopped();
     }
-  
+    
     public boolean key(Key key, int scancode, KeyAction a) {
       if (m.key(key, a)) return true;
       return super.key(key, scancode, a);
@@ -186,12 +188,12 @@ public abstract class Popup {
     public boolean fullyOpaque() { return true; }
     public boolean drawShadow() { return true; }
     public boolean ownsXY(int x, int y) { return true; }
-  
+    
     public void stopped() {
       super.stopped();
       m.stopped();
     }
-  
+    
     protected Rect getLocation(int pw, int ph) {
       XY sz = m.getSize();
       XY p = m.pos(sz, new Rect(0, 0, m.pw.w, m.pw.h));

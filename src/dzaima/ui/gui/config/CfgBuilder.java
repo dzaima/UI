@@ -6,7 +6,7 @@ import dzaima.utils.Tools;
 
 import java.util.*;
 
-class CfgBuilder {
+public class CfgBuilder {
   public final GConfig gc;
   public final Cfg root = new Cfg(null, "");
   public HashSet<String> currentlyAdded = new HashSet<>();
@@ -17,6 +17,11 @@ class CfgBuilder {
   public void addSrc(String src) {
     currentlyAdded.clear();
     root.update(this, Prs.parseList(src));
+  }
+  
+  public void updateProp(String path, PropI val) {
+    String[] p = Tools.split(path, '.');
+    root.getSubByPath(p, 1, true).props.put(p[p.length-1], val);
   }
   
   private PropI complete(HashSet<String> done, String which) {
