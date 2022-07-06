@@ -16,7 +16,7 @@ public class Click {
   
   public boolean down;
   
-  public int mod; // modifiers as per Key.M_*; TODO decide if should be set on start, or on every frame
+  public int mod0; // modifiers as per Key.M_* on the starting frame
   public int sx, sy; // global x/y start
   public int cx, cy; // global x/y current (or last position, if released)
   public int dx, dy; // global x/y delta from previous frame

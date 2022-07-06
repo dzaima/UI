@@ -128,7 +128,7 @@ public class LwjglWindow extends WindowImpl {
       if (key==GLFW_KEY_LEFT_SHIFT   || key==GLFW_KEY_RIGHT_SHIFT  ) this.mod = action==GLFW_PRESS? mod|Key.M_SHIFT : mod&~Key.M_SHIFT; // shift = action==GLFW_PRESS? true : action==GLFW_RELEASE? false : shift;
       if (key==GLFW_KEY_LEFT_CONTROL || key==GLFW_KEY_RIGHT_CONTROL) this.mod = action==GLFW_PRESS? mod|Key.M_CTRL  : mod&~Key.M_CTRL; // ctrl  = action==GLFW_PRESS? true : action==GLFW_RELEASE? false : ctrl ;
       if (key==GLFW_KEY_LEFT_ALT     || key==GLFW_KEY_RIGHT_ALT    ) this.mod = action==GLFW_PRESS? mod|Key.M_ALT   : mod&~Key.M_ALT; // alt   = action==GLFW_PRESS? true : action==GLFW_RELEASE? false : alt  ;
-      for (Click c : w.btns) c.mod = this.mod;
+      for (Click c : w.btns) c.mod0 = this.mod;
       KeyVal kv;
       int kmod = mod&Key.M_MOD;
       if (key>=GLFW_KEY_0 & key<=GLFW_KEY_9) kv = KeyVal.valueOf("d" + (key-GLFW_KEY_0));

@@ -83,7 +83,7 @@ public class JWMEventHandler implements Consumer<Event> {
               : b==MouseButton.FORWARD? Click.FORWARD : 99;
       if (num<=Click.FORWARD) {
         Click c = ww.btns[num];
-        c.mod = mod(e::isModifierDown);
+        c.mod0 = mod(e::isModifierDown);
         c.down = e.isPressed();
         if (c.down) ww.mouseDown(c);
         else ww.mouseUp(ww.mx, ww.my, c);

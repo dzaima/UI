@@ -333,7 +333,7 @@ public class EditNode extends Node {
     y-= drawOffY;
     ctx.focus(this);
     XY l = find(x, y);
-    if (Key.only(c.mod, Key.M_ALT)) {
+    if (Key.only(c.mod0, Key.M_ALT)) {
       um.pushU("add cursor");
       movedCursor = addCursor(cs.sz, cs.peek());
       movedCursor.mv(l.x, l.y);
@@ -345,7 +345,7 @@ public class EditNode extends Node {
       tmpNoScroll = true;
       collapseCursors(true);
       tmpNoScroll = false;
-      if (!Key.shift(c.mod)) cs.get(0).mv(l.x, l.y);
+      if (!Key.shift(c.mod0)) cs.get(0).mv(l.x, l.y);
       movedCursor = cs.get(0);
       movedCursorPos = 0;
       um.pop();

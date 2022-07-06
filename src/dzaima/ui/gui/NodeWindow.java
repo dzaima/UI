@@ -25,6 +25,7 @@ public class NodeWindow extends Window {
   public final Node base;
   public final Vec<VirtualWindow> vws = new Vec<>();
   public VirtualWindow focusedVW, hoveredVW;
+  public int keyMod; // modifiers as per Key.M_*
   
   public NodeWindow(GConfig gc, Ctx pctx, PNodeGroup g, WindowInit i) {
     super(i);
@@ -187,6 +188,7 @@ public class NodeWindow extends Window {
     hoveredVW.scroll(dx*speed, dy*speed);
   }
   public boolean key(Key key, int scancode, KeyAction a) {
+    keyMod = key.mod;
     Node n = focusNode();
     if (n!=null && n.keyF(key, scancode, a)) return true;
     if (focusedVW!=null) return focusedVW.key(key, scancode, a);
