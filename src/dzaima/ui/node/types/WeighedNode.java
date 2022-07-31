@@ -11,6 +11,7 @@ public class WeighedNode extends Node {
   public WeighedNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
     weight = gc.fD(this, "weight", 0.5f);
+    enabled = gc.boolD(this, "enabled", true);
   }
   
   protected float weight;
@@ -33,7 +34,7 @@ public class WeighedNode extends Node {
   private float handlePos() { return (v? ch.get(1).dy : ch.get(1).dx) - pad; }
   
   public void mouseStart(int x, int y, Click c) {
-    if (c.bL() && withinHandle(x, y)) c.register(this, x, y);
+    if (c.bL() && withinHandle(x, y) && enabled) c.register(this, x, y);
     super.mouseStart(x, y, c);
   }
   
@@ -44,6 +45,7 @@ public class WeighedNode extends Node {
   boolean dragging;
   public void mouseDown(int x, int y, Click c) { dragging = false; }
   public void mouseTick(int x, int y, Click c) {
+    if (!enabled) c.unregister();
     if (dragging || !gc.isClick(c)) {
       int cw = (v? h : w)-pad;
       if (!dragging) {
@@ -67,9 +69,20 @@ public class WeighedNode extends Node {
     }
   }
   
+  protected boolean enabled = true;
+  public boolean isModifiable() { return enabled; }
+  public float getWeight() { return weight; }
+  public void setModifiable(boolean enabled) {
+    this.enabled = enabled;
+  }
+  public void setWeight(float w) {
+    this.weight = w;
+    mResize();
+  }
+  
   private short cPos;
   public void hoverS() { cPos = ctx.vw().pushCursor(null); }
-  public void hoverT(int mx, int my) { ctx.vw().replaceCursor(cPos, withinHandle(mx, my)? (v? Window.CursorType.NS_RESIZE : Window.CursorType.EW_RESIZE) : null); }
+  public void hoverT(int mx, int my) { ctx.vw().replaceCursor(cPos, withinHandle(mx, my) && enabled? (v? Window.CursorType.NS_RESIZE : Window.CursorType.EW_RESIZE) : null); }
   public void hoverE() { ctx.vw().popCursor(); }
   
   protected void resized() {
