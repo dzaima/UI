@@ -26,7 +26,7 @@ public class SvgIconNode extends Node {
     sc = vs[id("sz")].f()*gc.em*(1f/169);
     w = Tools.ceil(vs[id("w")].f()*sc);
     h = Tools.ceil(vs[id("h")].f()*sc);
-    col = new Paint().setColor(gc.col(this, "color", "svgicon.color"));
+    col = new Paint().setColor(gc.col(this, "color", "icon.color"));
   }
   
   public void drawC(Graphics g) {
