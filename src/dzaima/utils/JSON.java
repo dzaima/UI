@@ -195,6 +195,9 @@ public class JSON {
       for (int i = 0; i < ks.length; i++) if (map.put(ks[i], vs[i]) != null) throw new RuntimeException("Duplicate entry for "+quote(ks[i]));
     }
     
+    public String[] orderedKeys() { return ks; }
+    public Val[] orderedVals() { return vs; }
+    
     public Val get(String k, Val def) {
       if (ks!=null && ks.length<10) {
         for (int i = 0; i < ks.length; i++) if (k.equals(ks[i])) return vs[i];
