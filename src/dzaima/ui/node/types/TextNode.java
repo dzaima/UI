@@ -33,7 +33,7 @@ public class TextNode extends InlineNode {
     sv.tcol = pFG;
     sv.tbg = pBG;
   }
-  protected void baseline(int asc, int dsc) { }
+  protected void baseline(int asc, int dsc, int h) { }
   
   int tsz = -1;
   int col; boolean hasCol;

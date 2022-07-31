@@ -215,7 +215,7 @@ public class StringNode extends InlineNode {
     colBG = sv.tbg;
     if (mut) mRedraw();
   }
-  protected void baseline(int asc, int dsc) {
+  protected void baseline(int asc, int dsc, int h) {
     this.asc = (short)(asc-f.ascI);
     for (Word w : words) if (w.f(Word.F_EL) && w.split==null) w.y+= asc-f.ascI;
   }

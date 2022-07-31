@@ -17,6 +17,7 @@ public class BtnNode extends Node {
   private int bRad, bcolL, bcolD;
   // style==2:
   private int radius;
+  private boolean useMaxWidth;
   public BtnNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
   }
@@ -28,6 +29,7 @@ public class BtnNode extends Node {
       padX = gc.len(this, "padX", "btn.padX");
       padY = gc.len(this, "padY", "btn.padY");
     } else padX=padY = vs[padId].len();
+    useMaxWidth = gc.boolD(this, "maxWidth", false);
     
     if (styleS.equals("rect")) {
       style = 1;
@@ -68,8 +70,8 @@ public class BtnNode extends Node {
   }
   
   public Node ch() { return ch.get(0); }
-  public int minW(     ) { return ch().minW(               )+(bRad+padX)*2; }
-  public int minH(int w) { return ch().minH(w-(bRad+padX)*2)+(bRad+padY)*2; }
+  public int minW(     ) { return (useMaxWidth? ch().maxW() : ch().minW())+(bRad+padX)*2; }
+  public int minH(int w) { return (ch().minH(w-(bRad+padX)*2))            +(bRad+padY)*2; }
   public int maxW(     ) { return minW( ); }
   public int maxH(int w) { return minH(w); }
   

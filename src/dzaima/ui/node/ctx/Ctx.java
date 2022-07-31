@@ -16,7 +16,11 @@ import java.util.HashMap;
 public abstract class Ctx {
   public abstract NodeGen getGen(String name);
   private final HashMap<String, Node> ids = new HashMap<>();
-  public Node id(String id) { return ids.get(id); }
+  public Node id(String id) {
+    Node res = ids.get(id);
+    assert res!=null : "Expected node with ID "+id+", but it wasn't found";
+    return res;
+  }
   public GConfig gc;
   public Ctx(GConfig gc) {
     this.gc = gc;
@@ -129,6 +133,7 @@ public abstract class Ctx {
     HashMap<String, Ctx.NodeGen> map = new HashMap<>();
     map.put("text", TextNode::new);
     map.put("stext", STextNode::new);
+    map.put("ta", InlineNode.TANode::new);
     map.put("h", HNode::new);
     map.put("v", VNode::new);
     map.put("hl", HlNode::new);

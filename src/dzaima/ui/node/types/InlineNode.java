@@ -24,7 +24,7 @@ public abstract class InlineNode extends Node {
   }
   
   protected abstract void addInline(InlineSolver sv);
-  protected abstract void baseline(int asc, int dsc);
+  protected abstract void baseline(int asc, int dsc, int h);
   
   public static class InlineSolver {
     public final int w; // total max width allocated for this
@@ -66,8 +66,9 @@ public abstract class InlineNode extends Node {
         int cw = n.minW();
         int ch = n.minH(w);
         if (x+cw > w) nl();
-        if (resize) n.resize(cw, ch, (int)x, y);
-        x+= cw;
+        int x0 = Tools.ceil(x);
+        if (resize) n.resize(cw, ch, x0, y);
+        x = x0+cw;
         h = Math.max(h, ch);
       }
     }
@@ -82,7 +83,7 @@ public abstract class InlineNode extends Node {
           boolean start = c.sY2==-1;
           if (start) c.sY2 = (short)ny;
           c.eY2 = (short)ny;
-          if (!start) c.baseline(a, b); // TODO pass h in too?
+          if (!start) c.baseline(a, b, h);
           c.h = ny;
         }
       }
@@ -128,7 +129,7 @@ public abstract class InlineNode extends Node {
     private final boolean returnNewline;
     public LineEnd(Ctx ctx, boolean returnNewline) { super(ctx, KS_NONE, VS_NONE); this.returnNewline = returnNewline; }
     protected void addInline(InlineSolver sv) { sv.x = sv.w; }
-    protected void baseline(int asc, int dsc) { }
+    protected void baseline(int asc, int dsc, int h) { }
     public String asString() {
       return returnNewline? "\n" : "";
     }
@@ -141,18 +142,52 @@ public abstract class InlineNode extends Node {
       Node c = ch.get(0);
       sX = 0; eX = (short) w;
       sY1 = eY1 = (short) sv.y;
-      c.resize(sv.w, c.minH(sv.w), 0, sv.y);
+      // if (sv.resize)
+        c.resize(sv.w, c.minH(sv.w), 0, sv.y);
       sv.y+= c.h;
       sv.h = sv.a = sv.b = 0;
       sv.x = sv.w;
       sY2 = eY2 = (short) sv.y;
     }
-    protected void baseline(int asc, int dsc) { }
+    protected void baseline(int asc, int dsc, int h) { }
     public static FullBlock wrap(Node n) {
       FullBlock b = new FullBlock(n.ctx);
       b.add(n);
       return b;
     }
+  }
+  public static class TANode extends InlineNode {
+    public TANode(Ctx ctx, String[] ks, Prop[] vs) {
+      super(ctx, ks, vs);
+    }
+    
+    protected String mode() { return vs[id("mode")].val(); }
+    protected void baseline(int asc, int dsc, int h) {
+      Node n = ch.get(0);
+      switch (mode()) {
+        case "above": n.dy+= asc-n.h; break;
+        case "below": n.dy+= asc; break;
+        case "top": return;
+        case "bottom": if (n.h<h) n.dy+= h-n.h; break;
+      }
+    }
+    protected void addInline(InlineSolver sv) {
+      Node n = ch.get(0);
+      int cw = n.minW();
+      int ch = n.minH(sv.w);
+      if (sv.x+cw > sv.w) sv.nl();
+      int x0 = Tools.ceil(sv.x);
+      if (sv.resize) n.resize(cw, ch, x0, sv.y);
+      sv.x = x0+cw;
+      String mode = mode();
+      if (mode.equals("above")) sv.a = Math.max(sv.a, ch);
+      else if (mode.equals("below")) sv.b = Math.max(sv.b, ch);
+      else if (mode.equals("top") || mode.equals("bottom")) sv.h = Math.max(sv.h, ch);
+      else Log.warn("node 'ta'", "invalid mode \""+mode+"\"");
+    }
+    public int minW() { return ch.get(0).minW(); }
+    public int maxW() { return ch.get(0).maxW(); }
+    public int minH(int w) { return ch.get(0).minH(w); }
   }
   
   public static abstract class SubSelConsumer {
