@@ -6,6 +6,7 @@ import dzaima.ui.node.ctx.Ctx;
 public abstract class Tab {
   public TabWrapper w;
   public final Ctx ctx;
+  public boolean open;
   
   public Tab(Ctx ctx) {
     this.ctx = ctx;
