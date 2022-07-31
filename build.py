@@ -89,7 +89,7 @@ def jar(res, classpath, release = ""):
     call([
       "javac",
       *(["--release",release] if release else []),
-      "-classpath", classpath+":"+':'.join(prev_classes),
+      "-classpath", ':'.join(classpath+prev_classes),
       "-Xmaxerrs", "1000",
       "-d", "classes",
       * srcs
@@ -109,11 +109,13 @@ def build_ui_lib(uiloc):
     shutil.copytree(uiloc+"/lib/", uilib)
   if os.path.exists(res): shutil.rmtree(res)
   shutil.copytree(uiloc+"/"+res, res)
-  return ':'.join(["lib/ui"+x for x in cp])+":lib/UI.jar"
+  return ["lib/ui"+x for x in cp]+["lib/UI.jar"]
 
 def make_run(path, classpath, main, flags = ""):
   run = f"""#!/usr/bin/env bash
-java {flags} -cp {shstr(classpath)} {main} $@
+APPDIR=`readlink -f "$0"`
+APPDIR=`dirname "$APPDIR"`
+java -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
 """
 
   with open(path, 'w') as f:
@@ -148,10 +150,10 @@ def build_ui(res = "UI.jar"):
   ]
   
   if not 'skipui' in sys.argv:
-    jar(res, ':'.join(classpath), "8")
+    jar(res, classpath, "8")
   return classpath
 
 
 if __name__ == "__main__":
   cp = build_ui()
-  make_run("run", ':'.join(cp)+":UI.jar", "dzaima.ui.apps.ExMain", "-ea")
+  make_run("run", cp+["UI.jar"], "dzaima.ui.apps.ExMain", "-ea")

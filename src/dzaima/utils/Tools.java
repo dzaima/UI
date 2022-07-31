@@ -10,7 +10,12 @@ import java.util.Arrays;
 @SuppressWarnings({"AssertWithSideEffects", "ConstantConditions"})
 public class Tools {
   public static final int BIG = Integer.MAX_VALUE/2;
-  public static Path RES_PATH = Paths.get("res/");
+  public static Path RES_DIR;
+  static {
+    String res = System.getProperty("RES_DIR");
+    if (res!=null) RES_DIR = Paths.get(res);
+    else RES_DIR = Paths.get("res/");
+  }
   
   // assertion stuff
   public static final boolean DBG;
@@ -124,7 +129,7 @@ public class Tools {
   }
   
   public static String readRes(String s) {
-    return Tools.readFile(RES_PATH.resolve(s));
+    return Tools.readFile(RES_DIR.resolve(s));
   }
   
   public static void sleep(int ms) {
