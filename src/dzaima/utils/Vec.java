@@ -106,6 +106,10 @@ public class Vec<T> implements Iterable<T> {
     for (int i = 0; i < sz; i++) if (arr[i] == t) return i;
     return -1;
   }
+  public int indexOfEqual(T t) {
+    for (int i = 0; i < sz; i++) if (Objects.equals(arr[i], t)) return i;
+    return -1;
+  }
   
   
   public int size() {
