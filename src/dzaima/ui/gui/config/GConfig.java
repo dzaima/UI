@@ -37,7 +37,7 @@ public class GConfig {
   
   public void setEM(int em) {
     this.em = em;
-    imgScale = em>10 && em<16? 1 : 13f/em; // don't scale images if they'd be scaled by too little (to keep pixels real pixels)
+    imgScale = em>10 && em<16? 1 : em/13f; // don't scale images if they'd be scaled by too little (to keep pixels real pixels)
     cfgUpdated();
   }
   public void cfgUpdated() {

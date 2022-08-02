@@ -115,6 +115,9 @@ public class Prs {
   }
   
   private RuntimeException err(String msg) {
-    return new RuntimeException(msg+" at "+(off>=arr.length? arr[arr.length-1] : arr[off]).off);
+    return new ParserException(msg+" at "+(off>=arr.length? arr[arr.length-1] : arr[off]).off);
+  }
+  public static class ParserException extends RuntimeException {
+    public ParserException(String msg) { super(msg); }
   }
 }

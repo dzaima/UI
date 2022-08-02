@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 import io.github.humbleui.skija.Image;
 
 public class ImgNode extends Node { // TODO remove
@@ -12,6 +12,7 @@ public class ImgNode extends Node { // TODO remove
   private float sc;
   public ImgNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
+    Log.warn("'img' node is deprecated");
   }
   
   
