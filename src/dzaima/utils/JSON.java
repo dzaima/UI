@@ -113,7 +113,11 @@ public class JSON {
       b.append(e);
     }
     void nl() {
-      if (!mini) b.append('\n').append(Tools.repeat(' ', ci));
+      if (!mini) {
+        char[] s = new char[ci];
+        Arrays.fill(s, ' ');
+        b.append('\n').append(s);
+      }
     }
   }
   
