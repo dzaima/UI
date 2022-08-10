@@ -64,7 +64,7 @@ public abstract class InlineNode extends Node {
         ln.add(c);
       } else {
         int cw = n.minW();
-        int ch = n.minH(w);
+        int ch = n.minH(cw);
         if (x+cw > w) nl();
         int x0 = Tools.ceil(x);
         if (resize) n.resize(cw, ch, x0, y);
