@@ -576,13 +576,15 @@ public class EditNode extends Node {
       x = pos.x;
     }
     if (mode==ScrollNode.Mode.FULLY_OFFSCREEN || mode==ScrollNode.Mode.PARTLY_OFFSCREEN) {
-      int csy = sc.clipSY-sc.oy;
-      int cey = sc.clipEY-sc.oy;
+      XY rel = this.relPos(sc);
+      int csy = sc.clipSY-rel.y;
+      int cey = sc.clipEY-rel.y;
       if (y > csy  &&  y+f.hi < cey) return;
       int mid = (csy+cey)/2;
-      if (y>mid) y+= f.hi;
+      boolean hi = y>mid;
+      if (hi) y+= f.hi;
       mode = ScrollNode.Mode.SMOOTH;
-      ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, (y<csy? y-csy : y-cey) + mid);
+      ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, (hi? y-cey : y-csy) + mid);
     } else {
       ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, y);
     }
