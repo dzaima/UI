@@ -142,7 +142,7 @@ public abstract class InlineNode extends Node {
       Node c = ch.get(0);
       sX = 0; eX = (short) w;
       sY1 = eY1 = (short) sv.y;
-      // if (sv.resize)
+      // if (sv.resize) // TODO this should really be here
         c.resize(sv.w, c.minH(sv.w), 0, sv.y);
       sv.y+= c.h;
       sv.h = sv.a = sv.b = 0;
@@ -161,7 +161,7 @@ public abstract class InlineNode extends Node {
       super(ctx, ks, vs);
     }
     
-    protected String mode() { return vs[id("mode")].val(); }
+    protected String mode() { int id = id("mode"); return id==-1? "top" : vs[id].val(); }
     protected void baseline(int asc, int dsc, int h) {
       Node n = ch.get(0);
       switch (mode()) {
@@ -173,8 +173,16 @@ public abstract class InlineNode extends Node {
     }
     protected void addInline(InlineSolver sv) {
       Node n = ch.get(0);
-      int cw = n.minW();
-      int ch = n.minH(sv.w);
+      boolean maxW = false;
+      
+      int width = id("width");
+      if (width!=-1) switch (vs[width].val()) { default: Log.error("node 'ta'", "width should be either min or max");
+        case "min": maxW = false; break;
+        case "max": maxW = true; break;
+      }
+      
+      int cw = maxW? Math.min(sv.w, n.maxW()) : n.minW();
+      int ch = n.minH(cw);
       if (sv.x+cw > sv.w) sv.nl();
       int x0 = Tools.ceil(sv.x);
       if (sv.resize) n.resize(cw, ch, x0, sv.y);
