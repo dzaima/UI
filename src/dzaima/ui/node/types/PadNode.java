@@ -1,5 +1,6 @@
 package dzaima.ui.node.types;
 
+import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
@@ -41,7 +42,7 @@ public class PadNode extends Node {
   public int maxH(int w) { return ch().maxH(w-pX)+pY; }
   
   public void resized() {
-    assert ch.sz==1 : "pad should have exactly 1 child";
+    assert ch.sz==1 : Devtools.debugMe(this)+" should have exactly 1 child";
     ch().resize(w-pX, h-pY, pL, pU);
   }
 }

@@ -32,7 +32,7 @@ public class Cfg {
       PropI r = c.props.get(p[p.length-1]);
       if (r!=null) return r;
     }
-    throw new Error("Config path '"+path+"' found");
+    throw new Error("Config path '"+path+"' not found");
   }
   
   private HashMap<String, String> kbActions;
