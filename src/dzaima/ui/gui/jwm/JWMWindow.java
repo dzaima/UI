@@ -202,6 +202,7 @@ public class JWMWindow extends WindowImpl {
         drawRequest = w.nextTick();
       } catch (Throwable e) {
         dzaima.ui.gui.Window.onFrameError(w, e);
+        // TODO should request tick?
         return;
       }
     }

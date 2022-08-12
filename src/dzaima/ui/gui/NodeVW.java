@@ -38,6 +38,7 @@ public abstract class NodeVW extends VirtualWindow {
     long sns = System.nanoTime();
     int nw = Math.max(base.minW(  ), Math.min(rect.w(), base.maxW( )));
     int nh = Math.max(base.minH(nw), Math.min(rect.h(), base.maxH(nw)));
+    base.propsTick();
     base.resize(nw, nh, 0, 0);
     long ens = System.nanoTime();
     if (NodeWindow.PRINT_ON_RESIZE && !(w instanceof Devtools)) System.out.println((ens-sns)/1e6d+"ms resize to "+nw+";"+nh);

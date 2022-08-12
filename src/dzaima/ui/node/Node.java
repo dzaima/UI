@@ -171,9 +171,9 @@ public abstract class Node implements Click.RequestImpl {
         1. general events in unknown order
         2. Node::mouseTick
         3. Window::eventTick (incl. hoverS/hoverE)
-      3. resize
-      4. tick
-      5. resize (yes, resize is called twice, to guarantee that before both tick and draw there's proper layouting; in most cases only one will be triggered, but not always)
+      3. maybe resize (incl. propsUpd if ran)
+      4. tick (incl. propsUpd)
+      5. maybe resize (incl. propsUpd if ran; yes, resize is called twice per frame, to guarantee that before both tick and draw there's proper layouting; in most cases only one will be triggered, but that's not guaranteed)
       6. draw
     
     Override `drawC` with a function that draws foreground elements of this only
@@ -234,13 +234,20 @@ public abstract class Node implements Click.RequestImpl {
   public final void tick() {
     int f0 = flags;
     if ((f0&(ATICK|MTICK|PROPS|ANYCT)) == 0) return;
-    flags = (short)(f0 & ~(MTICK|PROPS|ANYCT));
+    flags&= ~(MTICK|PROPS|ANYCT);
     if ((f0&PROPS) != 0) hProps();
     if ((f0&(ATICK|MTICK)) != 0) {
       if ((f0&ATICK) != 0) anyc();
       tickC();
     }
     if ((f0&ANYCT) != 0) for (Node c : ch) c.tick();
+  }
+  public final void propsTick() {
+    int f0 = flags;
+    if ((f0&PROPS) == 0) return;
+    flags&= ~PROPS;
+    hProps();
+    if ((f0&ANYCT) != 0) for (Node c : ch) c.propsTick();
   }
   public final void aTick() { flags|= ATICK; anyc(); }
   public final void mTick() { flags|= MTICK; anyc(); }
