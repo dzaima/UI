@@ -80,7 +80,7 @@ public class BtnNode extends Node {
   }
   
   public void mouseStart(int x, int y, Click c) {
-    c.register(this, x, y);
+    if (c.bL()) c.register(this, x, y);
   }
   
   boolean clicked;
