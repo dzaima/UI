@@ -55,7 +55,7 @@ public class JWMEventHandler implements Consumer<Event> {
       // eventFrame will appear later, so not requesting tick is fine
     } else if (ev instanceof EventMouseScroll) {
       EventMouseScroll e = (EventMouseScroll) ev;
-      w.enqueue(() -> ww.scroll(e.getDeltaX()/15f, e.getDeltaY()/15f, e.isModifierDown(KeyModifier.SHIFT)));
+      w.enqueue(() -> ww.scroll(e.getDeltaX(), e.getDeltaY(), e.isModifierDown(KeyModifier.SHIFT)));
     } else if (ev instanceof EventWindowCloseRequest) {
       w.w.closeRequested();
       w.requestTick();

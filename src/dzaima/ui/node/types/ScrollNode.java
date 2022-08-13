@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 public class ScrollNode extends FrameNode {
@@ -250,7 +250,9 @@ public class ScrollNode extends FrameNode {
     if (dx==0 && yMode==OFF) dx=dy;
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
-    int sz = gc.getProp("scroll.nodeSpeed").len();
+    PropI s = gc.getProp("scroll.nodeSpeed");
+    if (s.type()!='0') { Log.error("scroll", "scroll.nodeSpeed should be a number"); return true; }
+    float sz = s.f();
     ox+= (int)(dx*sz);
     oy+= (int)(dy*sz);
     limit();
