@@ -43,7 +43,7 @@ public class Cfg {
       if (kt==null) throw new RuntimeException("Didn't find 'keys' at '"+path+"' for keymap");
       kt.props.forEach((name, gr) -> {
         for (PNode n : gr.gr().ch) {
-          String c = ((PNodeStr) n).s;
+          String c = ((PNode.PNodeStr) n).s;
           Key k = Key.byName(c);
           if (k==null) throw new RuntimeException("Invalid key description: \""+c+"\"");
           kbActions.put(k.repr(), name);

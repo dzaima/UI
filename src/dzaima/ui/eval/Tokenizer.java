@@ -1,7 +1,7 @@
 package dzaima.ui.eval;
 
 import dzaima.ui.eval.Token.*;
-import dzaima.utils.Vec;
+import dzaima.utils.*;
 
 public class Tokenizer {
   
@@ -36,8 +36,17 @@ public class Tokenizer {
       } else if (nameS(c)) {
         int li = i-1;
         while (i<s.length() && nameM(s.charAt(i))) i++;
-        // TODO properly.parse.dot.chains
-        res.add(new NameTok(li, s.substring(li, i)));
+        String v = s.substring(li, i);
+        String[] parts = Tools.split(v, '.');
+        for (int j = 0; j < parts.length; j++) {
+          String p = parts[j];
+          if (p.length() == 0) throw err("Empty dot-separated segment", i);
+          if (!nameS(p.charAt(0))) throw err("Name starts with number", i);
+          int idx = p.indexOf('$');
+          if (idx>0) throw err("'$' in the middle of name", i);
+          if (idx==0 && j!=parts.length-1) throw err("'$' can only be used in the last item of a dot chain", i);
+        }
+        res.add(new NameTok(li, v, parts[parts.length-1].charAt(0)=='$'));
       } else if (c=='"') {
         int li = i;
         StringBuilder b = new StringBuilder();
@@ -45,14 +54,14 @@ public class Tokenizer {
           c = s.charAt(i++);
           if (c=='"') break;
           if (c=='\\') {
-            if (i>=s.length()) throw new RuntimeException("Tokenize error: unfinished string");
+            if (i>=s.length()) throw err("Tokenize error: unfinished string", i);
             c = s.charAt(i++);
             if (c=='\\') b.append('\\');
             else if (c=='"') b.append('"');
             else if (c=='n') b.append('\n');
             else if (c=='r') b.append('\r');
             else if (c=='t') b.append('\t');
-            else throw new RuntimeException("Tokenize error: string escapes not finished");
+            else throw err("Tokenize error: string escapes not finished", i);
           } else b.append(c);
         }
         res.add(new StrTok(li, b.toString()));
@@ -61,27 +70,33 @@ public class Tokenizer {
         while (i<s.length() && hex(s.charAt(i))) i++;
         res.add(new ColorTok(li, s.substring(li, i)));
       } else if (c=='/') {
-        if (i>=s.length()) throw new RuntimeException("Tokenize error: ending with '/'");
+        if (i>=s.length()) throw err("Tokenize error: ending with '/'", i);
         char n = s.charAt(i++);
         if (n=='/') {
           while (i<s.length() && !ln(s.charAt(i))) i++;
         } else if (n=='*') {
           i++;
           do {
-            if (i>=s.length()) throw new RuntimeException("Tokenize error: unfinished '/*' comment");
+            if (i>=s.length()) throw err("Tokenize error: unfinished '/*' comment", i);
             if (s.charAt(i-1)=='*' && s.charAt(i)=='/') break;
             i++;
           } while (true);
           i++;
-        } else throw new RuntimeException("Tokenize error: slash not followed by '/' or '*'");
-      } else throw new RuntimeException("Tokenize error: failed to parse chr '"+c+"'");
+        } else throw err("Tokenize error: slash not followed by '/' or '*'", i);
+      } else throw err("Tokenize error: failed to parse chr '"+c+"'", i);
     }
-    if (depth!=0) throw new RuntimeException("Parse error: mismatched brackets");
+    if (depth!=0) throw err("Parse error: mismatched brackets", i);
     res.add(new EOFTok(s.length()));
     return res;
   }
+  
+  private static RuntimeException err(String msg, int off) {
+    return new Prs.ParserException(msg+" at "+off);
+  }
+  
+  
   private static boolean nameS(char c) {
-    return c>='a' & c<='z'  |  c>='A' & c<='Z'  |  c=='.';
+    return c>='a' & c<='z'  |  c>='A' & c<='Z'  |  c=='.'  |  c=='$';
   }
   private static boolean nameM(char c) {
     return nameS(c) | dig(c);

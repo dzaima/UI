@@ -1,0 +1,25 @@
+example {
+  $def = btn { style=round round=.5em padX=1em padY=1em id=$id w=max text { tsz=2em $ct } }
+  $rect = h { $f bg=#333 }
+  $square = example.$rect { f = {w=$sz h=$sz} }
+  $list = { "hello" text { "world" "!" } }
+  
+  ui = v { bg=#222
+    example.$list{}
+    example.$def { id=a ct=1em }
+    example.$def { id=b ct="bar" }
+    example.$def { id=c ct="baz" }
+    hl { pad=.2em
+      vl { pad=.2em
+        example.$rect { f = { w=2em h=2em } }
+        example.$rect { f = { w=2em h=3em } }
+        example.$rect { f = { w=2em h=4em } }
+      }
+      vl { pad=.2em
+        example.$square { sz=2em }
+        example.$square { sz=3em }
+        example.$square { sz=4em }
+      }
+    }
+  }
+}

@@ -60,7 +60,7 @@ public class MenuNode extends Node {
           Vec<PNode> keys = ((MINode) c).keys();
           if (keys==null) continue;
           for (PNode k : keys) {
-            if (key.equals(Key.byName(((PNodeStr) k).s))) {
+            if (key.equals(Key.byName(((PNode.PNodeStr) k).s))) {
               ((MINode) c).run();
               return true;
             }
@@ -106,7 +106,7 @@ public class MenuNode extends Node {
         StringBuilder b = new StringBuilder();
         for (PNode n : keys) {
           if (b.length()>0) b.append(", ");
-          b.append(Objects.requireNonNull(Key.byName(((PNodeStr) n).s)).repr());
+          b.append(Objects.requireNonNull(Key.byName(((PNode.PNodeStr) n).s)).repr());
         }
         binds = b.length()==0? "(unassigned)" : b.toString();
         bindW = f.widthf(binds);

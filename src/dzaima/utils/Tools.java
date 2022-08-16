@@ -57,8 +57,7 @@ public class Tools {
           if (i==b.length) b = Arrays.copyOf(b, b.length*2);
         }
       }
-      byte[] r = Arrays.copyOf(b, i);
-      return r;
+      return Arrays.copyOf(b, i);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

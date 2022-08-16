@@ -149,7 +149,7 @@ public abstract class Graphics {
     if (family.type()=='{') {
       Vec<PNode> ch = family.gr().ch;
       String[] families = new String[ch.sz];
-      for (int i = 0; i < ch.sz; i++) families[i] = ((PNodeStr) ch.get(i)).s;
+      for (int i = 0; i < ch.sz; i++) families[i] = ((PNode.PNodeStr) ch.get(i)).s;
       tmpTextStyle.setFontFamilies(families);
     } else {
       tmpTextStyle.setFontFamily(family.str());

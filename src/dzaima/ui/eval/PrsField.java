@@ -21,6 +21,12 @@ public abstract class PrsField {
     public String toString() { return name+" = "+s; }
   }
   
+  public static class VarFld extends PrsField {
+    public final String s;
+    public VarFld(String n, String s) { super(n); this.s = s; }
+    public String toString() { return name+" = "+s; }
+  }
+  
   public static class GroupFld extends PrsField {
     public final PNodeGroup g;
     public GroupFld(String n, PNodeGroup g) { super(n); this.g = g; }

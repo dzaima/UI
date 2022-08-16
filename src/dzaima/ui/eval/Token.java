@@ -38,7 +38,8 @@ public class Token {
   
   public static class NameTok extends Token {
     public final String s;
-    public NameTok(int o, String s) { super(o, 'v'); this.s=s; }
+    public final boolean defn;
+    public NameTok(int o, String s, boolean defn) { super(o, 'v'); this.s=s; this.defn = defn; }
     public String toString() { return "Name("+s+")"; }
   }
   

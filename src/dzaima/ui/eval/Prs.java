@@ -14,7 +14,7 @@ public class Prs {
   
   public static PNodeGroup parseList(String s) {
     Prs p = new Prs(Tokenizer.tk(s));
-    PNodeGroup r = p.nodeNamed(null);
+    PNodeGroup r = p.nodeNamed(null, false);
     if (p.off != p.arr.length-1) throw p.err("Parse error: Expected end");
     return r;
   }
@@ -28,20 +28,21 @@ public class Prs {
   
   private PNodeGroup node() {
     String name;
-    name = ((NameTok) req('v')).s;
+    NameTok t = (NameTok) req('v');
+    name = t.s;
     req('{');
-    PNodeGroup r = nodeNamed(name);
+    PNodeGroup r = nodeNamed(name, t.defn);
     req('}');
     return r;
   }
-  private PNodeGroup nodeNamed(String name) {
+  private PNodeGroup nodeNamed(String name, boolean defn) {
     Vec<PrsField> props = new Vec<>();
     Vec<PNode> ch = new Vec<>();
     while (true) {
       if (off >= arr.length-1) break;
       Token t = pop();
       if (t.type=='s') { // node: STR
-        ch.add(new PNodeStr(((StrTok) t).s));
+        ch.add(new PNode.PNodeStr(((StrTok) t).s));
       } else if (t.type=='v') { // node: NAME …
         Token n = peek();
         if (n.type=='{') { // node: NAME '{' node* '}'
@@ -56,6 +57,8 @@ public class Prs {
             off--;
             if (peek1().type=='{') {
               val = new GroupFld(pname, node());
+            } else if (((NameTok) v).defn) {
+              val = new VarFld(pname, path());
             } else {
               val = new NameFld(pname, path());
             }
@@ -73,17 +76,19 @@ public class Prs {
           } else if (v.type=='#') {
             val = new ColFld(pname, ((ColorTok) v).c);
           } else if (v.type=='{') {
-            val = new GroupFld(pname, nodeNamed(null));
+            val = new GroupFld(pname, nodeNamed(null, false));
             req('}');
           } else throw err("Parse error: Expected value, got "+v.expl());
           props.add(val);
+        } else if (((NameTok) t).defn) {
+          ch.add(new PNode.PNodeDefn(((NameTok) t).s));
         } else throw err("Parse error: Expected '='");
       } else if (t.type == '}') {
         off--;
         break;
       } else throw err("Parse error: Unexpected "+t.expl());
     }
-    return new PNodeGroup(name, props, ch);
+    return new PNodeGroup(name, defn, props, ch);
   }
   private String path() {
     return ((NameTok) pop()).s;

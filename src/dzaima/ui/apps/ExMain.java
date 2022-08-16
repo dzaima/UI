@@ -37,6 +37,7 @@ public class ExMain extends NodeWindow {
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/weighed.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
+    // gc.addCfg(() -> Tools.readFile(Paths.get("examples/defs.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("example.ui").gr();
     // ExMain w = new ExMain(gc, ctx, g, "example window");
     
     ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
@@ -98,7 +99,7 @@ public class ExMain extends NodeWindow {
   // code for selection example
   public void tick() {
     super.tick();
-    Node info = base.ctx.id("selectInfo");
+    Node info = base.ctx.idNullable("selectInfo");
     if (info!=null) {
       Node t = base.ctx.id("insertText");
       if (t.ch.sz==0) {

@@ -8,14 +8,16 @@ import java.util.*;
 
 public class PNodeGroup extends PNode {
   public final String name;
+  public final boolean defn;
   public final String[] ks;
   public final Prop[] vs; // only properties which are contant known; contains null elements otherwise
   
   public final Vec<PrsField> props;
   public final Vec<PNode> ch;
   
-  public PNodeGroup(String name, Vec<PrsField> props, Vec<PNode> ch) {
+  public PNodeGroup(String name, boolean defn, Vec<PrsField> props, Vec<PNode> ch) {
     this.name = name;
+    this.defn = defn;
     this.props = props; int sz = props.sz;
     ks = sz==0? Node.KS_NONE : new String[sz];
     vs = sz==0? Node.VS_NONE : new Prop  [sz];
@@ -33,7 +35,8 @@ public class PNodeGroup extends PNode {
   }
   
   public PNodeGroup copy() {
-    return new PNodeGroup(name, new Vec<>(props), new Vec<>(ch));
+    assert !defn;
+    return new PNodeGroup(name, defn, new Vec<>(props), new Vec<>(ch));
   }
   
   public String toString(String pad) {
