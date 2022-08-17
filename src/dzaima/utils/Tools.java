@@ -25,13 +25,10 @@ public class Tools {
     DBG = a;
   }
   
-  private static MessageDigest d;
   public static String sha256(byte[] data) {
-    if (d==null) try {
-      d = MessageDigest.getInstance("SHA-256");
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    MessageDigest d;
+    try { d = MessageDigest.getInstance("SHA-256"); }
+    catch (NoSuchAlgorithmException e) { throw new RuntimeException(e); }
     byte[] bs = d.digest(data);
     char[] cs = new char[64];
     for (int i = 0; i < cs.length; i++) {
@@ -43,11 +40,14 @@ public class Tools {
   
   
   public static byte[] get(String path) {
+    return get(path, false);
+  }
+  public static byte[] get(String path, boolean useCaches) {
     try {
       URL u = new URL(path);
       HttpURLConnection c = (HttpURLConnection) u.openConnection();
       c.setRequestMethod("GET");
-      c.setUseCaches(false);
+      c.setUseCaches(useCaches);
       
       byte[] b = new byte[1024];
       int i = 0, am;
