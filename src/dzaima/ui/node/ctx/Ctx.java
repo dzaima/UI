@@ -48,6 +48,17 @@ public abstract class Ctx {
   public Node make(PNodeGroup pn) {
     return shadow().makeHere(pn);
   }
+  public Node make(PNodeGroup pn, HashMap<String, Var> vars) {
+    return shadow().makeHere(pn, vars);
+  }
+  public Node makeKV(PNodeGroup pn, Object... kv) {
+    HashMap<String, Var> vars = new HashMap<>();
+    for (int i = 0; i < kv.length; i+= 2) {
+      Object v = kv[i+1];
+      vars.put((String) kv[i], new Var(new ObjProp(v), NO_VARS));
+    }
+    return make(pn, vars);
+  }
   
   public Prop[] finishProps(PNodeGroup g, HashMap<String, Var> vars) {
     Prop[] vs = g.vs;
@@ -77,7 +88,7 @@ public abstract class Ctx {
     final HashMap<String, Var> ctx;
     private Var(Prop val, HashMap<String, Var> ctx) { this.val = val; this.ctx = ctx; }
   }
-  public static final HashMap<String, Var> noVars = new HashMap<>();
+  public static final HashMap<String, Var> NO_VARS = new HashMap<>();
   private static Var getVar(HashMap<String, Var> vars, String k) {
     Var v = vars.get(k);
     if (v==null) throw new Error("Variable '"+k+"' not found");
@@ -86,12 +97,15 @@ public abstract class Ctx {
   }
   
   
-  public Node makeHere(PNode pn) {
+  public Node makeHere(PNode pn, HashMap<String, Var> vars) {
     Vec<Node> nodes = new Vec<>();
     HashMap<String, Prop> props = new HashMap<>();
-    makeHere(pn, noVars, nodes, props);
+    makeHere(pn, vars, nodes, props);
     if (!props.isEmpty() || nodes.sz!=1) throw new Error("Expected to instantiate single node");
     return nodes.get(0);
+  }
+  public Node makeHere(PNode pn) {
+    return makeHere(pn, NO_VARS);
   }
   
   
@@ -166,6 +180,8 @@ public abstract class Ctx {
       }
     } else if (val instanceof StrProp) {
       nodes.add(new StringNode(this, ((StrProp) val).s));
+    } else if (val instanceof ObjProp && val.obj() instanceof Node) {
+      nodes.add(val.obj());
     } else throw new Error(val.toString()+" isn't a node type");
   }
   
