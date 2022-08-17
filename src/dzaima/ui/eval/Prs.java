@@ -58,7 +58,7 @@ public class Prs {
             if (peek1().type=='{') {
               val = new GroupFld(pname, node());
             } else if (((NameTok) v).defn) {
-              val = new VarFld(pname, path());
+              val = new VarFld(pname, varname(pop()));
             } else {
               val = new NameFld(pname, path());
             }
@@ -81,7 +81,7 @@ public class Prs {
           } else throw err("Parse error: Expected value, got "+v.expl());
           props.add(val);
         } else if (((NameTok) t).defn) {
-          ch.add(new PNode.PNodeDefn(((NameTok) t).s));
+          ch.add(new PNode.PNodeDefn(varname(t)));
         } else throw err("Parse error: Expected '='");
       } else if (t.type == '}') {
         off--;
@@ -90,6 +90,13 @@ public class Prs {
     }
     return new PNodeGroup(name, defn, props, ch);
   }
+  
+  private String varname(Token t) {
+    if (!(t instanceof NameTok)) throw err("Parse error: Expected name");
+    if (!((NameTok) t).s.startsWith("$")) throw err("Parse error: Variable reads cannot be paths");
+    return ((NameTok) t).s.substring(1);
+  }
+  
   private String path() {
     return ((NameTok) pop()).s;
   }

@@ -119,7 +119,7 @@ public abstract class Ctx {
         Prop[] vs = finishProps(g, vars);
         for (int i = 0; i < g.ks.length; i++) {
           String k = g.ks[i];
-          args.put(k.startsWith("$")? k : "$"+k, new Var(vs[i], vars));
+          args.put(k.startsWith("$")? k.substring(1) : k, new Var(vs[i], vars));
         }
         addProp(p, args, nodes, props);
       } else {
