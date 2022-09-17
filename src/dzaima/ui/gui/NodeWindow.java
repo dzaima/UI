@@ -253,6 +253,7 @@ public class NodeWindow extends Window {
   }
   
   
+  @Deprecated
   public String getClip() {
     try {
       return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);

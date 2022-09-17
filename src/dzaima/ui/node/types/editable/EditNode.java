@@ -240,17 +240,24 @@ public class EditNode extends Node {
     });
   }
   
+  public /*open*/ void preLineDraw(Graphics g, int ln, int x, int y, int w, int lh, int th) { }
+  public /*open*/ void postLineDraw(Graphics g, int ln, int x, int y, int w, int lh, int th) { }
   public void drawC(Graphics g) {
     g.push();
     g.translate(drawOffX, drawOffY);
     getSize();
-    g.clip(0, 0, w-drawOffX, h-drawOffY);
+    int dw = w - drawOffX;
+    int dh = h - drawOffY;
+    g.clip(0, 0, dw, dh);
     CIt cit = new CIt(cs);
     int y = 0;
     for (Line ln : lns) {
       int lh = f.hi*ln.ch;
-      if (g.clip==null || y+lh > g.clip.sy && y < g.clip.ey) ln.draw(g, y, cit);
-      else ln.notDrawn();
+      if (g.clip==null || y+lh > g.clip.sy && y < g.clip.ey) {
+        preLineDraw(g, ln.y, 0, y, dw, f.hi, lh);
+        ln.draw(g, y, cit);
+        postLineDraw(g, ln.y, 0, y, dw, f.hi, lh);
+      } else ln.notDrawn();
       
       y+= lh;
     }
