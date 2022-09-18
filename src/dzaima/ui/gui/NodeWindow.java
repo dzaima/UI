@@ -66,7 +66,7 @@ public class NodeWindow extends Window {
   
   
   ///////// focus \\\\\\\\\
-  public Node focusNode;
+  public Node focusNode; // use focusNode() to read
   public void focus(Node n) {
     Node prev = focusNode();
     focusNode = n;

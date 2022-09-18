@@ -129,7 +129,7 @@ public abstract class Node implements Click.RequestImpl {
   public void shown() {
     assert !visible : getClass()+" shown twice!";
     visible = true;
-    if ((flags&PROPS)!=0) hProps();
+    hProps(); // this was previously under a (flags&PROPS)!=0 but that doesn't work when a node is removed from the tree, global em changed, and readded
     for (Node c : ch) c.shown();
     if ((flags&ATICK)!=0 && p!=null) aTick();
     if ((flags&MTICK)!=0 && p!=null) mTick();
