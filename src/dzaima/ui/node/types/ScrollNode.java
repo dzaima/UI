@@ -26,10 +26,8 @@ public class ScrollNode extends FrameNode {
     scrollTo(n, x, y, 0, 0);
   }
   public static ScrollNode scrollTo(Node n, Mode x, Mode y, int offX, int offY) {
-    Node p = n;
-    while (!(p instanceof ScrollNode) && p!=null) p = p.p;
-    if (p==null) return null;
-    ScrollNode sc = (ScrollNode) p;
+    ScrollNode sc = nearestScrollNode(n);
+    if (sc==null) return null;
     // if (n==sc.ch() && offX==0 && offY==0) return; // TODO is this needed?
     sc.stNode = n;
     sc.stX = x;
@@ -39,6 +37,12 @@ public class ScrollNode extends FrameNode {
     sc.ignoreStart();
     sc.ignoreEnd();
     return sc;
+  }
+  public static ScrollNode nearestScrollNode(Node n) {
+    Node p = n;
+    while (!(p instanceof ScrollNode) && p!=null) p = p.p;
+    if (p==null) return null;
+    return (ScrollNode) p;
   }
   
   public boolean stable() {
