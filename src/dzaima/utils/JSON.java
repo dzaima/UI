@@ -225,8 +225,8 @@ public class JSON {
     public double num(String k, double def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.num(def); }
     public int getInt(String k, int    def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.asInt(def); }
     public String str(String k, String def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.str(def); }
-    public Arr    arr(String k, Arr    def) { return get(k, def).arr(); }
-    public Obj    obj(String k, Obj    def) { return get(k, def).obj(); }
+    public Arr    arr(String k, Arr    def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.arr(def); }
+    public Obj    obj(String k, Obj    def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.obj(def); }
     
     public boolean bool(String k) { return get(k).bool(); }
     public boolean bool(String k, boolean def) { Val r = get(k, NOTFOUND); return r==NOTFOUND? def : r.bool(def); }
@@ -238,9 +238,14 @@ public class JSON {
     public boolean hasArr (String k) { return get(k, null) instanceof Arr; }
     public boolean hasObj (String k) { return get(k, null) instanceof Obj; }
     
-    public Val put(String k, Val v) { // calling will discard ordering
+    public Val put(String k, Val v) { // discards map ordering
       toMap(); ks=null; vs=null;
       return map.put(k, v);
+    }
+    
+    public Val remove(String k) { // discards map ordering; returns previous value
+      toMap(); ks=null; vs=null;
+      return map.remove(k);
     }
     
     public static Obj fromKV(Object... objs) {
