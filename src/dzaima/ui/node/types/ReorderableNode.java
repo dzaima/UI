@@ -7,48 +7,33 @@ import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 
-public class ReorderableNode extends FrameNode {
+public class ReorderableNode extends PackedListNode {
   public ReorderableNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
   }
   
   public /*open*/ boolean shouldReorder(int idx, Node n) { return true; }
+  public /*open*/ Node reorderSelect(Node selected) { return selected; }
   public /*open*/ void reorderStarted(Node n) { }
+  public /*open*/ void reorderSwapped() { }
   public /*open*/ void reorderEnded(int oldIdx, int newIdx, Node n) { }
+  public /*open*/ void drawPlaceholder(Graphics g, int w, int h) { }
   public boolean reordering() { return reVW!=null; }
   public boolean holding(Node n) { return reVW!=null && takenNode==n; }
+  public Node heldNode() { return takenNode; }
   
   
-  protected boolean v, shadow;
-  protected byte mode;
-  protected int pad;
+  protected boolean shadow;
+  protected int mode;
   public void propsUpd() {
     super.propsUpd();
-    switch (vs[id("dir")].val()) { default: throw new RuntimeException("Bad ReorderableNode \"dir\" value "+vs[id("dir")]);
-      case "v": v=true; break;
-      case "h": v=false; break;
-    }
     switch (vs[id("mode")].val()) { default: throw new RuntimeException("Bad ReorderableNode \"mode\" value "+vs[id("mode")]);
       case "none": mode = 0; break;
       case "drag": mode = 1; break;
       case "instant": mode = 2; break;
     }
     shadow = gc.boolD(this, "shadow", true);
-    pad = gc.lenD(this, "pad", 0);
   }
-  
-  // TODO binary search trimming drawCh
-  
-  public int fillW() {
-    return v? Solve.vMinW(ch)
-            : Solve.hMinW(ch)+Math.max(0, pad*(ch.sz-1));
-  }
-  public int fillH(int w) {
-    if (!v) w-= Math.max(0, pad*(ch.sz-1));
-    return v? Solve.vMinH(ch, w)+Math.max(0, pad*(ch.sz-1))
-            : Solve.hMinH(ch, w);
-  }
-  
   
   
   public void mouseStart(int x, int y, Click c) {
@@ -79,10 +64,11 @@ public class ReorderableNode extends FrameNode {
   public void mouseTick(int x, int y, Click c) {
     if (!c.bL() || canceled) return;
     if (reVW==null && (mode==2 || !gc.isClick(c))) {
-      origIdx = currIdx = ch.indexOf(takenNode);
-      if (shouldReorder(currIdx, takenNode)) {
-        replace(currIdx, p1 -> new PlaceholderNode(ctx, p1));
-        ctx.win().addVW(reVW = new ReVW(takenNode));
+      if (shouldReorder(ch.indexOf(takenNode), takenNode)) {
+        takenNode = reorderSelect(takenNode);
+        origIdx = currIdx = ch.indexOf(takenNode);
+        replace(currIdx, p1 -> new PlaceholderNode(ctx, p1, this));
+        ctx.win().addVW(reVW = new ReVW(takenNode, ctx.win().focusedVW));
         reorderStarted(takenNode);
       } else canceled = true;
     }
@@ -95,21 +81,25 @@ public class ReorderableNode extends FrameNode {
       int ny = !v? 0 : Math.max(0, Math.min(y-takeY, h-nh));
       reVW.setPos(pos.x+nx, pos.y+ny, nw, nh);
       int ci = currIdx;
+      boolean swapped = false;
       while (ci+1 < ch.sz) {
         Node n = ch.get(ci+1);
         if (v? ny+nh <= n.dy+n.h/2
              : nx+nw <= n.dx+n.w/2) break;
         swap(ci, ci+1);
+        swapped = true;
         ci++;
       }
-      while (ci!=0) {
+      if (!swapped) while (ci!=0) { // only try moving up if moving down failed; otherwise the non-recalculated layout messes up movement
         Node n = ch.get(ci-1);
         if (v? ny > n.dy+n.h/2
              : nx > n.dx+n.w/2) break;
         swap(ci, ci-1);
+        swapped = true;
         ci--;
       }
       currIdx = ci;
+      if (swapped) reorderSwapped();
     }
   }
   public void mouseUp(int x, int y, Click c) {
@@ -134,8 +124,11 @@ public class ReorderableNode extends FrameNode {
       replace(currIdx, takenNode);
     }
     reVW = null;
-    reorderEnded(origIdx, currIdx, takenNode);
+    int oi = origIdx;
+    int ci = currIdx;
+    Node nd = takenNode;
     resetVars();
+    reorderEnded(oi, ci, nd);
   }
   
   private void cancelInAnyWay() {
@@ -174,41 +167,17 @@ public class ReorderableNode extends FrameNode {
   
   
   
-  protected void resized() {
-    boolean r = pad!=0;
-    if (v) {
-      int y = 0;
-      for (Node c : ch) {
-        int cw = Math.min(c.maxW(), w);
-        int ch = c.minH(cw);
-        c.resize(cw, ch, 0, y);
-        r|= cw!=w;
-        y+= ch+pad;
-      }
-      r|= y!=h; // TODO can this (& below) even happen?
-    } else {
-      int x = 0;
-      for (Node c : ch) {
-        int cw = c.minW();
-        int ch = c.minH(cw);
-        c.resize(cw, ch, x, 0);
-        r|= ch!=h;
-        x+= cw+pad;
-      }
-      r|= x!=w;
-    }
-    if (r) mRedraw();
-  }
-  
-  
   public static class PlaceholderNode extends Node {
     public final Node n;
+    public final ReorderableNode r;
     
-    public PlaceholderNode(Ctx ctx, Node n) {
+    public PlaceholderNode(Ctx ctx, Node n, ReorderableNode r) {
       super(ctx, KS_NONE, VS_NONE);
       this.n = n;
+      this.r = r;
       add(n);
     }
+    public void drawC(Graphics g) { r.drawPlaceholder(g, w, h); }
     public void drawCh(Graphics g, boolean full) { }
     
     public int minW() { return n.minW(); }
@@ -223,9 +192,11 @@ public class ReorderableNode extends FrameNode {
   
   private class ReVW extends VirtualWindow {
     private final Node nd;
-    public ReVW(Node nd) {
+    private final VirtualWindow prev;
+    public ReVW(Node nd, VirtualWindow prev) {
       super(ReorderableNode.this.ctx.win());
       this.nd = nd;
+      this.prev = prev;
     }
     
     public boolean drawShadow() { return true; } // TODO not
@@ -248,7 +219,7 @@ public class ReorderableNode extends FrameNode {
     public boolean ownsXY(int x, int y) { return true; }
     public void mouseStart(Click cl) { }
     public void initialMouseTick(Click c) { }
-    public void scroll(float dx, float dy) { }
+    public void scroll(float dx, float dy) { prev.scroll(dx, dy); }
     public boolean key(Key key, int scancode, KeyAction a) { return false; }
     public void typed(int p) { }
     public void started() { }
