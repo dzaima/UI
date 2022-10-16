@@ -98,6 +98,7 @@ public class Cfg {
     String last = p[p.length - 1];
     if (!b.currentlyAdded.add(fullPath)) throw new RuntimeException("Duplicate config key '"+fullPath+"'");
     if (f instanceof PrsField.NameFld && ((PrsField.NameFld) f).cfg) {
+      c.props.remove(last);
       b.toMap.put(fullPath, ((PrsField.NameFld) f).s);
     } else {
       c.props.put(last, (PropI) Prop.makeProp(b.gc, f));
