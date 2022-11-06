@@ -5,6 +5,7 @@ import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class AsmLang extends Lang {
@@ -29,19 +30,23 @@ public class AsmLang extends Lang {
     return styles[v];
   }
   
-  AsmLang.AsmState init;
   public AsmLang(Font f) {
-    super(new AsmLang.AsmState());
+    this(f, c -> regs.matcher(c).matches());
+  }
+  public AsmLang(Font f, Predicate<String> isReg) {
+    super(new AsmLang.AsmState(isReg));
     styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new AsmLang(f); }
-  public LangState<?> init() { return init; }
+  public Lang font(Font f) { return new AsmLang(f, ((AsmState) init).isReg); }
   
   
   static class AsmState extends LangState<AsmLang.AsmState> {
+    Predicate<String> isReg;
+    public AsmState(Predicate<String> isReg) { this.isReg = isReg; }
+  
     public AsmLang.AsmState after(int sz, char[] p, byte[] b) {
       if (sz==0) return this;
-      AsmLang.AsmState r = new AsmLang.AsmState();
+      AsmLang.AsmState r = new AsmLang.AsmState(isReg);
       r.eval(sz, p, b);
       return r;
     }
@@ -55,7 +60,6 @@ public class AsmLang extends Lang {
         int li = i;
         int c = s[i];
         switch (c) {
-          case '#': { r[li] = 1; return; }
           case '\'': case '"':
             r[i++] = 6;
             while (i<sz) {
@@ -71,6 +75,12 @@ public class AsmLang extends Lang {
             r[i++] = 6;
             while (i<sz && s[i-1]!='>') i++;
             break;
+          case '/':
+            if (i!=s.length-1 && s[i+1]=='/') { r[li] = 1; return; }
+            else r[i++] = 0;
+            break;
+          case '#': if (i!=s.length-1 && !dig(s[i+1]) && s[i+1]!='-') { r[li] = 1; return; }
+            // fallthrough
           case'0':case'1':case'2':case'3':case'4':case'5':case'6':case'7':case'8':case'9':case'.':
             if (c!='.' || i+1>=sz || dig(s[i+1])) {
               r[i++] = 5;
@@ -81,13 +91,13 @@ public class AsmLang extends Lang {
           default:
             if (nameS(c) || c=='.') {
               i++;
-              while (i<sz && nameM(s[i])) i++;
+              while (i<sz && (nameM(s[i]) || s[i]=='.')) i++;
               char[] val = Arrays.copyOfRange(s, li, i);
               String str = new String(val);
               byte t = (byte) (firstWord? 2 : 4);
               if (i<sz && s[i]==':') { t = 4; i++; }
               else if (sizes.has(str.toLowerCase().toCharArray())) t = 3;
-              else if (regs.matcher(str).matches()) t = 7;
+              else if (isReg.test(str)) t = 7;
               r[li] = t;
               firstWord = false;
             } else {
