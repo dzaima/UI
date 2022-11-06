@@ -130,9 +130,11 @@ public class JWMEventHandler implements Consumer<Event> {
     dontPaint = true;
     try {
       if (w.shouldStop.get()) {
-        running = false;
-        w.stop();
-        return;
+        if (w.w.framesSinceSetup>2) {
+          running = false;
+          w.stop();
+          return;
+        } else jwmw.requestFrame();
       }
       w.nextFrame(false);
     } finally {

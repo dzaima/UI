@@ -78,7 +78,7 @@ public abstract class Window {
   public void copyString(String s) { impl.copyString(s); }
   public void pasteString(Consumer<String> f) { impl.pasteString(f); }
   
-  public final void closeOnNext() { impl.closeOnNext(); } // close the window on next tick
+  public final void closeOnNext() { impl.closeOnNext(); } // close the window on next tick (or possibly later if the window was just opened)
   public void closeRequested() { closeOnNext(); } // called when user wants to close window
   
   public Devtools createTools() { return impl.createTools(); }
@@ -93,7 +93,7 @@ public abstract class Window {
   
   protected boolean setupDone = false;
   public final AtomicBoolean updateSize = new AtomicBoolean(true);
-  public int nodrawFrames=-60;
+  public int nodrawFrames=-60, framesSinceSetup;
   public enum DrawReq { NONE, TEMP, PARTIAL, FULL };
   public DrawReq nextTick() { // 0-don't draw; 1-needs partial draw; 2-needs full draw
     long sns = System.nanoTime();
@@ -113,7 +113,7 @@ public abstract class Window {
         throw new RuntimeException(e);
       }
       setupDone = true;
-    }
+    } else if (framesSinceSetup<10) framesSinceSetup++;
     boolean resize = updateSize.getAndSet(false);
     if (resize) {
       resized(impl.runResize());
