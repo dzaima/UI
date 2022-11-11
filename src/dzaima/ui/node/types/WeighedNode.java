@@ -59,7 +59,7 @@ public class WeighedNode extends Node {
     }
   }
   
-  public void mouseUp(int x, int y, Click c) { if (!dragging) c.unregister(); }
+  public void mouseUp(int x, int y, Click c) { if (visible && !dragging) c.unregister(); }
   
   public void drawC(Graphics g) {
     if (pad!=0 && Tools.vs(padColor)) {

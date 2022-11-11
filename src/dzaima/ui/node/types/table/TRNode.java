@@ -31,6 +31,7 @@ public class TRNode extends TRTNode {
   }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
+    if (!visible) return;
     if (c.bL()) {
       if (t.rowSel) ctx.focus(this);
       if (c.onDoubleClick()) action(2);

@@ -148,7 +148,7 @@ public class MenuNode extends Node {
     public MenuNode menu() { return (MenuNode) ctx.vw().base; }
     public void mouseStart(int x, int y, Click c) { c.register(this, x, y); }
     public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
-    public void mouseUp(int x, int y, Click c) { run(); }
+    public void mouseUp(int x, int y, Click c) { if (visible) run(); }
     public void run() {
       menu().obj.menuItem(vs[id("id")].val());
     }

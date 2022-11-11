@@ -114,9 +114,10 @@ public class TNNode extends ATreeNode {
   }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
+    if (!visible) return;
     if (y < ch.get(0).h) {
       boolean prev = ctx.focusedNode()==this;
-      if (ctx.focusedNode()!=this) ctx.focus(this);
+      if (!prev) ctx.focus(this);
       if (prev && openable && c.onDoubleClick()) {
         if (open) close();
         else open();

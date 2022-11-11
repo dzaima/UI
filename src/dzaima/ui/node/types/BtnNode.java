@@ -118,6 +118,7 @@ public class BtnNode extends Node {
     if (!clicked) c.unregister();
   }
   public void mouseUp(int x, int y, Click c) {
+    if (!visible) return;
     if (clicked) clicked();
     clicked = false;
     mRedraw();
