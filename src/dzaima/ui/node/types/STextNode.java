@@ -12,7 +12,7 @@ public class STextNode extends TextNode implements Selectable {
     super(ctx, ks, vs);
   }
   private static String[] IBEAM_K = new String[]{"ibeam"};
-  private static Prop[] IBEAM_V = new Prop[]{new EnumProp("true")};
+  private static Prop[] IBEAM_V = new Prop[]{EnumProp.TRUE};
   public STextNode(Ctx ctx, boolean ibeam) {
     super(ctx, ibeam? IBEAM_K : KS_NONE, ibeam? IBEAM_V : VS_NONE);
   }

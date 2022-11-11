@@ -58,7 +58,6 @@ public class CheckboxNode extends Node {
   
   public void mouseStart(int x, int y, Click c) { c.register(this, x, y); }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
-  
   public void mouseUp(int x, int y, Click c) { if (visible) toggle(); }
   
   public void hoverS() { hovered=true;  mRedraw(); }

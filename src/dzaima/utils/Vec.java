@@ -175,6 +175,7 @@ public class Vec<T> implements Iterable<T> {
     return b.toString();
   }
   
+  @SafeVarargs
   public static <T> Vec<T> of(T... is) {
     return new Vec<>(is);
   }
