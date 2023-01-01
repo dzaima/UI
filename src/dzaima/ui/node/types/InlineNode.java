@@ -155,6 +155,8 @@ public abstract class InlineNode extends Node {
       b.add(n);
       return b;
     }
+    public int minW(     ) { return ch.get(0).minW( ); }
+    public int minH(int w) { return ch.get(0).minH(w); }
   }
   public static class TANode extends InlineNode {
     public TANode(Ctx ctx, String[] ks, Prop[] vs) {
