@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import sys, os, urllib.request, subprocess, shutil
 
-skija_os = "linux" # or "windows", or "macos-arm64", or "macos-x64"
-lwjgl_os = "linux" # or "windows", or "macos-arm64", or "macos"
-                   # (but there will probably be more changes needed for non-linux OSes probably)
+skija_os = "linux-x64" # or "windows-x64", or "macos-arm64", or "macos-x64"
+lwjgl_os = "linux"     # or "windows",     or "macos-arm64", or "macos"
+                       # (but there will probably be more changes needed for non-linux OSes probably)
 
 lwjgl_version = "3.3.0"
 
@@ -130,10 +130,10 @@ def build_ui(res = "UI.jar"):
     return maven_lib("org/lwjgl", name, lwjgl_version, "lib/lwjgl-"+lwjgl_version, post)
   
   classpath = [
-    maven_lib("io/github/humbleui", "types", "0.1.2", "lib"),
-    maven_lib("io/github/humbleui", "jwm", "0.4.6", "lib"),
-    maven_lib("io/github/humbleui", "skija-shared", "0.98.1", "lib"),
-    maven_lib("io/github/humbleui", "skija-"+skija_os, "0.98.1", "lib"),
+    maven_lib("io/github/humbleui", "types", "0.2.0", "lib"),
+    maven_lib("io/github/humbleui", "jwm", "0.4.9", "lib"),
+    maven_lib("io/github/humbleui", "skija-shared", "0.109.1", "lib"),
+    maven_lib("io/github/humbleui", "skija-"+skija_os, "0.109.1", "lib"),
     
     lwjgl_lib("lwjgl"),
     lwjgl_lib("lwjgl-glfw"),
