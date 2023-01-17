@@ -122,7 +122,7 @@ public class LwjglWindow extends WindowImpl {
       if (c.down) w.mouseDown(c);
       else w.mouseUp(w.mx, w.my, c);
     }));
-    glfwSetScrollCallback(windowPtr, (cw, dx, dy) -> enqueue(() -> w.scroll((float) dx, (float) dy, Key.shift(mod))));
+    glfwSetScrollCallback(windowPtr, (cw, dx, dy) -> enqueue(() -> w.scroll(100*(float) dx, 100*(float) dy, Key.shift(mod))));
     glfwSetCharCallback(windowPtr, (cw, p) -> enqueue(() -> w.typed(p)));
     glfwSetKeyCallback(windowPtr, (cw, key, scancode, action, mod) -> enqueue(() -> {
       if (key==GLFW_KEY_LEFT_SHIFT   || key==GLFW_KEY_RIGHT_SHIFT  ) this.mod = action==GLFW_PRESS? mod|Key.M_SHIFT : mod&~Key.M_SHIFT; // shift = action==GLFW_PRESS? true : action==GLFW_RELEASE? false : shift;
