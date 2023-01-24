@@ -158,7 +158,9 @@ public class Key {
         default: return null;
       }
     }
-    Key k = keyBase.get(parts[parts.length - 1]);
+    String last = parts[parts.length-1];
+    if (last.length()>1) last = last.toLowerCase(Locale.ROOT); // "a" vs "A" should be preserved, but "F12" vs "f12" should not
+    Key k = keyBase.get(last);
     if (k==null) return null;
     return new Key(k.val, mod|k.mod);
   }
