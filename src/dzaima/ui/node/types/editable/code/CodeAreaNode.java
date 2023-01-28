@@ -68,11 +68,13 @@ public class CodeAreaNode extends EditNode {
     if (lineNumbering) {
       int dy = drawOffY+f.ascI;
       g.rect(0, 0, drawOffX, h, lnBg);
-      for (int i = 0; i < lns.sz; i++) {
+      int i = g.clip==null? 0 : Tools.firstMatch(0, lns.sz, (j) -> (ln(j).yw+1)*f.hi > g.clip.sy);
+      while (i < lns.sz) {
         String s = (i+1) + "";
         int y = ln(i).yw*f.hi;
-        if (g.clip!=null && y>g.clip.ey) break; // TODO clip from start
+        if (g.clip!=null && y>g.clip.ey) break;
         g.text(s, f, drawOffX-lnR-f.width(s), y+dy, lnCol);
+        i++;
       }
     }
   }

@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.security.*;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 @SuppressWarnings({"AssertWithSideEffects", "ConstantConditions"})
 public class Tools {
@@ -63,6 +64,16 @@ public class Tools {
     }
   }
   
+  
+  public static Integer firstMatch(int s, int e, Predicate<Integer> test) { // can return both s and e
+    s--;
+    while (s+1 < e) {
+      int m = (s+e)/2;
+      if (test.test(m)) e = m;
+      else s = m;
+    }
+    return e;
+  }
   
   
   public static int err() {
