@@ -189,10 +189,9 @@ public class NodeWindow extends Window {
   }
   public boolean key(Key key, int scancode, KeyAction a) {
     keyMod = key.mod;
-    Node n = focusNode();
-    if (n!=null && n.keyF(key, scancode, a)) return true;
     if (focusedVW!=null) return focusedVW.key(key, scancode, a);
-    return false;
+    Node n = focusNode();
+    return n!=null && n.keyF(key, scancode, a);
   }
   
   public void typed(int p) {

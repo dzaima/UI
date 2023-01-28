@@ -1,6 +1,7 @@
 package dzaima.ui.gui;
 
 import dzaima.ui.gui.io.*;
+import dzaima.ui.node.Node;
 import dzaima.utils.*;
 import io.github.humbleui.skija.*;
 
@@ -65,7 +66,10 @@ public abstract class VirtualWindow {
   public abstract void mouseStart(Click cl);
   public abstract void initialMouseTick(Click c);
   public abstract void scroll(float dx, float dy);
-  public abstract boolean key(Key key, int scancode, KeyAction a);
+  public boolean key(Key key, int scancode, KeyAction a) {
+    Node n = w.focusNode();
+    return n!=null && n.keyF(key, scancode, a);
+  }
   public abstract void typed(int p);
   
   public abstract void started();

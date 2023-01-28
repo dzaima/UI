@@ -91,7 +91,9 @@ public abstract class NodeVW extends VirtualWindow {
   public void mouseStart(Click cl) { base.mouseStart(mx, my, cl); }
   public void initialMouseTick(Click c) { c.initialTick(mx, my); activeClicks.add(c); }
   public void scroll(float dx, float dy) { base.scroll(mx, my, dx, dy); }
-  public boolean key(Key key, int scancode, KeyAction a) { return base.key(mx, my, key, scancode, a); }
+  public boolean key(Key key, int scancode, KeyAction a) {
+    return super.key(key, scancode, a) || base.key(mx, my, key, scancode, a);
+  }
   
   public void typed(int p) { base.typed(p); }
   

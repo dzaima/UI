@@ -220,7 +220,6 @@ public class ReorderableNode extends PackedListNode {
     public void mouseStart(Click cl) { }
     public void initialMouseTick(Click c) { }
     public void scroll(float dx, float dy) { prev.scroll(dx, dy); }
-    public boolean key(Key key, int scancode, KeyAction a) { return false; }
     public void typed(int p) { }
     public void started() { }
     public void newSize() { }
