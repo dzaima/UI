@@ -2,7 +2,7 @@ package dzaima.ui.node.types.editable;
 
 public abstract class Pointer {
   public abstract void dx(int x, int y, int dx);
-  public abstract void ln(int x, int y);
+  public abstract void ln(int x, int y, int am);
   public abstract void collapse(int x0, int y0, int x1, int y1);
   
   

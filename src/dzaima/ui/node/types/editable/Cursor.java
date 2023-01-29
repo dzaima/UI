@@ -47,10 +47,10 @@ public class Cursor extends Pointer implements Comparable<Cursor> {
     if (ey==y && ex>=x) nex+= dx;
     mv(nsx, sy, nex, ey);
   }
-  public void ln(int x, int y) {
+  public void ln(int x, int y, int am) {
     int nsx=sx, nsy=sy, nex=ex, ney=ey;
-    if (sy>y) nsy++; else if (sy==y && sx>=x) { nsy++; nsx-= x; }
-    if (ey>y) ney++; else if (ey==y && ex>=x) { ney++; nex-= x; }
+    if (sy>y) nsy+= am; else if (sy==y && sx>=x) { nsy+= am; nsx-= x; }
+    if (ey>y) ney+= am; else if (ey==y && ex>=x) { ney+= am; nex-= x; }
     mv(nsx, nsy, nex, ney);
   }
   public void collapse(int x0, int y0, int x1, int y1) {

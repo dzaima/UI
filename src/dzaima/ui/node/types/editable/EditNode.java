@@ -110,18 +110,16 @@ public class EditNode extends Node {
   }
   
   public /*open*/ void insert(int x, int y, String s) { // todo split into insertL/insertR? this is insertL
-    int p = 0;
-    for (int i = 0; i < s.length(); i++) {
-      if (s.charAt(i)=='\n') {
-        insert(x, y, Tools.get(s, p, i));
-        insert(x+i-p, y, '\n', false);
-        p = i+1;
-        x = 0;
-        if (multiline) y++;
+    String[] lns;
+    if (multiline) lns = Tools.split(s, '\n');
+    else lns = new String[]{s.replace("\n", "")};
+    insert(x, y, Tools.get(lns[0], 0, lns[0].length()));
+    if (lns.length>1) {
+      insertNewlines(x+lns[0].length(), y, lns.length-1);
+      for (int i = 1; i < lns.length; i++) {
+        insert(0, ++y, Tools.get(lns[i], 0, lns[i].length()));
       }
     }
-    insert(x, y, Tools.get(s, p, s.length()));
-    scrollToVis();
   }
   
   public /*open*/ void remove(int sx, int sy, int ex, int ey) {
@@ -168,15 +166,28 @@ public class EditNode extends Node {
       return 2;
     }
   }
-  public /*open*/ void insert(int x, int y, char p, boolean human) { // p might be 10 aka '\n'
+  public /*open*/ void insertNewlines(int x, int y, int amount) { // equivalent to inserting amount*"\n"
+    assert amount!=0;
     Line l = lns.get(y);
-    if (p==10) {
-      if (!multiline) {
-        if (human) enter(0);
-        return;
-      }
-      char[] i = l.cut(x, l.sz());
-      Line l2 = createLine(i, y+1);
+    char[] i = l.cut(x, l.sz());
+    Line l2 = createLine(i, y+amount);
+    if (amount>1) {
+      Line[] nlns = new Line[amount];
+      nlns[nlns.length-1] = l2;
+      for (int j = 0; j < nlns.length-1; j++) nlns[j] = createLine(new char[0], y+1+j);
+      u(new Undo() {
+        public void redo() {
+          lns.addAll(y+1, nlns, 0, nlns.length);
+          modFrom(y+1+amount, amount);
+          scrollToVis();
+        }
+        public void undo() {
+          modFrom(y+1+amount, -amount);
+          lns.remove(y+1, y+1+nlns.length);
+          scrollToVis();
+        }
+      });
+    } else {
       u(new Undo() {
         public void redo() {
           lns.insert(y+1, l2);
@@ -189,7 +200,17 @@ public class EditNode extends Node {
           scrollToVis();
         }
       });
-      for (Pointer c : ps) c.ln(x, y);
+    }
+    for (Pointer c : ps) c.ln(x, y, amount);
+  }
+  public /*open*/ void insert(int x, int y, char p, boolean human) { // p might be 10 aka '\n'
+    Line l = lns.get(y);
+    if (p==10) {
+      if (!multiline) {
+        if (human) enter(0);
+      } else {
+        insertNewlines(x, y, 1);
+      }
     } else {
       l.insert(x, p);
       for (Pointer c : ps) c.dx(x, y, 1);
@@ -694,7 +715,10 @@ public class EditNode extends Node {
     
     
     public float width() {
-      if (cw==-1) buildPara();
+      if (cw==-1) {
+        if (sz()==0) cw = 0;
+        else buildPara();
+      }
       return cw;
     }
     public XY real(int x) { // character index to screen pos
