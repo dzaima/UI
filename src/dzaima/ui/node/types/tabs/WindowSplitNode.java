@@ -1,6 +1,5 @@
 package dzaima.ui.node.types.tabs;
 
-import dzaima.ui.gui.Popup;
 import dzaima.ui.gui.PartialMenu;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
@@ -15,7 +14,7 @@ public class WindowSplitNode extends WeighedNode {
   
   
   public boolean wantClick(Click c) {
-    return super.wantClick(c)  ||  c.bR() && canMerge();
+    return super.wantClick(c)  ||  c.bR() && (canMerge() || canUnhide());
   }
   
   public void mouseTick(int x, int y, Click c) { if (c.bR()) c.onClickEnd(); else super.mouseTick(x, y, c); }
@@ -25,11 +24,17 @@ public class WindowSplitNode extends WeighedNode {
     for (Node c : ch) if (!(c instanceof TabbedNode)) return false;
     return true;
   }
+  public boolean canUnhide() {
+    return ch.filter(n -> n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS).sz!=0;
+  }
   
   public void mouseUp(int x, int y, Click c) {
-    if (c.bR() && canMerge()) {
-      Popup.rightClickMenu(gc, ctx, gc.getProp("tabbed.mergeMenu").gr(), s -> {
-        if (s.equals("merge") && canMerge() && p!=null) {
+    boolean merge = c.bR() && canMerge();
+    boolean unhide = canUnhide();
+    if (merge || unhide) {
+      PartialMenu m = new PartialMenu(gc);
+      if (merge) m.add(gc.getProp("tabbed.mergeMenu").gr(), "base_merge", () -> {
+        if (canMerge() && p!=null) {
           TabbedNode t0 = (TabbedNode) ch.get(0);
           TabbedNode t1 = (TabbedNode) ch.get(1);
           Tab toSelect = t0.cTab()==null? t1.cTab() : null;
@@ -42,6 +47,12 @@ public class WindowSplitNode extends WeighedNode {
           if (toSelect!=null) toSelect.w.o.toTab(toSelect.w);
         }
       });
+      if (unhide) m.add(gc.getProp("tabbed.unhideAdj").gr(), "base_unhideAdj", () -> {
+        for (Node n : ch) {
+          if (n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS) ((TabbedNode) n).setMode(TabbedNode.Mode.ALWAYS);
+        }
+      });
+      m.open(ctx);
     } else super.mouseUp(x, y, c);
   }
   

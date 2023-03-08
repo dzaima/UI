@@ -87,7 +87,7 @@ public class Click {
     }
     return false;
   }
-  void tickClick() {
+  public void tickClick() {
     Request r = current();
     try {
       if (r==null) return;
@@ -132,9 +132,14 @@ public class Click {
       else endClick();
     }
   }
-  public void replace(RequestImpl n, int x, int y) {
+  public void replace(RequestImpl n, int x, int y) { // TODO don't take x/y?
     assert pos < queue.sz;
     queue.set(pos, new Request(n, x, y));
+  }
+  public void replaceAndRestart(RequestImpl n, int x, int y) {
+    replace(n, x, y);
+    pos--;
+    nextItem();
   }
   public boolean onClickEnd() {
     if (!current().n.gc().isClick(this)) {

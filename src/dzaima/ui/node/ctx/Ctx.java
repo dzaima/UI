@@ -109,28 +109,30 @@ public abstract class Ctx {
     return makeHere(pn, NO_VARS);
   }
   
-  
+  private String rmPrefix(String k) {
+    return k.startsWith("$")? k.substring(1) : k;
+  }
   public void makeHere(PNode pn, HashMap<String, Var> vars, Vec<Node> nodes, HashMap<String, Prop> props) {
     if (pn instanceof PNodeGroup) {
       PNodeGroup g = (PNodeGroup) pn;
       
-      if (g.defn) {
+      if (g.defn && g.name.indexOf(".")>=0) {
         PropI p = gc.getProp(g.name);
         HashMap<String, Var> args = new HashMap<>();
         Prop[] vs = finishProps(g, vars);
         for (int i = 0; i < g.ks.length; i++) {
           String k = g.ks[i];
-          args.put(k.startsWith("$")? k.substring(1) : k, new Var(vs[i], vars));
+          args.put(rmPrefix(k), new Var(vs[i], vars));
         }
         addProp(p, args, nodes, props);
       } else {
-        NodeGen nd = getGen(g.name);
+        NodeGen nd = g.defn? ((ObjProp) vars.get(rmPrefix(g.name)).val).obj() : getGen(g.name);
         if (nd==null) throw new Error(g.name==null? "Encountered node with no name" : "no node defined by name '"+g.name+"'");
         
         Vec<Node> chList = new Vec<>();
         HashMap<String, Prop> chProps = new HashMap<>();
         for (PNode c : g.ch) makeHere(c, vars, chList, chProps);
-  
+        
         String[] ks = g.ks;
         Prop[] vs = finishProps(g, vars);
         if (!chProps.isEmpty()) {

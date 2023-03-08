@@ -29,8 +29,16 @@ public class Rect {
   public boolean intersects(Rect that) {
     return ex <= that.sx || that.ex <= sx || ey <= that.ex || that.ey <= ex;
   }
+  public static boolean inXYWH(int x, int y, int sx, int sy, int w, int h) {
+    return x>=sx & y>=sy & x<sx+w & y<sy+h;
+  }
   public boolean contains(int x, int y) {
     return x>=sx & y>=sy & x<ex & y<ey;
+  }
+  public int manhattanDistance(int x, int y) {
+    int dx = x<sx? sx-x : x>ex? x-ex : 0;
+    int dy = y<sy? sy-y : y>ey? y-ey : 0;
+    return Math.max(dx, dy);
   }
   public Rect and(Rect that) {
     return new Rect(Math.max(sx, that.sx), Math.max(sy, that.sy), Math.min(ex, that.ex), Math.min(ey, that.ey));

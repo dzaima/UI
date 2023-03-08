@@ -206,7 +206,7 @@ public abstract class Node implements Click.RequestImpl {
   public /*open*/ void over(Graphics g) { }
   
   public final void draw(Graphics g, boolean full) { // called only by NodeWindow & drawCh; full only matters when !g.redraw
-    assert visible;
+    assert visible : "Node "+Devtools.debugMe(this)+" not visible during draw";
     boolean meR = (flags&RD_ME)!=0 || full || g.redraw;
     boolean chR = (flags&RD_CH)!=0 || meR;
     if (!chR) return;

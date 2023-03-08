@@ -36,17 +36,19 @@ tabbed.bgOff = #3C3D37
 tabbed.bgOn = #282923
 tabbed.radius = 0.2em
 tabbed.barBg = #484944
-tabbed.bar = scroll { y=off x=hidden reorderable { id=r dir=h mode=drag } }
+tabbed.bar = scroll { y=off x=hidden $list { dir=h mode=drag } }
 
+tabbed.dragOutMinDist = 5em // minimum distance required to drag a tab outside of its original holder for it to consider changing holder
 tabbed.splitMenu = {
   mi { id=base_splitR "Split right" key=tabbed.keys.splitR }
   mi { id=base_splitD "Split down" key=tabbed.keys.splitD }
   mi { id=base_splitL "Split left" key=tabbed.keys.splitL }
   mi { id=base_splitU "Split up" key=tabbed.keys.splitU }
 }
-tabbed.mergeMenu = menu {
-  mi { id=merge "Merge" key=tabbed.keys.merge }
-}
+tabbed.hideBar   = { mi { id=base_hideBar "Hide bar" } }
+tabbed.unhideBar = { mi { id=base_unhideBar "Unhide bar" } }
+tabbed.mergeMenu = { mi { id=base_merge "Merge" key=tabbed.keys.merge } }
+tabbed.unhideAdj = { mi { id=base_unhideAdj "Unhide adjacent bars" } }
 tabbed.keys {
   splitR = { "right" }
   splitD = { "down" } 

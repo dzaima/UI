@@ -49,16 +49,20 @@ public class ReorderableNode extends PackedListNode {
   int origIdx, currIdx = -1;
   ReVW reVW; // reVW!=null indicates reordering
   Node takenNode;
-  int takeX, takeY;
+  protected int takeX, takeY;
   boolean canceled;
   
+  public void manualReorderStart(int x, int y, Click c, Node t) {
+    canceled = false;
+    takenNode = t;
+    takeX = x;
+    takeY = y;
+  }
   public void mouseDown(int x, int y, Click c) {
     if (!c.bL()) return;
-    canceled = false;
-    takenNode = findCh(x, y);
-    if (takenNode==null) { c.unregister(); return; }
-    takeX = x-takenNode.dx;
-    takeY = y-takenNode.dy;
+    Node t = findCh(x, y);
+    if (t==null) { takenNode=null; c.unregister(); return; }
+    else manualReorderStart(x-t.dx, y-t.dy, c, t);
   }
   
   public void mouseTick(int x, int y, Click c) {

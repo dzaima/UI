@@ -31,9 +31,10 @@ public class XY {
     return "("+x+" "+y+")";
   }
   
-  public XY add(int dx, int dy) {
-    return new XY(x+dx, y+dy);
-  }
+  public XY add(int dx, int dy) { return new XY(x+dx, y+dy); }
+  public XY sub(int dx, int dy) { return new XY(x-dx, y-dy); }
+  public XY add(XY o) { return new XY(x+o.x, y+o.y); }
+  public XY sub(XY o) { return new XY(x-o.x, y-o.y); }
   
   public static int dist(int x, int y, int x0, int y0, int w, int h) {
     x-= x0; int xd = x<0? -x : x>w? x-w : 0;

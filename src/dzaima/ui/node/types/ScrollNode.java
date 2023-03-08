@@ -20,7 +20,7 @@ public class ScrollNode extends FrameNode {
   
   public enum Mode { NONE, PARTLY_OFFSCREEN, FULLY_OFFSCREEN, SMOOTH, INSTANT } // TODO split into two, to allow smooth & instant variations of only-on-offscreen
   private Node stNode;
-  private Mode stX, stY;
+  private Mode stX=Mode.NONE, stY=Mode.NONE;
   private int offX, offY;
   public static void scrollTo(Node n, Mode x, Mode y) {
     scrollTo(n, x, y, 0, 0);
@@ -30,10 +30,8 @@ public class ScrollNode extends FrameNode {
     if (sc==null) return null;
     // if (n==sc.ch() && offX==0 && offY==0) return; // TODO is this needed?
     sc.stNode = n;
-    sc.stX = x;
-    sc.stY = y;
-    sc.offX = offX;
-    sc.offY = offY;
+    if (x!=Mode.NONE) { sc.stX = x; sc.offX = offX; }
+    if (y!=Mode.NONE) { sc.stY = y; sc.offY = offY; }
     sc.ignoreStart();
     sc.ignoreEnd();
     return sc;
@@ -232,6 +230,7 @@ public class ScrollNode extends FrameNode {
       if (move(stY, ry, ry+stNode.h, clipSY-oy, clipEY-oy)) oy = limitY((clipSY+clipEY)/2 - ry);
       if (stX==Mode.INSTANT) c.dx = ox;
       if (stY==Mode.INSTANT) c.dy = oy;
+      stX = stY = Mode.NONE;
       stNode = null;
       mRedraw();
     }

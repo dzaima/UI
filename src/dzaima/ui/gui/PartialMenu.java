@@ -20,9 +20,16 @@ public class PartialMenu {
     gr.ch.addAll(l.ch);
     consumers.add(consume);
   }
+  public void add(PNodeGroup l, String k, Runnable r) {
+    add(l, s -> {
+      if (!s.equals(k)) return false;
+      r.run();
+      return true;
+    });
+  }
   
   public void open(Ctx ctx) {
-    Popup.rightClickMenu(ctx.gc, ctx, gr, s -> {
+    if (gr.ch.sz!=0) Popup.rightClickMenu(ctx.gc, ctx, gr, s -> {
       for (Predicate<String> c : consumers) {
         if (c.test(s)) return;
       }

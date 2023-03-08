@@ -2,11 +2,12 @@ package dzaima.ui.node.types.tabs;
 
 import dzaima.ui.eval.PNodeGroup;
 import dzaima.ui.gui.Graphics;
+import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.ReorderableNode;
-import dzaima.utils.Tools;
+import dzaima.utils.*;
 
 public class TabbedNode extends Node {
   public TabbedNode(Ctx ctx, String[] ks, Prop[] vs) {
@@ -15,8 +16,100 @@ public class TabbedNode extends Node {
   
   public TabbedNode(Ctx ctx, String[] ks, Prop[] vs, PNodeGroup tl) {
     super(ctx, ks, vs);
-    tabListW = ctx.make(tl);
-    tabList = (ReorderableNode) tabListW.ctx.id("r");
+    Box<TabReorderNode> l = new Box<>();
+    tabListW = ctx.makeKV(tl, "list", (Ctx.NodeGen) (ctx2, ks2, vs2) -> {
+      TabReorderNode r = new TabReorderNode(ctx2, ks2, vs2);
+      assert !l.has();
+      l.set(r);
+      return r;
+    });
+    tabList = l.get();
+    assert tabList!=null;
+  }
+  
+  public TabbedNode findNewHolder(Node c, int x, int y) {
+    while (!Rect.inXYWH(x, y, 0, 0, c.w, c.h)) {
+      x+= c.dx;
+      y+= c.dy;
+      c = c.p;
+      if (!(c instanceof WindowSplitNode)) return null; // incl. c==null
+    }
+    
+    mid: while (true) {
+      if (c instanceof TabbedNode) return (TabbedNode) c;
+      
+      for (Node n : c.ch) {
+        if (Rect.inXYWH(x, y, n.dx, n.dy, n.w, n.h)) {
+          x-= n.dx;
+          y-= n.dy;
+          c = n;
+          continue mid;
+        }
+      }
+      return null;
+    }
+  }
+  private static class TabReorderNode extends ReorderableNode {
+    boolean wasSel, firstMove, canceledReorder;
+    public TabReorderNode(Ctx ctx, String[] ks, Prop[] vs) {
+      super(ctx, ks, vs);
+    }
+    
+    public boolean shouldReorder(int idx, Node n) {
+      return n instanceof TabWrapper;
+    }
+    public void reorderStarted(Node n) {
+      wasSel = ((TabWrapper) n).sel;
+      firstMove = true;
+      canceledReorder = false;
+    }
+    
+    static int depth = 0;
+    
+    public void mouseStart(int x, int y, Click c) {
+      depth = 0;
+      super.mouseStart(x, y, c);
+    }
+    
+    public void mouseTick(int x0, int y0, Click c) {
+      super.mouseTick(x0, y0, c);
+      if (c.bL() && reordering()) {
+        TabWrapper w = (TabWrapper) heldNode();
+        TabbedNode oh = w.o;
+        XY rel = oh.tabList.relPos(oh);
+        int x = x0+rel.x;
+        int y = y0+rel.y;
+        int d = Rect.xywh(0, 0, oh.w, Math.min(oh.h, h)).manhattanDistance(x, y);
+        int md = firstMove? gc.getProp("tabbed.dragOutMinDist").len() : 0;
+        if (d > md && !Rect.xywh(0, 0, oh.w, oh.h).contains(x, y)) {
+          TabbedNode nh = oh.findNewHolder(oh, x, y);
+          if (depth>10) {
+            Log.warn("tabs", "recursive window moving!!");
+          } else if (nh!=null) {
+            depth++;
+            canceledReorder = true;
+            stopReorder(false);
+            oh.removeTab(oh.tabIndex(w.tab));
+            TabWrapper nw = nh.addTab(w.tab);
+            nw.sel = wasSel;
+            nh.tabList.manualReorderStart(takeX, takeY, c, nw);
+            c.replace(nh.tabList, 0, 0);
+            c.tickClick();
+            nh.tabList.wasSel = wasSel;
+            nh.tabList.firstMove = false;
+            depth--;
+          }
+        }
+      }
+    }
+    
+    public void reorderEnded(int oldIdx, int newIdx, Node n) {
+      if (wasSel && !canceledReorder) {
+        TabWrapper w = (TabWrapper) n;
+        assert w.o.tabIndex(w.tab)!=-1;
+        w.o.toTab(w);
+      }
+    }
   }
   
   public void propsUpd() {
@@ -35,7 +128,7 @@ public class TabbedNode extends Node {
   int tlBg, tlRadius, tlBgOn, tlBgOff;
   
   public final Node tabListW;
-  public final ReorderableNode tabList;
+  public final TabReorderNode tabList;
   
   public enum Mode { NEVER, ALWAYS, WHEN_MULTIPLE }
   public Mode mode = Mode.ALWAYS;
@@ -46,6 +139,7 @@ public class TabbedNode extends Node {
   }
   
   public TabWrapper addTab(Tab t) {
+    if (tabList.reordering()) tabList.stopReorder(false);
     TabWrapper w = new TabWrapper(this, t);
     tabList.add(w);
     updated();
@@ -55,11 +149,13 @@ public class TabbedNode extends Node {
     return tabList.ch.sz;
   }
   public int tabIndex(Tab t) {
+    if (tabList.reordering()) tabList.stopReorder(false);
     int i = 0;
     while (getTab(i)!=t) i++;
     return i;
   }
   public void removeTab(int i) {
+    if (tabList.reordering()) tabList.stopReorder(false);
     if (cw!=null && getTab(i)==cw.tab) cw = null;
     tabList.remove(i, i+1);
     updated();
@@ -69,6 +165,7 @@ public class TabbedNode extends Node {
   }
   
   public Tab getTab(int i) {
+    if (tabList.reordering()) tabList.stopReorder(false);
     return ((TabWrapper) tabList.ch.get(i)).tab;
   }
   public Tab[] getTabs() {
