@@ -212,7 +212,7 @@ public class ReorderableNode extends PackedListNode {
     protected Rect getLocation(int pw, int ph) { return Rect.xywh(lx, ly, lw, lh); }
     protected void implDraw(Graphics g, boolean full) { nd.draw(g, full); }
     protected boolean implRequiresRedraw() { return nd.needsRedraw(); }
-    public boolean shouldRemove() { return currIdx==-1; }
+    public boolean shouldRemove() { return reVW!=this; }
     public Window.CursorType cursorType() { return Window.CursorType.HAND; }
     
     public boolean fullyOpaque() { return false; }
