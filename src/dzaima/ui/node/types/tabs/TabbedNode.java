@@ -51,6 +51,19 @@ public class TabbedNode extends Node {
     updated();
     return w;
   }
+  public int tabCount() {
+    return tabList.ch.sz;
+  }
+  public int tabIndex(Tab t) {
+    int i = 0;
+    while (getTab(i)!=t) i++;
+    return i;
+  }
+  public void removeTab(int i) {
+    if (cw!=null && getTab(i)==cw.tab) cw = null;
+    tabList.remove(i, i+1);
+    updated();
+  }
   public void addSelectedTab(Tab t) {
     toTab(addTab(t));
   }
@@ -87,7 +100,7 @@ public class TabbedNode extends Node {
     }
   }
   
-  Tab cTab() {
+  public Tab cTab() {
     return cw==null? null : cw.tab;
   }
   

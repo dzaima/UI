@@ -9,6 +9,7 @@ import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.*;
 import dzaima.ui.node.types.editable.code.*;
 import dzaima.ui.node.types.table.*;
+import dzaima.ui.node.types.tabs.WindowSplitNode;
 import dzaima.ui.node.types.tree.*;
 import dzaima.utils.*;
 
@@ -260,6 +261,7 @@ public abstract class Ctx {
     map.put("menu", MenuNode::new);
     map.put("mi", MenuNode.MINode::new);
     map.put("weighed", WeighedNode::new);
+    map.put("windowsplit", WindowSplitNode::new);
     return new BaseCtx(map);
   }
 }

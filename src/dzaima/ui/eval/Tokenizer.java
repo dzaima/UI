@@ -99,7 +99,7 @@ public class Tokenizer {
     return c>='a' & c<='z'  |  c>='A' & c<='Z'  |  c=='.'  |  c=='$';
   }
   private static boolean nameM(char c) {
-    return nameS(c) | dig(c);
+    return nameS(c) | dig(c) | c=='_';
   }
   private static boolean hex(char c) {
     return c>='a' & c<='f'  |  c>='A' & c<='F'  |  c>='0' & c<='9';

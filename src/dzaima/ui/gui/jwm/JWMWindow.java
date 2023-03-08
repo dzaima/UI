@@ -31,11 +31,6 @@ public class JWMWindow extends WindowImpl {
     id = idCounter.getAndIncrement();
   }
   
-  static {
-    io.github.humbleui.jwm.Log.setLogger(o -> Log.info("JWM", Objects.toString(o)));
-    Log.onLogLevelChanged(() -> io.github.humbleui.jwm.Log.setVerbose(Log.level.i <= Log.Level.FINE.i));
-  }
-  
   public void setTitle(String s) {
     if (!s.equals(title)) {
       title = s;
@@ -99,6 +94,8 @@ public class JWMWindow extends WindowImpl {
     this.mgr = mgr;
     assert state.get()==0;
     App.runOnUIThread(() -> {
+      io.github.humbleui.jwm.Log.setLogger(o -> Log.info("JWM", Objects.toString(o)));
+      Log.onLogLevelChanged(() -> io.github.humbleui.jwm.Log.setVerbose(Log.level.i <= Log.Level.FINE.i));
       make();
       jwmw.requestFrame();
     });

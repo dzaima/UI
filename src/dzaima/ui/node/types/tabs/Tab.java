@@ -19,4 +19,6 @@ public abstract class Tab {
   public final void nameUpdated() {
     if (w!=null) w.nameUpdated();
   }
+  
+  public /*open*/ void onRightClick() { }
 }

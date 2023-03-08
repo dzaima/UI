@@ -15,7 +15,7 @@ public class Langs {
   
   public Langs() {
     addLang("Java",    JavaLang::new, "java");
-    addLang("C",       CLang::new, "c", "h", "cc", "cpp", "hh", "hpp"); // temporarily includes c++ extensions too
+    addLang("C",       CLang::new, "c", "h", "cc", "cpp", "hh", "hpp", "cxx", "hxx"); // temporarily includes c++ extensions too
     addLang("BQN",     BQNLang::new, "bqn");
     addLang("APL",     APLLang::new, "apl");
     addLang("Singeli", SingeliLang::new, "singeli");

@@ -35,7 +35,13 @@ public class TabWrapper extends PadCNode {
     g.rrect(0, 0, w, h, o.tlRadius, o.tlRadius, 0, 0, sel? o.tlBgOn : o.tlBgOff);
   }
   
-  public void mouseStart(int x, int y, Click c) { c.register(this, x, y); }
+  public void mouseStart(int x, int y, Click c) { if (c.bL() || c.bR()) c.register(this, x, y); }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
-  public void mouseUp(int x, int y, Click c) { if (visible) o.toTab(this); }
+  public void mouseUp(int x, int y, Click c) {
+    if (c.bL()) {
+      if (visible) o.toTab(this);
+    } else if (c.bR()) {
+      tab.onRightClick();
+    }
+  }
 }

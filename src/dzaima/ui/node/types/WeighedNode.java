@@ -24,8 +24,8 @@ public class WeighedNode extends Node {
       case "h": v=false; break;
     }
     handleWidth = gc.len(this, "handleWidth", "uw.handleWidth");
-    pad = gc.lenD(this, "pad", 0);
-    padColor = gc.colD(this, "padCol", 0);
+    pad = gc.len(this, "pad", "uw.pad");
+    padColor = gc.col(this, "padCol", "uw.padCol");
   }
   
   public int minW(     ) { return v? Solve.vMinW(ch  )     : Solve.hMinW(ch      )+pad; }
@@ -33,8 +33,9 @@ public class WeighedNode extends Node {
   
   private float handlePos() { return (v? ch.get(1).dy : ch.get(1).dx) - pad; }
   
+  public boolean wantClick(Click c) { return c.bL(); }
   public void mouseStart(int x, int y, Click c) {
-    if (c.bL() && withinHandle(x, y) && enabled) c.register(this, x, y);
+    if (wantClick(c) && withinHandle(x, y) && enabled) c.register(this, x, y);
     super.mouseStart(x, y, c);
   }
   
@@ -43,23 +44,25 @@ public class WeighedNode extends Node {
   }
   
   boolean dragging;
-  public void mouseDown(int x, int y, Click c) { dragging = false; }
+  public void mouseDown(int x, int y, Click c) { if (c.bL()) dragging = false; }
   public void mouseTick(int x, int y, Click c) {
-    if (!enabled) c.unregister();
-    if (dragging || !gc.isClick(c)) {
-      int cw = (v? h : w)-pad;
-      if (!dragging) {
-        weight = handlePos()/cw;
-        dragging = true;
+    if (c.bL()) {
+      if (!enabled) c.unregister();
+      if (dragging || !gc.isClick(c)) {
+        int cw = (v? h : w) - pad;
+        if (!dragging) {
+          weight = handlePos()/cw;
+          dragging = true;
+        }
+        weight+= (v? c.dy : c.dx) * (1f/cw);
+        if (weight < 0) weight = 0;
+        if (weight > 1) weight = 1;
+        mResize();
       }
-      weight+= (v? c.dy : c.dx)*1f/cw;
-      if (weight < 0) weight = 0;
-      if (weight > 1) weight = 1;
-      mResize();
     }
   }
   
-  public void mouseUp(int x, int y, Click c) { if (visible && !dragging) c.unregister(); }
+  public void mouseUp(int x, int y, Click c) { if (c.bL() && visible && !dragging) c.unregister(); }
   
   public void drawC(Graphics g) {
     if (pad!=0 && Tools.vs(padColor)) {

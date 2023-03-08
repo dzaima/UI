@@ -28,12 +28,32 @@ scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
 uw.handleWidth = 0.3em
+uw.pad = 0
+uw.padCol = #0000
 
+partialMenu.menu = menu {}
 tabbed.bgOff = #3C3D37
 tabbed.bgOn = #282923
 tabbed.radius = 0.2em
 tabbed.barBg = #484944
 tabbed.bar = scroll { y=off x=hidden reorderable { id=r dir=h mode=drag } }
+
+tabbed.splitMenu = {
+  mi { id=base_splitR "Split right" key=tabbed.keys.splitR }
+  mi { id=base_splitD "Split down" key=tabbed.keys.splitD }
+  mi { id=base_splitL "Split left" key=tabbed.keys.splitL }
+  mi { id=base_splitU "Split up" key=tabbed.keys.splitU }
+}
+tabbed.mergeMenu = menu {
+  mi { id=merge "Merge" key=tabbed.keys.merge }
+}
+tabbed.keys {
+  splitR = { "right" }
+  splitD = { "down" } 
+  splitL = { "left" }
+  splitU = { "up" } 
+  merge = { "m" }
+}
 
 menu {
   genericExit = { "esc" }

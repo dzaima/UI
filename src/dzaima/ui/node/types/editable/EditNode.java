@@ -747,6 +747,7 @@ public class EditNode extends Node {
         if (Character.isHighSurrogate(c)) x1++;
         else x0--;
       }
+      if (c==0) return XY.ZERO;
       TextBox[] rs = bp.getRectsForRange(x0, x1, RectHeightMode.MAX, RectWidthMode.TIGHT);
       if (rs.length!=1) {
         Log.warn("No bounding box for character found: "+(int)c);

@@ -303,6 +303,8 @@ public class Devtools extends NodeWindow implements Hijack {
       addRow(infoT, "position Y"    , pos.y+"px");
       addRow(infoT, "delta X"       , insp.dx+"px");
       addRow(infoT, "delta Y"       , insp.dy+"px");
+      addRow(infoT, "minW"       , insp.minW()+"px");
+      addRow(infoT, "maxW"       , insp.maxW()+"px");
       addRow(infoT, "children count", insp.ch.sz+"");
       if (selected instanceof InlineNode) {
         InlineNode c = (InlineNode) selected;
