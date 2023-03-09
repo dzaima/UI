@@ -2,6 +2,7 @@ package dzaima.utils;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
 
 public class Time {
   public final static ZoneId tz = ZoneId.systemDefault();
@@ -24,5 +25,18 @@ public class Time {
   }
   public static String logStart(Object type) {
     return "["+Instant.now().toString()+" "+type+"] ";
+  }
+  
+  public static String relTimeStr(Duration d, int nowRangeSecs) {
+    long n = Math.abs(d.getSeconds());
+    if (n <= nowRangeSecs) return "now";
+    Function<String, String> post = d.isNegative()? c->"in "+c : c->c+" ago";
+    if (n<60) return post.apply(n+" second"+(n==1?"":"s"));
+    n/= 60;
+    if (n<60) return post.apply(n+" minute"+(n==1?"":"s"));
+    n/= 60;
+    if (n<24) return post.apply(n+" hour"+(n==1?"":"s"));
+    n/= 24;
+    return post.apply(n+" day"+(n==1?"":"s"));
   }
 }

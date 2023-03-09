@@ -3,6 +3,8 @@ package dzaima.ui.gui.undo;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.utils.*;
 
+import java.util.Objects;
+
 public class UndoManager {
   public GConfig gc;
   public UndoFrame curr;
@@ -70,7 +72,7 @@ public class UndoManager {
     groupDepth++;
   }
   
-  
+  private boolean forceImportantNext;
   @SuppressWarnings("StringEquality") // no reason to do full string comparison, jvm guarantees constant interning
   public void pop() {
     assert groupDepth>0;
@@ -80,12 +82,13 @@ public class UndoManager {
     UndoFrame last = myList.peek();
     
     long ms = curr.time;
-    curr.important = last==null  ||  curr.mode==2  ||  curr.mode==1 && (last.id!=curr.id || ms > last.time+mergeTimeout);
+    curr.important = forceImportantNext  ||  last==null  ||  curr.mode==2  ||  curr.mode==1 && (last.id!=curr.id || ms > last.time+mergeTimeout);
     
     myList.add(curr);
     if (curr.mode!=0) rs.clear();
     
     curr = null;
+    forceImportantNext = false;
   }
   
   public int pushIgnore() { // makes edits done just completely disappear. be very careful about this! meant for initializing things on just created objects
@@ -102,5 +105,18 @@ public class UndoManager {
     us.clear();
     usT.clear();
     rs.clear();
+  }
+  
+  public void forceBoundary() { // ensure that it's possible to undo/redo to this point
+    solidifyTemp();
+    // if (us.sz>0) us.peek().important = true;
+    forceImportantNext = true;
+  }
+  
+  public Object currMarker() { // returns the currently incomplete segment if one is active, such that onModified can use it
+    return curr!=null? curr : usT.sz>0? usT.peek() : us.sz!=0? us.peek() : (Integer) 0;
+  }
+  public boolean isAtMarker(Object o) {
+    return Objects.equals(currMarker(), o);
   }
 }

@@ -28,8 +28,8 @@ scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 
 uw.handleWidth = 0.3em
-uw.pad = 0
-uw.padCol = #0000
+uw.pad = 0.1em
+uw.padCol = #111
 
 partialMenu.menu = menu {}
 tabbed.bgOff = #3C3D37

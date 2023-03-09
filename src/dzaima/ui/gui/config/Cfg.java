@@ -40,7 +40,7 @@ public class Cfg {
     if (kbActions==null) {
       kbActions = new HashMap<>();
       Cfg kt = getSubByName("keys", false);
-      if (kt==null) throw new RuntimeException("Didn't find 'keys' at '"+path+"' for keymap");
+      if (kt==null) throw new RuntimeException("Didn't find 'keys' at '"+path+"' for keymap"+(path.endsWith(".keys")? " (unnecessary \".keys\"?)" : ""));
       kt.props.forEach((name, gr) -> {
         for (PNode n : gr.gr().ch) {
           String c = ((PNode.PNodeStr) n).s;
