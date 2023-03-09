@@ -16,7 +16,7 @@ public class Windows {
   final Vec<Window> ws = new Vec<>();
   
   public enum Manager { LWJGL, JWM }
-  private static Manager mgr = Manager.LWJGL;
+  private static Manager mgr = Manager.JWM;
   private static boolean mgrFrozen;
   public static void setManager(Manager m) {
     if (mgrFrozen) throw new RuntimeException("Couldn't change manager because it's already in use");
