@@ -56,12 +56,27 @@ public class Tokenizer {
           if (c=='\\') {
             if (i>=s.length()) throw err("Tokenize error: unfinished string", i);
             c = s.charAt(i++);
-            if (c=='\\') b.append('\\');
-            else if (c=='"') b.append('"');
-            else if (c=='n') b.append('\n');
-            else if (c=='r') b.append('\r');
-            else if (c=='t') b.append('\t');
-            else throw err("Tokenize error: string escapes not finished", i);
+            if (c=='"') b.append("\"");
+            else if (c=='\\')b.append("\\");
+            else if (c=='/') b.append("/");
+            else if (c=='b') b.append("\b");
+            else if (c=='f') b.append("\f");
+            else if (c=='n') b.append("\n");
+            else if (c=='r') b.append("\r");
+            else if (c=='t') b.append("\t");
+            else if (c=='u') {
+              if (i+4 > s.length()) throw err("Unfinished \\u escape", i);
+              int v = 0;
+              for (int j = 0; j < 4; j++) {
+                char d = s.charAt(i++);
+                v<<= 4;
+                if (d>='0' & d<='9') v|= d-'0';
+                else if (d>='a' & d<='f') v|= d-'a' + 10;
+                else if (d>='A' & d<='F') v|= d-'A' + 10;
+                else throw err("Bad \\u value", i);
+              }
+              b.append((char)v);
+            } else throw err("Unknown escape \\"+c, i);
           } else b.append(c);
         }
         res.add(new StrTok(li, b.toString()));
