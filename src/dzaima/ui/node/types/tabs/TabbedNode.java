@@ -106,8 +106,7 @@ public class TabbedNode extends Node {
     public void reorderEnded(int oldIdx, int newIdx, Node n) {
       if (wasSel && !canceledReorder) {
         TabWrapper w = (TabWrapper) n;
-        assert w.o.tabIndex(w.tab)!=-1;
-        w.o.toTab(w);
+        w.tab.switchTo();
       }
     }
   }

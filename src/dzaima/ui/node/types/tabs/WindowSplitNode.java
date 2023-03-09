@@ -44,7 +44,7 @@ public class WindowSplitNode extends WeighedNode {
             t0.addTab(t);
           }
           p.replace(p.ch.indexOf(this), n -> n.ch.get(0));
-          if (toSelect!=null) toSelect.w.o.toTab(toSelect.w);
+          if (toSelect!=null) toSelect.switchTo();
         }
       });
       if (unhide) m.add(gc.getProp("tabbed.unhideAdj").gr(), "base_unhideAdj", () -> {

@@ -32,5 +32,11 @@ public abstract class Tab {
     });
   }
   
+  public /*open*/ void switchTo() {
+    TabbedNode t = w.o;
+    if (!t.visible) return;
+    t.toTab(w);
+  }
+  
   public /*open*/ void onRightClick() { }
 }

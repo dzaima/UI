@@ -39,7 +39,7 @@ public class TabWrapper extends PadCNode {
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
   public void mouseUp(int x, int y, Click c) {
     if (c.bL()) {
-      if (visible) o.toTab(this);
+      if (visible) tab.switchTo();
     } else if (c.bR()) {
       tab.onRightClick();
     }
