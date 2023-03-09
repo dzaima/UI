@@ -109,6 +109,8 @@ public class EditNode extends Node {
     if (dy!=0) for (int i = y; i < lns.sz; i++) lns.get(i).y+= dy;
   }
   
+  public /*open*/ void onModified() { }
+  
   public /*open*/ void insert(int x, int y, String s) { // todo split into insertL/insertR? this is insertL
     String[] lns;
     if (multiline) lns = Tools.split(s, '\n');
@@ -137,11 +139,13 @@ public class EditNode extends Node {
           lns.remove(sy+1, ey+1);
           modFrom(sy+1, sy-ey);
           scrollToVis();
+          onModified();
         }
         public void undo() {
           modFrom(sy+1, ey-sy);
           lns.addAll(sy+1, r);
           scrollToVis();
+          onModified();
         }
       });
     }
@@ -179,12 +183,12 @@ public class EditNode extends Node {
         public void redo() {
           lns.addAll(y+1, nlns, 0, nlns.length);
           modFrom(y+1+amount, amount);
-          scrollToVis();
+          scrollToVis(false);
         }
         public void undo() {
           modFrom(y+1+amount, -amount);
           lns.remove(y+1, y+1+nlns.length);
-          scrollToVis();
+          scrollToVis(false);
         }
       });
     } else {
@@ -192,12 +196,14 @@ public class EditNode extends Node {
         public void redo() {
           lns.insert(y+1, l2);
           modFrom(y+2, 1);
-          scrollToVis();
+          scrollToVis(false);
+          onModified();
         }
         public void undo() {
           modFrom(y+2, -1);
           lns.removeAt(y+1);
-          scrollToVis();
+          scrollToVis(false);
+          onModified();
         }
       });
     }
@@ -580,11 +586,12 @@ public class EditNode extends Node {
   public void scrollToLine(int ln) {
     scrollTo(-1, ln, ScrollNode.Mode.PARTLY_OFFSCREEN);
   }
-  public void scrollToVis() {
-    scrollToVis(cs.peek());
+  public void scrollToVis() { scrollToVis(true); }
+  public void scrollToVis(boolean horiz) {
+    scrollToVis(cs.peek(), horiz);
   }
-  public void scrollToVis(Cursor c) {
-    scrollTo(c.sx, c.sy, ScrollNode.Mode.PARTLY_OFFSCREEN);
+  public void scrollToVis(Cursor c, boolean horiz) {
+    scrollTo(horiz? c.sx : -1, c.sy, ScrollNode.Mode.PARTLY_OFFSCREEN);
   }
   public void scrollTo(int xi, int yi, ScrollNode.Mode mode) {
     if (tmpNoScroll) return;
@@ -637,8 +644,8 @@ public class EditNode extends Node {
         cs.get(0).mv(0,0, ln(lns.sz-1).sz(), lns.sz-1);
         um.pop();
         return 1;
-      case "undo": if (mutable) um.undo(); return 1;
-      case "redo": if (mutable) um.redo(); return 1;
+      case "undo": if (mutable) um.undo(); onModified(); return 1;
+      case "redo": if (mutable) um.redo(); onModified(); return 1;
       case "keepFirst":
         if (cs.sz > 1) { collapseCursors(true); return 1; }
         if (cs.peek().sel()) { um.pushQ("keep first"); cs.peek().mv(cs.peek().ex, cs.peek().ey); um.pop(); scrollToVis(); return 1; }
@@ -698,16 +705,17 @@ public class EditNode extends Node {
     public /*open*/ String get() { return new String(get(0, sz())); }
     
     // write primitives
-    protected /*open*/ void insertA(int x, char[] p          ) { mod(); a.addAll(x, p); st.insertFill(x, p.length, x<1? 0 : st.get(x-1)); }
-    protected /*open*/ void insertA(int x, char[] p, byte[] s) { mod(); a.addAll(x, p); st.addAll(x, s); }
-    protected /*open*/ void insertA(int x, char p)             { mod(); a.insert(x, p); st.insert    (x,           x<1? 0 : st.get(x-1)); }
-    protected /*open*/ void rmA    (int s, int e)              { mod(); a.remove(s, e); st.remove(s, e); }
+    protected /*open*/ void insertA(int x, char[] p          ) { a.addAll(x, p); st.insertFill(x, p.length, x<1? 0 : st.get(x-1)); mod(); }
+    protected /*open*/ void insertA(int x, char[] p, byte[] s) { a.addAll(x, p); st.addAll(x, s);                                  mod(); }
+    protected /*open*/ void insertA(int x, char p)             { a.insert(x, p); st.insert    (x,           x<1? 0 : st.get(x-1)); mod(); }
+    protected /*open*/ void rmA    (int s, int e)              { a.remove(s, e); st.remove(s, e);                                  mod(); }
     
     protected /*open*/ void mod() {
       clearPara();
       mRedraw();
       cw = -1;
       ph = -1;
+      if (lns.sz>0) onModified();
     }
     public void clearPara() {
       if (bp!=null) bp.close(); bp = null;
