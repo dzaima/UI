@@ -60,6 +60,7 @@ public class JWMWindow extends WindowImpl {
     }
   }
   // TODO don't use LWJGL for this
+  public void openFolder(Path initial, Consumer<Path> onResult) { LwjglWindow.openFolderStatic(initial, onResult); }
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { LwjglWindow.openFileStatic(filter, initial, onResult); }
   public void saveFile(String filter, Path initial, Consumer<Path> onResult) { LwjglWindow.saveFileStatic(filter, initial, onResult); }
   

@@ -72,6 +72,7 @@ public abstract class Window {
   }
   public void setCursor(CursorType c) { impl.setCursor(c); }
   
+  public void openFolder(Path initial, Consumer<Path> onResult) { impl.openFolder(initial, onResult); }
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { impl.openFile(filter, initial, onResult); }
   public void saveFile(String filter, Path initial, Consumer<Path> onResult) { impl.saveFile(filter, initial, onResult); }
   

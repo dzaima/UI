@@ -345,12 +345,23 @@ public class LwjglWindow extends WindowImpl {
     GLFW.glfwSetCursor(windowPtr, p);
   }
   
+  public void openFolder(Path initial, Consumer<Path> onResult) { openFolderStatic(initial, onResult); }
   public void openFile(String filter, Path initial, Consumer<Path> onResult) { openFileStatic(filter, initial, onResult); }
   public void saveFile(String filter, Path initial, Consumer<Path> onResult) { saveFileStatic(filter, initial, onResult); }
   public static void openFileStatic(String filter, Path initial, Consumer<Path> onResult) {
     PointerBuffer r = MemoryUtil.memAllocPointer(1);
     try {
       int x = NativeFileDialog.NFD_OpenDialog(filter==null? "" : filter, initial==null? null : initial.toAbsolutePath().toString(), r);
+      if (x==NativeFileDialog.NFD_OKAY) onResult.accept(Paths.get(r.getStringUTF8(0)));
+      else onResult.accept(null);
+    } finally {
+      MemoryUtil.memFree(r);
+    }
+  }
+  public static void openFolderStatic(Path initial, Consumer<Path> onResult) {
+    PointerBuffer r = MemoryUtil.memAllocPointer(1);
+    try {
+      int x = NativeFileDialog.NFD_PickFolder(initial==null? null : initial.toAbsolutePath().toString(), r);
       if (x==NativeFileDialog.NFD_OKAY) onResult.accept(Paths.get(r.getStringUTF8(0)));
       else onResult.accept(null);
     } finally {
