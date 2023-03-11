@@ -667,6 +667,8 @@ public class EditNode extends Node {
   public boolean keyF2(Key key, int scancode, KeyAction a) { // TODO keymap
     if (a.release) return false;
     
+    if ((key.mod & ~(Key.M_SHIFT|Key.M_CTRL)) != 0) return false;
+    
     if (key.k_enter()) {
       if (enter(key.mod)) return true;
       if (!multiline || !mutable) return true;
