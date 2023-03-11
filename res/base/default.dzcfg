@@ -32,6 +32,7 @@ uw.pad = 0.1em
 uw.padCol = #111
 
 partialMenu.menu = menu {}
+partialMenu.sep = vsep {}
 tabbed.bgOff = #3C3D37
 tabbed.bgOn = #282923
 tabbed.radius = 0.2em
@@ -41,9 +42,9 @@ tabbed.bar = scroll { y=off x=hidden $list { dir=h mode=drag } }
 tabbed.dragOutMinDist = 5em // minimum distance required to drag a tab outside of its original holder for it to consider changing holder
 tabbed.splitMenu = {
   mi { id=base_splitR "Split right" key=tabbed.keys.splitR }
-  mi { id=base_splitD "Split down" key=tabbed.keys.splitD }
   mi { id=base_splitL "Split left" key=tabbed.keys.splitL }
   mi { id=base_splitU "Split up" key=tabbed.keys.splitU }
+  mi { id=base_splitD "Split down" key=tabbed.keys.splitD }
 }
 tabbed.hideBar   = { mi { id=base_hideBar "Hide bar" } }
 tabbed.unhideBar = { mi { id=base_unhideBar "Unhide bar" } }

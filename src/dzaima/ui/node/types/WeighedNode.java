@@ -74,6 +74,7 @@ public class WeighedNode extends Node {
   
   protected boolean enabled = true;
   public boolean isModifiable() { return enabled; }
+  public boolean isVertical() { return v; }
   public float getWeight() { return weight; }
   public void setModifiable(boolean enabled) {
     this.enabled = enabled;

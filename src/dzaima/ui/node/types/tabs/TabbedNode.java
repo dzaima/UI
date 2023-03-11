@@ -76,6 +76,7 @@ public class TabbedNode extends Node {
       if (c.bL() && reordering()) {
         TabWrapper w = (TabWrapper) heldNode();
         TabbedNode oh = w.o;
+        if (!oh.tabList.visible) oh.setMode(Mode.ALWAYS); // should only happen when dragged into a previously-zero-tab window with a hidden bar; TODO something better
         XY rel = oh.tabList.relPos(oh);
         int x = x0+rel.x;
         int y = y0+rel.y;
@@ -130,7 +131,7 @@ public class TabbedNode extends Node {
   public final TabReorderNode tabList;
   
   public enum Mode { NEVER, ALWAYS, WHEN_MULTIPLE }
-  public Mode mode = Mode.ALWAYS;
+  public Mode mode = Mode.ALWAYS; // when to show top bar
   
   public void setMode(Mode m) {
     mode = m;

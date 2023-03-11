@@ -29,11 +29,9 @@ public class WindowSplitNode extends WeighedNode {
   }
   
   public void mouseUp(int x, int y, Click c) {
-    boolean merge = c.bR() && canMerge();
-    boolean unhide = canUnhide();
-    if (merge || unhide) {
+    if (c.bR()) {
       PartialMenu m = new PartialMenu(gc);
-      if (merge) m.add(gc.getProp("tabbed.mergeMenu").gr(), "base_merge", () -> {
+      if (canMerge()) m.add(gc.getProp("tabbed.mergeMenu").gr(), "base_merge", () -> {
         if (canMerge() && p!=null) {
           TabbedNode t0 = (TabbedNode) ch.get(0);
           TabbedNode t1 = (TabbedNode) ch.get(1);
@@ -47,13 +45,15 @@ public class WindowSplitNode extends WeighedNode {
           if (toSelect!=null) toSelect.switchTo();
         }
       });
-      if (unhide) m.add(gc.getProp("tabbed.unhideAdj").gr(), "base_unhideAdj", () -> {
+      if (canUnhide()) m.add(gc.getProp("tabbed.unhideAdj").gr(), "base_unhideAdj", () -> {
         for (Node n : ch) {
           if (n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS) ((TabbedNode) n).setMode(TabbedNode.Mode.ALWAYS);
         }
       });
       m.open(ctx);
-    } else super.mouseUp(x, y, c);
+      return;
+    }
+    super.mouseUp(x, y, c);
   }
   
   private static final String[] k_dir = new String[]{"dir"};
