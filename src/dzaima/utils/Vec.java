@@ -153,15 +153,9 @@ public class Vec<T> implements Iterable<T> {
   }
   public Iterator<T> iterator() {
     return new Iterator<T>() {
-      private int i;
-      
-      public boolean hasNext() {
-        return i < sz;
-      }
-      
-      public T next() {
-        return arr[i++];
-      }
+      private int i = 0;
+      public boolean hasNext() { return i < sz; }
+      public T next() { return arr[i++]; }
     };
   }
   

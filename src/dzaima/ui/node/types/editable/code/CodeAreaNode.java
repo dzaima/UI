@@ -270,10 +270,20 @@ public class CodeAreaNode extends EditNode {
       
       case "duplicateSelection": { if (!mutable) return 1;
         um.pushQ("duplicate selection");
-        for (Cursor c : cs) {
-          String s = getByCursor(c);
-          c.mv(c.xM(), c.yM());
-          replaceByCursor(c, s);
+        if (anySel()) {
+          for (Cursor c : cs) {
+            String s = getByCursor(c);
+            c.mv(c.xM(), c.yM());
+            replaceByCursor(c, s);
+          }
+        } else {
+          for (Cursor c : cs) {
+            Line l = ln(c.sy);
+            int x0 = c.sx;
+            c.mv(l.sz(), c.sy);
+            replaceByCursor(c, "\n"+l.get());
+            c.mv(x0, c.sy+1);
+          }
         }
         um.pop();
         scrollToVis();
