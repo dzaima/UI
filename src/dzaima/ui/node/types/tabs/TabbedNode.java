@@ -117,6 +117,10 @@ public class TabbedNode extends Node {
     tlBgOff = gc.col(this, "bgOff", "tabbed.bgOff");
     tlBgOn = gc.col(this, "bgOn", "tabbed.bgOn");
     tlRadius = gc.len(this, "radius", "tabbed.radius");
+    tlL = gc.len(this, "padL", "tabbed.padL");
+    tlU = gc.len(this, "padU", "tabbed.padU");
+    tlW = gc.len(this, "padR", "tabbed.padR")+tlL;
+    tlH = gc.len(this, "padD", "tabbed.padD")+tlU;
   }
   
   private static PNodeGroup findTL(Ctx ctx, String[] ks, Prop[] vs) {
@@ -126,6 +130,7 @@ public class TabbedNode extends Node {
   
   // tab list properties
   int tlBg, tlRadius, tlBgOn, tlBgOff;
+  int tlL, tlU, tlW, tlH;
   
   public final Node tabListW;
   public final TabReorderNode tabList;

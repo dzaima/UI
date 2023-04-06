@@ -33,6 +33,11 @@ uw.padCol = #111
 
 partialMenu.menu = menu {}
 partialMenu.sep = vsep {}
+tabbed.minWidth = 10em
+tabbed.padL = 0.4em
+tabbed.padR = 1.1em
+tabbed.padU = 0.3em
+tabbed.padD = 0.3em
 tabbed.bgOff = #3C3D37
 tabbed.bgOn = #282923
 tabbed.radius = 0.2em

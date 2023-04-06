@@ -2,19 +2,24 @@ package dzaima.ui.node.types.tabs;
 
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.Click;
+import dzaima.ui.node.Node;
 import dzaima.ui.node.types.*;
 
-public class TabWrapper extends PadCNode {
+public class TabWrapper extends Node {
   public final TabbedNode o;
   public final Tab tab;
   
   public boolean sel;
   
   public TabWrapper(TabbedNode o, Tab t) {
-    super(o.ctx, new StringNode(o.ctx, t.name()), 0.4f, 1.1f, 0.3f, 0.3f); // TODO don't use hard-coded constant
+    super(o.ctx, KS_NONE, VS_NONE);
+    add(new StringNode(o.ctx, t.name()));
     this.o = o;
     tab = t;
     tab.w = this;
+  }
+  
+  public void propsUpd() {
   }
   
   public void nameUpdated() {
@@ -23,13 +28,19 @@ public class TabWrapper extends PadCNode {
   
   public void drawCh(Graphics g, boolean full) {
     g.push();
-    g.clip(lI, uI, w-dwI, h-dhI);
+    g.clip(o.tlL, o.tlU, w-o.tlW, h-o.tlH);
     super.drawCh(g, full);
     g.pop();
   }
   
-  public int minW() { return Math.max(super.minW(), gc.em*10); }
-  public int maxW() { return Math.max(super.maxW(), gc.em*10); }
+  public int minH(int w) { return ch.get(0).minH(w-o.tlW)+o.tlH; }
+  public int maxH(int w) { return ch.get(0).maxH(w-o.tlW)+o.tlH; }
+  public void resized() {
+    ch.get(0).resize(w-o.tlW, h-o.tlH, o.tlL, o.tlU);
+  }
+  
+  public int minW() { return Math.max(ch.get(0).minW()+o.tlW, gc.getProp("tabbed.minWidth").len()); }
+  public int maxW() { return Math.max(ch.get(0).maxW()+o.tlW, gc.getProp("tabbed.minWidth").len()); }
   
   public void drawC(Graphics g) {
     g.rrect(0, 0, w, h, o.tlRadius, o.tlRadius, 0, 0, sel? o.tlBgOn : o.tlBgOff);
