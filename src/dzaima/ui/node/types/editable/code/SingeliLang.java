@@ -74,7 +74,7 @@ public class SingeliLang extends Lang {
           case'-':case'$':case'*':case'<':case'>':case'+':case'/':case'%':case'&':case'|':case'^':case'~':case'=':case':':
             r[i++] = 7;
             break;
-          case'0':case'1':case'2':case'3':case'4':case'5':case'6':case'7':case'8':case'9':case'.':
+          case'0':case'1':case'2':case'3':case'4':case'5':case'6':case'7':case'8':case'9':
             r[i++] = 3;
             while (i<sz && (nameM(s[i]) || s[i]=='.')) i++;
             break;
