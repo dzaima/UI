@@ -104,7 +104,7 @@ public class JWMEventHandler implements Consumer<Event> {
       }
       w.requestTick();
     } else if (ev instanceof EventTextInput) {
-      if (!dzaima.ui.gui.io.Key.alt(lastModifiers)) {
+      if (!dzaima.ui.gui.io.Key.alt(lastModifiers) && !dzaima.ui.gui.io.Key.ctrl(lastModifiers)) {
         String s = ((EventTextInput) ev).getText();
         int i = 0;
         while (i < s.length()) {
