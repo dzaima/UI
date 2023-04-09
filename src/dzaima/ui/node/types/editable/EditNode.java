@@ -591,7 +591,7 @@ public class EditNode extends Node {
     scrollToVis(cs.peek(), horiz);
   }
   public void scrollToVis(Cursor c, boolean horiz) {
-    scrollTo(horiz? c.sx : -1, c.sy, ScrollNode.Mode.PARTLY_OFFSCREEN);
+    scrollTo(horiz? c.ex : -1, c.ey, ScrollNode.Mode.PARTLY_OFFSCREEN);
   }
   public void scrollTo(int xi, int yi, ScrollNode.Mode mode) {
     if (tmpNoScroll) return;
