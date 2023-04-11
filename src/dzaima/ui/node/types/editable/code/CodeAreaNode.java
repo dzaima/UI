@@ -383,6 +383,7 @@ public class CodeAreaNode extends EditNode {
       }
       sortCursors();
       um.pop();
+      scrollToVis();
       return true;
     }
     return super.keyF2(key, scancode, a);

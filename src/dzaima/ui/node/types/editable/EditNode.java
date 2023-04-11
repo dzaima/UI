@@ -602,24 +602,30 @@ public class EditNode extends Node {
     if (sc0==null) return;
     ScrollNode sc = (ScrollNode) sc0;
     Line ln = lns.get(yi);
-    int y = ln.yw*f.hi;
+    int y = ln.yw*f.hi + drawOffY;
     int x = -1;
     if (xi!=-1) {
       ln.buildPara();
       XY pos = ln.real(xi);
       y+= pos.y;
-      x = pos.x;
+      x = pos.x + drawOffX;
     }
     if (mode==ScrollNode.Mode.FULLY_OFFSCREEN || mode==ScrollNode.Mode.PARTLY_OFFSCREEN) {
       XY rel = this.relPos(sc);
-      int csy = sc.clipSY-rel.y;
-      int cey = sc.clipEY-rel.y;
-      if (y > csy  &&  y+f.hi < cey) return;
-      int mid = (csy+cey)/2;
-      boolean hi = y>mid;
-      if (hi) y+= f.hi;
+      int csx = sc.clipSX-rel.x; int csy = sc.clipSY-rel.y;
+      int cex = sc.clipEX-rel.x; int cey = sc.clipEY-rel.y;
+      int hb = gc.em*4; // horizontal border to ensure; TODO config
+      int hh = gc.em*10; // how far off the left edge to hard-scroll all the way left
+      boolean keepX = (x >= csx+hb  &&  x <= cex-hb)  ||  xi==-1;
+      boolean keepY = y >= csy  &&  y+f.hi <= cey;
+      if (keepX && keepY) return;
+      int midX = (csx+cex)/2;
+      int midY = (csy+cey)/2;
+      int cx = midX + x - (x>midX? cex-hb : csx+hb);
+      if (!keepX && x < drawOffX+hh) cx = 0; // scroll left hard
+      int cy = midY + y - (y>midY? cey-f.hi : csy);
       mode = ScrollNode.Mode.SMOOTH;
-      ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, (hi? y-cey : y-csy) + mid);
+      ScrollNode.scrollTo(this, keepX? ScrollNode.Mode.NONE : mode, keepY? ScrollNode.Mode.NONE : mode, cx, cy);
     } else {
       ScrollNode.scrollTo(this, xi==-1? ScrollNode.Mode.NONE : mode, mode, x, y);
     }
