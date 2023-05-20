@@ -3,6 +3,7 @@ package dzaima.ui.gui;
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.Popup;
 import dzaima.ui.gui.config.*;
+import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.utils.*;
 
@@ -43,16 +44,24 @@ public class PartialMenu {
   
   private Vec<Consumer<Popup.RightClickMenu>> onBuild = new Vec<>();
   public void onBuild(Consumer<Popup.RightClickMenu> f) { onBuild.add(f); }
-  public void open(Ctx ctx) {
+  public void open(Ctx ctx, Click cl, Runnable onClose) {
     if (gr.ch.sz!=0) {
       Popup.RightClickMenu m = Popup.rightClickMenu(ctx.gc, ctx, gr, s -> {
+        if (s.equals("(closed)") && onClose!=null) onClose.run();
         for (Predicate<String> c : consumers) {
           if (c.test(s)) return;
         }
         if (s.equals("(closed)")) return;
         Log.warn("partialmenu", "Nothing consumed menu item '" + s + "'!");
       });
+      if (cl!=null) m.takeClick(cl);
       for (Consumer<Popup.RightClickMenu> c : onBuild) c.accept(m);
     }
+  }
+  public void open(Ctx ctx, Click cl) {
+    open(ctx, cl, null);
+  }
+  public void open(Ctx ctx) {
+    open(ctx, null);
   }
 }
