@@ -265,6 +265,7 @@ public abstract class Ctx {
     map.put("weighed", WeighedNode::new);
     map.put("tabbed", TabbedNode::new);
     map.put("windowsplit", WindowSplitNode::new);
+    map.put("label", LabelNode::new);
     return new BaseCtx(map);
   }
 }
