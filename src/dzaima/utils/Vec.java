@@ -144,6 +144,13 @@ public class Vec<T> implements Iterable<T> {
       else sz--;
     }
   }
+  public T linearFind(Predicate<T> f) {
+    for (int i = 0; i < sz; i++) {
+      T c = arr[i];
+      if (f.test(c)) return c;
+    }
+    return null;
+  }
   
   
   private void dcap() {
