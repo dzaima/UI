@@ -26,17 +26,20 @@ public class Tools {
     DBG = a;
   }
   
+  public static String hexBytes(byte[] data) {
+    char[] cs = new char[data.length*2];
+    for (int i = 0; i < cs.length; i++) {
+      int c = (data[i/2] >>> (4 - i%2*4)) & 0xf;
+      cs[i] = (char)(c<10? '0'+c : 'a'+c-10);
+    }
+    return new String(cs);
+  }
   public static String sha256(byte[] data) {
     MessageDigest d;
     try { d = MessageDigest.getInstance("SHA-256"); }
     catch (NoSuchAlgorithmException e) { throw new RuntimeException(e); }
     byte[] bs = d.digest(data);
-    char[] cs = new char[64];
-    for (int i = 0; i < cs.length; i++) {
-      int c = (bs[i/2] >>> (4 - i%2*4)) & 0xf;
-      cs[i] = (char)(c<10? '0'+c : 'a'+c-10);
-    }
-    return new String(cs);
+    return hexBytes(bs);
   }
   
   
