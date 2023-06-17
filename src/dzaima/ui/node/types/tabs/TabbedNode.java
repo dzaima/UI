@@ -163,6 +163,7 @@ public class TabbedNode extends Node {
     if (tabList.reordering()) tabList.stopReorder(false);
     if (cw!=null && getTab(i)==cw.tab) cw = null;
     tabList.remove(i, i+1);
+    if (tabCount()==1 && mode==Mode.WHEN_MULTIPLE) toTab(getTab(0).w);
     updated();
   }
   public void addSelectedTab(Tab t) {
