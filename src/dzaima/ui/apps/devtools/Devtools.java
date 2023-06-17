@@ -177,8 +177,8 @@ public class Devtools extends NodeWindow implements Hijack {
     Node nHL = null;
     if (pick) {
       nHL = hoveredNode(hoveredVW());
-    } else if (focusNode instanceof DTTNNode) {
-      nHL = ((DTTNNode) focusNode).insp;
+    } else if (_focusNode instanceof DTTNNode) {
+      nHL = ((DTTNNode) _focusNode).insp;
       if (!nHL.visible) nHL = null;
     }
     Node nSel = nHL==null? selected : nHL;

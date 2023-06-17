@@ -66,10 +66,10 @@ public class NodeWindow extends Window {
   
   
   ///////// focus \\\\\\\\\
-  public Node focusNode; // use focusNode() to read
+  public Node _focusNode;
   public void focus(Node n) {
-    Node prev = focusNode();
-    focusNode = n;
+    Node prev = _focusNode;
+    _focusNode = n;
     if (prev != null) prev.focusE();
     if (n == null) return;
     
@@ -85,8 +85,7 @@ public class NodeWindow extends Window {
     focusedVW = vw;
   }
   public Node focusNode() {
-    if (focusNode!=null && !focusNode.visible) focusNode = null;
-    return focusNode;
+    return _focusNode!=null && _focusNode.visible? _focusNode : null;
   }
   
   
@@ -153,7 +152,7 @@ public class NodeWindow extends Window {
         c.stopped();
         if (focusedVW==c) {
           focusedVW = vws.get(0);
-          if (focusNode!=null && focusNode.ctx.vw()==c) focus(null);
+          if (_focusNode !=null && _focusNode.ctx.vw()==c) focus(null);
         }
         requestDraw = true;
         return false;

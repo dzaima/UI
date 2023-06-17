@@ -156,8 +156,8 @@ public class FMgr extends NodeWindow {
           return true;
         }
         if (key.k_down()) {
-          if (focusNode instanceof FRef.FileRow) {
-            ((FRef.FileRow) focusNode).action(0);
+          if (_focusNode instanceof FRef.FileRow) {
+            ((FRef.FileRow) _focusNode).action(0);
           }
           return true;
         }

@@ -39,7 +39,7 @@ public abstract class Ctx {
     win().focus(n);
   }
   public Node focusedNode() {
-    return win().focusNode;
+    return win()._focusNode;
   }
   
   

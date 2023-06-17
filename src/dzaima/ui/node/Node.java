@@ -339,8 +339,10 @@ public abstract class Node implements Click.RequestImpl {
   public /*open*/ void hoverE() { }
   public /*open*/ void hoverT(int mx, int my) { }
   
-  // may be called at any point in time! (except between resizing & drawing)
+  // focusS & focusE may be called at any point in time! (except between resizing & drawing)
   public /*open*/ void focusS() { mRedraw(); ScrollNode.scrollTo(this, ScrollNode.Mode.FULLY_OFFSCREEN, ScrollNode.Mode.FULLY_OFFSCREEN); }
+  // focusE will be called before a new node in this window gains focus regardless of whether this is visible
+  // if this node is removed, and re-added before another node is focused, focus will be kept on this node  
   public /*open*/ void focusE() { mRedraw(); }
   public final void focusMe() { ctx.focus(this); }
   
