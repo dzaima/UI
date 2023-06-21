@@ -15,6 +15,7 @@ public class CodeAreaNode extends EditNode {
   public Language lang;
   private Lang langInst;
   public int padLns, padChrs; // TODO negative numbers add screen height (so -padLns are visible when scrolled all the way down)
+  public int drawOffX2 = 0;
   
   public boolean lineNumbering;
   int lnBg, lnCol;
@@ -22,7 +23,7 @@ public class CodeAreaNode extends EditNode {
   public CodeAreaNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline, UndoManager um) {
     super(ctx, ks, vs, multiline, um);
     setLang(gc.langs().defLang);
-    lineNumbering = true;
+    lineNumbering = multiline;
   }
   
   
@@ -63,7 +64,7 @@ public class CodeAreaNode extends EditNode {
   }
   
   public void drawC(Graphics g) {
-    drawOffX = lineNumbering? lnL+lnR+f.width(lns.sz+"") : 0;
+    drawOffX = (lineNumbering? lnL+lnR+f.width(lns.sz+"") : 0) + drawOffX2;
     super.drawC(g);
     if (lineNumbering) {
       int dy = drawOffY+f.ascI;
