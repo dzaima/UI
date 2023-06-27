@@ -236,9 +236,10 @@ public class EditNode extends Node {
     } else {
       yo = 0;
       yl = 0;
-      for (Line ln : lns) {
+      for (int i = 0; i < lns.sz; i++) {
+        Line ln = lns.get(i);
         yo+= ln.ch;
-        if (yo > ryd) {
+        if (yo>ryd || i==lns.sz-1) {
           yo = (yo-ln.ch) * f.hi;
           yl = ln.y;
           break;
