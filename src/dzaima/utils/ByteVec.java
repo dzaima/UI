@@ -52,7 +52,7 @@ public class ByteVec {
   }
   
   public void insertFill(int i, int am, byte fill) {
-    while (sz+ am > arr.length) dcap();
+    while (sz+am > arr.length) dcap();
     System.arraycopy(arr, i, arr, i+am, sz-i);
     Arrays.fill(arr, i, i+am, fill);
     sz+= am;

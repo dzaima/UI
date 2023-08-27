@@ -248,13 +248,17 @@ public class JSON {
       return map.remove(k);
     }
     
-    public static Obj fromKV(Object... objs) {
+    public static Obj fromKV(Object... objs) { // values can be either Val, String, or Number
       if (objs.length%2 != 0) throw new IllegalArgumentException();
       String[] ks = new String[objs.length/2];
       Val[] vs = new Val[objs.length/2];
       for (int i = 0; i < objs.length/2; i++) {
         ks[i] = (String) objs[2*i];
-        vs[i] = (Val)objs[2*i + 1];
+        Object obj = objs[2*i + 1];
+        if (obj instanceof String) obj = new Str((String) obj);
+        if (obj instanceof Number) obj = new Num(((Number) obj).doubleValue());
+        if (!(obj instanceof Val)) throw new IllegalStateException("JSON.Obj.fromKV: unknown value class: "+(obj==null?"null":obj.getClass().getSimpleName()));
+        vs[i] = (Val) obj;
       }
       return new Obj(ks, vs);
     }
