@@ -9,8 +9,8 @@ public class SingeliLang extends Lang {
     "void","i8","i16","i32","i64","u1","u8","u16","u32","u64","f32","f64","Size"
   );
   public static LangState.Keywords keyw = new LangState.Keywords(
-    "include","fn","oper",
-    "def","extend",
+    "_","include","fn","oper",
+    "config","def","extend","local",
     "do","while","if","else","and","or","not",
     "return","makelabel","setlabel","goto",
     "over","from","to","in",
