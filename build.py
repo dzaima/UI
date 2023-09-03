@@ -1,9 +1,31 @@
 #!/usr/bin/env python3
-import sys, os, urllib.request, subprocess, shutil, hashlib
+import sys, os, platform, urllib.request, subprocess, shutil, hashlib
 
-skija_os = "linux-x64" # or "windows-x64", or "macos-arm64", or "macos-x64"
-lwjgl_os = "linux"     # or "windows",     or "macos-arm64", or "macos"
-                       # (also hashes below will need to be updated; and there will probably need to be more changes for non-linux OSes)
+if platform.system() == "Linux":
+  lib_os = "linux"
+elif platform.system() == "Darwin":
+  lib_os = "macos"
+elif "Win" in platform.system():
+  lib_os = "windows"
+else:
+  print(f'Unknown OS "{platform.system()}"; assuming Linux')
+  lib_os = "linux"
+
+if platform.machine().lower() in ["x86_64", "amd64"]:
+  lib_arch = "x64"
+elif platform.machine().lower() in ["aarch64", "arm64"]:
+  lib_arch = "arm64"
+else:
+  print(f'Unknown architecture "{platform.machine()}"')
+  sys.exit(1)
+
+# lib_os="linux";lib_arch="x86_64"
+# lib_os="macos";lib_arch="x86_64"
+# lib_os="macos";lib_arch="arm64"
+# lib_os="windows";lib_arch="x86_64"
+
+skija_os = lib_os + "-" + lib_arch
+lwjgl_os = lib_os + ("" if lib_arch=="x64" else "-"+lib_arch)
 
 lwjgl_version = "3.3.0"
 
@@ -16,7 +38,7 @@ def call(cmd):
     sys.exit(1)
   
 
-def maven_lib(base, name, version, dir, sha256, post = ""):
+def maven_lib(base, name, version, dir, expected, post = ""):
   jarname = name+"-"+version+post+".jar"
   fname = dir+"/"+jarname
   fname_tmp = fname+".download"
@@ -30,8 +52,14 @@ def maven_lib(base, name, version, dir, sha256, post = ""):
       f.write(urllib.request.urlopen(url).read())
     f = open(fname_tmp, "rb")
     sha256got = hashlib.sha256(f.read()).hexdigest()
-    if (sha256got != sha256):
-      print('unexpected sha256: expected '+sha256+', got '+sha256got)
+    
+    if isinstance(expected, str):
+      sha256exp = expected
+    else:
+      sha256exp = [x[2] for x in [x.split('-') for x in expected] if x[0]==lib_os and x[1]==lib_arch][0]
+    
+    if (sha256got != sha256exp):
+      print(f'unexpected sha256: got "{sha256got}", expected "{sha256exp}"')
       sys.exit(1)
     shutil.move(fname_tmp, fname)
   return fname
@@ -133,27 +161,27 @@ java -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x
 def build_ui(res = "UI.jar"):
   
   lwjgl_native = "-natives-"+lwjgl_os
-  def lwjgl_lib(name, sha256, post = ""):
+  def lwjgl_lib(name, post, sha256):
     return maven_lib("org/lwjgl", name, lwjgl_version, "lib/lwjgl-"+lwjgl_version, sha256, post)
   
   classpath = [
     maven_lib("io/github/humbleui", "types", "0.2.0", "lib", "38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8"),
     maven_lib("io/github/humbleui", "jwm", "0.4.13", "lib", "acc22fbb6b2259f26f74a94e5fff17196348a893187d3a4bea9a425f58690596"),
-    maven_lib("io/github/humbleui", "skija-shared", "0.109.1", "lib", "c89f87cc208617380c5a5c47b7dfd2a5b1340c1897d135da763703aafa853161"),
-    maven_lib("io/github/humbleui", "skija-"+skija_os, "0.109.1", "lib", "d5d658f2c768780adb3cba59c1bcc63a1ac3d13730a5f67fdae00bbf122a5d05"),
+    maven_lib("io/github/humbleui", "skija-shared", "0.116.1", "lib", "27d1575798ab1c8c27f9e9ea8f2b179c2b606dae0ebf136c83b0fbb584ab6da0"),
+    maven_lib("io/github/humbleui", "skija-"+skija_os, "0.116.1", "lib", ["linux-x64-7c3ab50102ca2b4816954eaeb148fe62458646b2ac6c6611150658f6f8ff5f4b","macos-arm64-307f15824638f5a0d40e0271a7ca5f84d2f155de8caf57d136382b5983ad583e","macos-x64-f675cb22f949ababa2fa4b1999245ff2cba1b6d1b2268a453f1602aeb81716d4","windows-x64-ae333594d148571494aeec9e29c0a9138d9b184120f6932363e2d52730ee17a9"]),
     
-    lwjgl_lib("lwjgl", "d04bb83798305ffb8322a60ae99c9f93493c7476abf780a1fde61c27e951dd07"),
-    lwjgl_lib("lwjgl-glfw", "a4a464130eb8943b41036d9c18f3d94da7aafedec7f407848bbc3c674c93e648"),
-    lwjgl_lib("lwjgl-nfd", "64b66ab4e63ca40612c23cab4b4c73be8676396ab1bc7617b364f93703ba3f61"),
-    lwjgl_lib("lwjgl-opengl", "0d2b245a1ee269d41a8fb1a194cb848495252ce0cc8222b398e4a9950fbd116c"),
+    lwjgl_lib("lwjgl", "", "d04bb83798305ffb8322a60ae99c9f93493c7476abf780a1fde61c27e951dd07"),
+    lwjgl_lib("lwjgl-glfw", "", "a4a464130eb8943b41036d9c18f3d94da7aafedec7f407848bbc3c674c93e648"),
+    lwjgl_lib("lwjgl-nfd", "", "64b66ab4e63ca40612c23cab4b4c73be8676396ab1bc7617b364f93703ba3f61"),
+    lwjgl_lib("lwjgl-opengl", "", "0d2b245a1ee269d41a8fb1a194cb848495252ce0cc8222b398e4a9950fbd116c"),
     # lwjgl_lib("lwjgl", "-sources"),
     # lwjgl_lib("lwjgl-glfw", "-sources"),
     # lwjgl_lib("lwjgl-nfd", "-sources"),
     # lwjgl_lib("lwjgl-opengl", "-sources"),
-    lwjgl_lib("lwjgl", "ddab8a8ad1e982ef061fe49845bc9010a5b0af3cd563819b8698927e08405f91", lwjgl_native),
-    lwjgl_lib("lwjgl-glfw", "9448bcc88acb164183c7b64b2dcb745e38f6cc79a8334c35eb69b245e65869e7", lwjgl_native),
-    lwjgl_lib("lwjgl-nfd", "c40cb912c805f35c8a61170d49d22d255b986689f256a8e1e0757b5c484ec8a0", lwjgl_native),
-    lwjgl_lib("lwjgl-opengl", "5972d4be0b1b68d86bc979a18e458e5e1e95a63c18fc9efe9c7cec794d5070df", lwjgl_native),
+    lwjgl_lib("lwjgl",        lwjgl_native, ["linux-x64-ddab8a8ad1e982ef061fe49845bc9010a5b0af3cd563819b8698927e08405f91","macos-arm64-f42c1a1ab2bbc3e6429817d48990c5f6cd04b284de6a3fe201db0da9901446b0","macos-x64-b2b829074883c1a008b99300092a9b0fb7023c88fe4d041fb32ed7c54ba525f7","windows-x64-cfb0a089cecce866b1c21d5ffb708711d82f059095d81bef842b2c0bd597eb9a"]),
+    lwjgl_lib("lwjgl-glfw",   lwjgl_native, ["linux-x64-9448bcc88acb164183c7b64b2dcb745e38f6cc79a8334c35eb69b245e65869e7","macos-arm64-037fb26882b61749cfa54d1e608d9768a5ec616230911d4d3e02560d2033fca5","macos-x64-928101bde61d2d745b664e3b9e8e2ab9e682553bc8a0be1a42c8874c8c007e61","windows-x64-23954dfa3333a91657cedfca251e147500aa24d14613101d64a326fb0a1fb0f6"]),
+    lwjgl_lib("lwjgl-nfd",    lwjgl_native, ["linux-x64-c40cb912c805f35c8a61170d49d22d255b986689f256a8e1e0757b5c484ec8a0","macos-arm64-ecbab3e2e815a0fdd53a216022abad1f826b92e69e6caeec89cb8cfc1e6c09c1","macos-x64-831ac60d853a6cfbf2932f7462fc21be75b2f086df1eb4c3922f155f1968d77d","windows-x64-88cace1d9baa162fe84f03609ce9a5e065d5834bab944e777462461a5b7b07ad"]),
+    lwjgl_lib("lwjgl-opengl", lwjgl_native, ["linux-x64-5972d4be0b1b68d86bc979a18e458e5e1e95a63c18fc9efe9c7cec794d5070df","macos-arm64-83e536559ff292da63381829c9fbf5c64199ac84e55122ed1fa61ec239bd8d6c","macos-x64-a021a0a472bb8a710db4793d674e5f163d2115d00de5002289a206a89796eba8","windows-x64-a364cc3322c0f1a1358988da8f160ad4efec5f6f22bbac9064e8f5836a16d2fe"]),
   ]
   
   if not 'skipui' in sys.argv:
