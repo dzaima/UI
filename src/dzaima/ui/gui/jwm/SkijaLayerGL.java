@@ -36,7 +36,7 @@ public class SkijaLayerGL extends LayerGL {
     if (directContext == null) directContext = DirectContext.makeGL();
     if (renderTarget == null) renderTarget = BackendRenderTarget.makeGL(getWidth(), getHeight(), /*samples*/0, /*stencil*/8, /*fbId*/0, FramebufferFormat.GR_GL_RGBA8);
     if (surface == null) {
-      surface = Surface.makeFromBackendRenderTarget(directContext, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getSRGB(), new SurfaceProps(PixelGeometry.RGB_H));
+      surface = Surface.wrapBackendRenderTarget(directContext, renderTarget, SurfaceOrigin.BOTTOM_LEFT, SurfaceColorFormat.RGBA_8888, ColorSpace.getSRGB(), new SurfaceProps(PixelGeometry.RGB_H));
       w.newCanvas(surface);
     }
     return surface;

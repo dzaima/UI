@@ -25,7 +25,7 @@ public class ImgNode extends Node { // TODO remove
   
   public void setImg(byte[] data) {
     try {
-      img = Image.makeFromEncoded(data); // TODO async
+      img = Image.makeDeferredFromEncodedBytes(data); // TODO async
       iw = img.getWidth();
       ih = img.getHeight();
     } catch (Throwable e) {
