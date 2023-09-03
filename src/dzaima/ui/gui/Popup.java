@@ -138,7 +138,13 @@ public abstract class Popup {
     public void takeClick(Click c) { c.replace(this, 0, 0); }
     public void mouseDown(int x, int y, Click c) { }
     public void mouseTick(int x, int y, Click c) { }
-    public void mouseUp(int x, int y, Click c) { }
+    public void mouseUp(int x, int y, Click c) {
+      if (!gc().getProp("menu.rightClickImplicitClick.enabled").b()) return;
+      if ( gc().getProp("menu.rightClickImplicitClick.minDist").len() > c.distFromStart()) return;
+      if ( gc().getProp("menu.rightClickImplicitClick.minTime").d()   > c.msTimeFromStart()/1e3) return;
+      Node n = node.findCh(x, y);
+      if (n instanceof MenuNode.MINode) ((MenuNode.MINode) n).run();
+    }
     public GConfig gc() { return node.gc; }
     public XY relPos(Node nullArgument) { return XY.ZERO; }
   }

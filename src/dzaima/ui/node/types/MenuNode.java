@@ -22,17 +22,19 @@ public class MenuNode extends Node {
     padY = (short) gc.getProp("menu.wholePadY").len();
   }
   
-  public void focusPrev() {
+  public void focusDelta(int d) {
     if (ch.sz==0) return;
-    int i = ch.indexOf(ctx.win().focusNode())-1;
-    if (i<0) i = ch.sz-1;
-    ch.get(i).focusMe();
+    int i = ch.indexOf(ctx.win().focusNode());
+    for (int j = 0; j < ch.sz; j++) { // bounded loop just to be safe
+      i = Math.floorMod(i+d, ch.sz);
+      if (ch.get(i) instanceof MINode) { ch.get(i).focusMe(); return; }
+    }
+  }
+  public void focusPrev() {
+    focusDelta(-1);
   }
   public void focusNext() {
-    if (ch.sz==0) return;
-    int i = ch.indexOf(ctx.win().focusNode())+1;
-    if (i>=ch.sz) i = 0;
-    ch.get(i).focusMe();
+    focusDelta(1);
   }
   
   public int minW() { return Math.max(Solve.vMinW(ch), gc.getProp("menu.minWidth").len()); }
@@ -110,7 +112,7 @@ public class MenuNode extends Node {
         }
         binds = b.length()==0? "(unassigned)" : b.toString();
         bindW = f.widthf(binds);
-        padX+= bindW;
+        padX+= (short) bindW;
       } else {
         binds = null;
       }

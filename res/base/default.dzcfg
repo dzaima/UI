@@ -74,6 +74,11 @@ menu {
   wholePadY = .3em // padding of whole menu
   keybindSize = 0.8em
   
+  rightClickImplicitClick {
+    enabled = true // whether to enable implicitly selecting a right-click menu item on release of a right-click drag, if all the following conditions are satisfied: 
+    minDist = 1em // minimum distance the mouse must have been moved
+    minTime = 0.2 // minimum time before release, in seconds
+  }
   shadowBlur = 0.6em
   shadowSpread = 0.1em
   shadowColor = #7f000000

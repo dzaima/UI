@@ -20,7 +20,11 @@ public class PartialMenu {
   }
   
   public void add(PNodeGroup g, Predicate<String> consume) {
-    gr.ch.addAll(g.ch);
+    if (g.name==null) {
+      gr.ch.addAll(g.ch);
+    } else {
+      gr.ch.add(g);
+    }
     consumers.add(consume);
   }
   public void add(PNodeGroup g, String k, Runnable r) {

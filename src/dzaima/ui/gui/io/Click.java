@@ -34,11 +34,15 @@ public class Click {
   public boolean bB() { return btn==BACK; }
   public boolean bF() { return btn==FORWARD; }
   
-  public float len() {
+  public float distFromStart() {
     int dx = sx - cx;
     int dy = sy - cy;
     return (float) Math.sqrt(dx*dx + dy*dy);
   }
+  public long msTimeFromStart() {
+    return System.currentTimeMillis()-startMs;
+  }
+  
   
   
   int state = 0; // 0:none; 1:in-progress; 2:ending
