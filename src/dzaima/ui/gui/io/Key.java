@@ -153,7 +153,7 @@ public class Key {
         case "alt": mod|= M_ALT; break;
         case "ctrl": mod|= M_CTRL; break;
         case "windows": case "meta": case "super": mod|= M_SUP; break;
-        case "kp": case "keypad": mod|= P_KP; break; 
+        case "kp": case "keypad": case "numpad": mod|= P_KP; break; 
         case "right": mod|= P_RIGHT; break;
         default: return null;
       }

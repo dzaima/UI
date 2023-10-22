@@ -152,7 +152,7 @@ public class NodeWindow extends Window {
         c.stopped();
         if (focusedVW==c) {
           focusedVW = vws.get(0);
-          if (_focusNode !=null && _focusNode.ctx.vw()==c) focus(null);
+          if (_focusNode!=null && _focusNode.ctx.vw()==c) focus(null);
         }
         requestDraw = true;
         return false;
