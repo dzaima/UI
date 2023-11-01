@@ -28,9 +28,6 @@ public class WeighedNode extends Node {
     padColor = gc.col(this, "padCol", "uw.padCol");
   }
   
-  public int minW(     ) { return v? Solve.vMinW(ch  )     : Solve.hMinW(ch      )+pad; }
-  public int minH(int w) { return v? Solve.vMinH(ch,w)+pad : Solve.hMinH(ch,w-pad); }
-  
   private float handlePos() { return (v? ch.get(1).dy : ch.get(1).dx) - pad; }
   
   public boolean wantClick(Click c) { return c.bL(); }
@@ -89,20 +86,41 @@ public class WeighedNode extends Node {
   public void hoverT(int mx, int my) { ctx.vw().replaceCursor(cPos, withinHandle(mx, my) && enabled? (v? Window.CursorType.NS_RESIZE : Window.CursorType.EW_RESIZE) : null); }
   public void hoverE() { ctx.vw().popCursor(); }
   
+  private int left(int tot) { return tot-pad; } // size left for children
+  private int c0f(int tot, int left, Node c0, Node c1) { // child 0 fill
+    int o = Math.round(left*weight); // optimal divider position
+    if (v) {
+      return Tools.constrain(o, c0.minH(tot), left - c1.minH(tot));
+    } else {
+      return Tools.constrain(o, c0.minW(), left - c1.minW());
+    }
+  }
+  
+  public int minW() {
+    return v? Solve.vMinW(ch) : Solve.hMinW(ch)+pad; 
+  }
+  public int minH(int w) {
+    if (v) return Solve.vMinH(ch, w) + pad;
+    Node c0 = ch.get(0);
+    Node c1 = ch.get(1);
+    int l = left(w);
+    int c0f = c0f(w, l, c0, c1);
+    return Math.max(c0.minH(c0f), c1.minH(l-c0f));
+  }
+  
   protected void resized() {
     assert ch.sz==2;
     Node c0 = ch.get(0);
     Node c1 = ch.get(1);
-    int g = (v?h:w)-pad; // given size
-    int o = Math.round(g*weight); // optimal divider position
+    int tot = v? h : w;
+    int left = left(tot);
+    int c0f = c0f(tot, left, c0, c1);
     if (v) {
-      int c0h = Math.min(Math.max(c0.minH(w), o), g-c1.minH(w));
-      c0.resize(w, c0h, 0, 0);
-      c1.resize(w, g-c0h, 0, c0h+pad);
+      c0.resize(w, c0f, 0, 0);
+      c1.resize(w, left-c0f, 0, c0f+pad);
     } else {
-      int c0w = Math.min(Math.max(c0.minW(), o), g-c1.minW());
-      c0.resize(c0w, h, 0, 0);
-      c1.resize(g-c0w, h, c0w+pad, 0);
+      c0.resize(c0f, h, 0, 0);
+      c1.resize(left-c0f, h, c0f+pad, 0);
     }
     if (pad!=0) mRedraw(); // TODO this is very bad
   }
