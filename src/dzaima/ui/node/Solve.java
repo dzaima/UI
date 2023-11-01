@@ -79,7 +79,7 @@ public class Solve {
     for (Node c : nds) r+= c.minW();
     return r;
   }
-  public static int hMinH(Vec<Node> nds, int w) {
+  public static int hMinH(Vec<Node> nds, int w) { // TODO this is evil? see adacb997e1b3a90e076a81cd6b7ae803232f95a1
     int r = 0;
     for (Node c : nds) r = Math.max(c.minH(w), r);
     return r;

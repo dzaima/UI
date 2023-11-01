@@ -17,7 +17,6 @@ public class VNode extends FrameNode {
   }
   
   public int fillW() {
-    if (ch.sz==0) return 0;
     return Solve.vMinW(ch);
   }
   

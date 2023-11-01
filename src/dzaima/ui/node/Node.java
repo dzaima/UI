@@ -345,6 +345,7 @@ public abstract class Node implements Click.RequestImpl {
   // if this node is removed, and re-added before another node is focused, focus will be kept on this node  
   public /*open*/ void focusE() { mRedraw(); }
   public final void focusMe() { ctx.focus(this); }
+  public boolean isFocused() { return ctx.win().focusNode()==this; }
   
   public /*open*/ void typed(int codepoint) { }
   public /*open*/ boolean keyF(Key key, int scancode, KeyAction a) { return false; } // for the focused element

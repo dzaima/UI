@@ -32,7 +32,7 @@ public abstract class Tab {
     });
   }
   
-  public /*open*/ void switchTo() {
+  public /*open*/ void switchTo() { // override to run an action on any selection of this tab
     TabbedNode t = w.o;
     if (!t.visible) return;
     t.toTab(w);
