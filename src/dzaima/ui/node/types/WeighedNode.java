@@ -87,10 +87,10 @@ public class WeighedNode extends Node {
   public void hoverE() { ctx.vw().popCursor(); }
   
   private int left(int tot) { return tot-pad; } // size left for children
-  private int c0f(int tot, int left, Node c0, Node c1) { // child 0 fill
+  private int c0f(int left, int w, Node c0, Node c1) { // child 0 fill
     int o = Math.round(left*weight); // optimal divider position
     if (v) {
-      return Tools.constrain(o, c0.minH(tot), left - c1.minH(tot));
+      return Tools.constrain(o, c0.minH(w), left - c1.minH(w));
     } else {
       return Tools.constrain(o, c0.minW(), left - c1.minW());
     }
@@ -104,7 +104,7 @@ public class WeighedNode extends Node {
     Node c0 = ch.get(0);
     Node c1 = ch.get(1);
     int l = left(w);
-    int c0f = c0f(w, l, c0, c1);
+    int c0f = c0f(l, -1, c0, c1);
     return Math.max(c0.minH(c0f), c1.minH(l-c0f));
   }
   
@@ -114,7 +114,7 @@ public class WeighedNode extends Node {
     Node c1 = ch.get(1);
     int tot = v? h : w;
     int left = left(tot);
-    int c0f = c0f(tot, left, c0, c1);
+    int c0f = c0f(left, w, c0, c1);
     if (v) {
       c0.resize(w, c0f, 0, 0);
       c1.resize(w, left-c0f, 0, c0f+pad);
