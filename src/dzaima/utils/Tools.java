@@ -176,6 +176,12 @@ public class Tools {
     return t;
   }
   
+  public static String prettyNum(Number d) {
+    String s = d.toString();
+    if (s.endsWith(".0")) return s.substring(0, s.length()-2);
+    return s;
+  }
+  
   public static int ceil(double d) { return (int) Math.ceil(d); }
   public static int ceil( float f) { return (int) Math.ceil(f); }
   
