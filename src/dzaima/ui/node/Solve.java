@@ -51,6 +51,11 @@ public class Solve {
       System.arraycopy(max, 0, res, 0, l);
       return res;
     }
+    if (x <= minSum) {
+      if (x < minSum) Log.warn("solver", "Solver was given impossible request - x="+x+", sum(min)="+minSum);
+      System.arraycopy(min, 0, res, 0, l);
+      return res;
+    }
     
     vs.sort();
     
