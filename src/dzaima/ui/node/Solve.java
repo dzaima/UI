@@ -1,19 +1,143 @@
 package dzaima.ui.node;
 
+import dzaima.ui.apps.devtools.Devtools;
 import dzaima.utils.*;
+import java.util.*;
 
 public class Solve {
-  // public static int[] solveN(Vec<Node> ch, int x, int aw, boolean y) { // returns ch.sz+1 items, last being sum of minW
-  //   int[] res = new int[ch.sz+1];
-  //   int sum = 0;
-  //   for (int i = 0; i < ch.sz; i++) {
-  //     Node c = ch.get(i);
-  //     sum+= res[i] = y? c.minH(aw) : c.minW();
-  //   }
-  //   res[ch.sz] = sum;
-  //   return res;
-  // }
-  public static int[] solve(Vec<Node> ch, int x, int w, boolean y) { // returns ch.sz+1 items, last being sum of minW 
+  static class Ent implements Comparable<Ent> {
+    final double m;
+    final int idx;
+    Ent(int idx, double m) { this.m=m; this.idx=idx; }
+    
+    public int compareTo(Ent o) { return Double.compare(m, o.m); }
+  }
+  public static boolean oldSolver;
+  public static int[] solve(Vec<Node> ch, int x, int widthArg, boolean y) { // returns ch.sz+1 items, last being sum of minW
+    if (oldSolver) return solveOld(ch, x, widthArg, y);
+    if (ch.get(0).ctx.win() instanceof Devtools) return solveOld(ch, x, widthArg, y);
+    
+    int l = ch.sz;
+    if (l==0) return new int[]{0};
+    
+    int[]   min = new int[l];
+    int[]   max = new int[l];
+    float[] wgt = new float[l];
+    int minSum = 0;
+    byte[] state = new byte[l];
+    int lx = x; // flexible space left
+    double lw = 0; // sum of left nodes
+    Vec<Ent> vs = new Vec<>();
+    
+    for (int i = 0; i < l; i++) {
+      Node c = ch.get(i); int wid = c.id("weight");
+      int minV = min[i] = y? c.minH(widthArg) : c.minW(); minSum+= minV;
+      int maxV = max[i] = y? c.maxH(widthArg) : c.maxW();
+      float wV = wgt[i] = wid==-1? 1 : c.vs[wid].f();
+      lx-= minV;
+      if (minV == maxV) {
+        state[i] = 2;
+      } else {
+        state[i] = 0;
+        assert minV < maxV;
+        float wi = 1f/wV;
+        vs.add(new Ent(i, (double)minV * wi));
+        vs.add(new Ent(i, (double)maxV * wi));
+      }
+    }
+    vs.sort();
+    
+    boolean print = ch.get(0).id("debugme")!=-1;
+    if (print) {
+      System.out.println();
+      System.out.println("tot="+x+" min="+Arrays.toString(min)+" max="+Arrays.toString(max)+" wgt="+Arrays.toString(wgt));
+    }
+    
+    int ei = 0;
+    while (ei < vs.sz) {
+      Ent v = vs.get(ei);
+      if (v.m*lw > lx) break;
+      
+      int i = v.idx;
+      int s0 = state[i];
+      
+      if (print) System.out.print("ent "+v.idx+" s="+s0+" at "+v.m+" cut="+(int)(lx/lw)+": lx0="+lx+" lw0="+lw);
+      state[i] = (byte) (s0+1);
+      if (s0==0) {
+        lx+= min[i];
+        lw+= wgt[i];
+      } else {
+        assert s0==1;
+        lx-= max[i];
+        lw-= wgt[i];
+      }
+      
+      if (print) System.out.println(" lx1="+lx+" lw1="+lw);
+      
+      ei++;
+    }
+    
+    double m = lx/lw;
+    if (print) {
+      System.out.println("ended at "+ei+"/"+vs.sz+" lx="+lx+" lw="+lw+" m="+m);
+      while (ei < vs.size()) {
+        Ent v = vs.get(ei);
+        System.out.println("..ent "+v.idx+" at "+v.m);
+        ei++;
+      }
+    }
+    
+    int[] res = new int[l+1];
+    for (int i = 0; i < l; i++) {
+      switch (state[i]) {
+        case 0:
+          res[i] = min[i];
+          break;
+        case 1:
+          int minV = min[i];
+          int maxV = max[i];
+          int nv = (int) (m*wgt[i]);
+          assert nv >= minV-1 && nv <= maxV+1 : nv+" ("+m+"*"+wgt[i]+") not in "+minV+"…"+maxV; // -1/+1 to allow for float inaccuracy
+          res[i] = Tools.constrain(nv, minV, maxV);
+          break;
+        case 2:
+          res[i] = max[i];
+          break;
+      }
+    }
+    
+    // TODO deal with leftover pixels
+    
+    
+    res[l] = minSum;
+    int rs = 0;
+    boolean bad = false;
+    for (int i = 0; i < l; i++) {
+      bad|= res[i]<min[i];
+      bad|= res[i]>max[i];
+      rs+= res[i];
+    }
+    if (bad || rs > x) {
+      System.out.println(x+" "+Arrays.toString(min)+" "+Arrays.toString(max)+" "+Arrays.toString(wgt));
+      System.out.println("  got "+Arrays.toString(res));
+      System.out.println("  exp "+Arrays.toString(solveOld(ch, x, widthArg, y)));
+    }
+    
+    
+    return res;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  public static int[] solveOld(Vec<Node> ch, int x, int widthArg, boolean y) { // returns ch.sz+1 items, last being sum of minW
     int l = ch.sz;
     
     int  [] min = new int  [l];   int minSum = 0;
@@ -23,8 +147,8 @@ public class Solve {
     int lx = x; // space left for undone cols
     for (int i = 0; i < ch.sz; i++) {
       Node c = ch.get(i); int wid = c.id("weight");
-      min[i] = y? c.minH(w) : c.minW(); minSum+= min[i];
-      max[i] = y? c.maxH(w) : c.maxW(); maxSum+= max[i];
+      min[i] = y? c.minH(widthArg) : c.minW(); minSum+= min[i];
+      max[i] = y? c.maxH(widthArg) : c.maxW(); maxSum+= max[i];
       wgt[i] = wid==-1?1:c.vs[wid].f(); wgtSum+= wgt[i];
       if (min[i]==max[i]) {
         lx-= max[i];
@@ -35,7 +159,7 @@ public class Solve {
     max[l] = minSum;
     assert x >= minSum : "Solve - invalid width ("+x+" < "+minSum+")";
     if (maxSum < x) return max;
-    loop: while (doneCount!=l) {
+    while (doneCount!=l) {
       int over = -1;
       int pdone = doneCount;
       for (int i = 0; i < l; i++) if (!done[i]) {
@@ -53,7 +177,10 @@ public class Solve {
       } else {
         for (int i = 0; i < l; i++) if (!done[i]) {
           int n = (int) (lx/wgtSum*wgt[i]);
-          if (n>max[i] || min[i]>n) { Log.warn("solver", "Solver failed"); continue loop; }
+          if (n>max[i] || min[i]>n) {
+            Log.warn("solver", "Solver failed");
+            n = min[i];
+          }
           lx-= min[i] = max[i] = n;
           done[i] = true; doneCount++; wgtSum-= wgt[i];
         }

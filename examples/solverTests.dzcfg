@@ -1,0 +1,166 @@
+ex.notecol = #842
+
+ex.$cell = v { alX=center
+  weight=$weight
+  format { str="≥%1" v1=$w color=ex.notecol tsz=0.8em }
+  h { alX=center
+    bg = #333
+    pad { y = 0.1em
+      h {
+        h { h=0.6em }
+        w = $w
+        bg = #343
+      }
+    }
+  }
+  format { str="w%1" v1=$weight color=ex.notecol tsz=0.8em }
+}
+ex.$cellp = pad { bg=#520 weight=$weight debugme=1 ex.$cell { w=$w weight=$weight } }
+
+ex.$text = text { $s }
+
+ex.$hl = h { pad=0.1em bg=#420 alY=center $ch }
+
+
+ui = v { bg=#151515 scroll { x=off v {
+  vl { text { id=message "new" tsz=4em } alX=center }
+  weighed { dir=v pad=2em handleWidth=1em padCol=#126
+    
+    
+  
+    weighed { dir=h pad=2em handleWidth=1em padCol=#841
+      v { pad=0.2em
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=3em }
+          ex.$cell { weight=1 w=20em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=3em }
+          ex.$cell { weight=1 w=3em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=20em }
+          ex.$cell { weight=1 w=3em }
+        }}
+        
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=3em }
+          ex.$cell { weight=2 w=20em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=3em }
+          ex.$cell { weight=1 w=3em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=2 w=20em }
+          ex.$cell { weight=1 w=3em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=10em }
+          ex.$cell { weight=1 w=10em }
+          ex.$cell { weight=1 w=3em }
+        }}
+        
+        ex.$hl { ch={
+          ex.$cell { weight=2 w=17em }
+          ex.$cell { weight=1 w=3em }
+          ex.$cell { weight=3 w=3em }
+        }}
+      }
+      
+      
+      v { pad=0.2em
+        ex.$hl { ch={
+          ex.$text { s="foo bar baz" }
+          ex.$cell { weight=1 w=10em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=1 w=10em }
+          ex.$text { s="foo bar baz" }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=99 w=10em }
+          ex.$text { s="hello" }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=0.01 w=10em }
+          ex.$text { s="foo bar baz" }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=99 w=9em }
+          ex.$cell { weight=1 w=2.2em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=0.01 w=9em }
+          ex.$cell { weight=1 w=2.2em }
+        }}
+        ex.$hl { ch={
+          ex.$cell { weight=0 w=9em }
+          ex.$cell { weight=1 w=2.2em }
+        }}
+        ex.$hl { ch={
+          ex.$text { s="hello" }
+          v { alX=center
+            text { "≥52px ≤260px" color=ex.notecol tsz=0.8em }
+            h { w=0em:20em bg=#333 alX=center pad { y = 0.1em h { w=4em bg=#343 h { h=0.6em } } } }
+            text { "w1" color=ex.notecol tsz=0.8em }
+          }
+          ex.$text { s="foo" }
+        }}
+      }
+    }
+    
+    
+    
+    
+    weighed { dir=v pad=2em handleWidth=1em padCol=#126
+      weighed { dir=h pad=2em handleWidth=1em padCol=#841
+        v { pad=0.2em
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=20em }
+            ex.$text { s="foo bar" }
+            ex.$cell { weight=1 w=5em }
+          }}
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=5em }
+            ex.$text { s="foo bar" }
+            ex.$cell { weight=1 w=20em }
+          }}
+        }
+        v { pad=0.2em
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=5em }
+            ex.$text { s="foo" }
+            ex.$cell { weight=1 w=20em }
+            ex.$text { s="foo bar baz hello world" }
+          }}
+        }
+      }
+    
+    
+      weighed { dir=h pad=2em handleWidth=1em padCol=#841
+        v { pad=0.2em
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=9em }
+            ex.$text { s="foo bar" }
+            ex.$cell { weight=1 w=9em }
+          }}
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=5em }
+            ex.$text { s="foo bar" }
+            ex.$cell { weight=1 w=14em }
+          }}
+        }
+        v { pad=0.2em
+          ex.$hl { ch={
+            ex.$cell { weight=1 w=14em }
+            ex.$text { s="foo bar" }
+            ex.$cell { weight=1 w=5em }
+          }}
+        }
+      }
+    }
+  }
+}}}
+
+//*/

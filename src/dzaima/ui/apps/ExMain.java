@@ -8,13 +8,16 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.select.*;
-import dzaima.ui.node.Node;
+import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.*;
+import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
 
 import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class ExMain extends NodeWindow {
   public static int dtc = 0;
@@ -38,14 +41,15 @@ public class ExMain extends NodeWindow {
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
     // gc.addCfg(() -> Tools.readFile(Paths.get("examples/defs.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("example.ui").gr();
-    // ExMain w = new ExMain(gc, ctx, g, "example window");
+    gc.addCfg(() -> Tools.readFile(Paths.get("examples/solverTests.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("ui").gr(); ctx.put("format", FormatNode::new);
+    ExMain w = new ExMain(gc, ctx, g, "example window");
     
-    ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
-    CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
-    ed.setLang(w.gc.langs().fromName("java"));
-    int s = ed.um.pushIgnore();
-    ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
-    ed.um.popIgnore(s);
+    // ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
+    // CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
+    // ed.setLang(w.gc.langs().fromName("java"));
+    // int s = ed.um.pushIgnore();
+    // ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
+    // ed.um.popIgnore(s);
     
     
     if (dtc == 0) {
@@ -64,6 +68,17 @@ public class ExMain extends NodeWindow {
     }
   }
   
+  private static class FormatNode extends WrapNode {
+    public FormatNode(Ctx ctx, String[] ks, Prop[] vs) {
+      super(ctx, ks, vs);
+      String s = vs[id("str")].str();
+      for (int i = 0; i < ks.length; i++) {
+        if (ks[i].charAt(0)=='v') s = s.replace('%'+ks[i].substring(1), vs[i].toString().replaceAll(".*=", ""));
+      }
+      add(new StringNode(ctx, s));
+    }
+  }
+  
   public static void main(String[] args) {
     Windows.setManager(Windows.Manager.JWM);
     Windows.start(ExMain::run);
@@ -74,6 +89,14 @@ public class ExMain extends NodeWindow {
     if (a.press) {
       if (key.k_f12()) {
         createTools();
+        return true;
+      }
+      if (key.k_f1()) {
+        Solve.oldSolver^= true;
+        base.ctx.id("message").replace(0, new StringNode(ctx, Solve.oldSolver? "old" : "new"));
+        Box<Consumer<Node>> resize = new Box<>();
+        resize.set(n -> { n.mResize(); for (Node c : n.ch) resize.get().accept(c); });
+        resize.get().accept(base);
         return true;
       }
       if (key.k_f5()) {
