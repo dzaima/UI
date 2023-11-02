@@ -15,7 +15,6 @@ ex.$cell = v { alX=center
   }
   format { str="w%1" v1=$weight color=ex.notecol tsz=0.8em }
 }
-ex.$cellp = pad { bg=#520 weight=$weight debugme=1 ex.$cell { w=$w weight=$weight } }
 
 ex.$text = text { $s }
 
@@ -23,7 +22,6 @@ ex.$hl = h { pad=0.1em bg=#420 alY=center $ch }
 
 
 ui = v { bg=#151515 scroll { x=off v {
-  vl { text { id=message "new" tsz=4em } alX=center }
   weighed { dir=v pad=2em handleWidth=1em padCol=#126
     
     

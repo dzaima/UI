@@ -91,14 +91,6 @@ public class ExMain extends NodeWindow {
         createTools();
         return true;
       }
-      if (key.k_f1()) {
-        Solve.oldSolver^= true;
-        base.ctx.id("message").replace(0, new StringNode(ctx, Solve.oldSolver? "old" : "new"));
-        Box<Consumer<Node>> resize = new Box<>();
-        resize.set(n -> { n.mResize(); for (Node c : n.ch) resize.get().accept(c); });
-        resize.get().accept(base);
-        return true;
-      }
       if (key.k_f5()) {
         gc.reloadCfg();
         base.mRedraw();
