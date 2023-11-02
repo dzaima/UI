@@ -23,7 +23,7 @@ public class Solve {
     int[]   min = new int[l];
     int[]   max = new int[l];
     float[] wgt = new float[l];
-    int minSum = 0;
+    long minSum=0, maxSum=0;
     byte[] state = new byte[l];
     int lx = x; // flexible space left
     double lw = 0; // sum of left nodes
@@ -32,7 +32,7 @@ public class Solve {
     for (int i = 0; i < l; i++) {
       Node c = ch.get(i); int wid = c.id("weight");
       int minV = min[i] = y? c.minH(widthArg) : c.minW(); minSum+= minV;
-      int maxV = max[i] = y? c.maxH(widthArg) : c.maxW();
+      int maxV = max[i] = y? c.maxH(widthArg) : c.maxW(); maxSum+= maxV;
       float wV = wgt[i] = wid==-1? 1 : c.vs[wid].f();
       lx-= minV;
       if (minV == maxV) {
@@ -45,6 +45,13 @@ public class Solve {
         vs.add(new Ent(i, (double)maxV * wi));
       }
     }
+    int[] res = new int[l+1];
+    res[l] = (int) minSum;
+    if (maxSum <= x) {
+      System.arraycopy(max, 0, res, 0, l);
+      return res;
+    }
+    
     vs.sort();
     
     boolean print = ch.get(0).id("debugme")!=-1;
@@ -87,7 +94,6 @@ public class Solve {
       }
     }
     
-    int[] res = new int[l+1];
     for (int i = 0; i < l; i++) {
       switch (state[i]) {
         case 0:
@@ -109,7 +115,6 @@ public class Solve {
     // TODO deal with leftover pixels
     
     
-    res[l] = minSum;
     int rs = 0;
     boolean bad = false;
     for (int i = 0; i < l; i++) {
