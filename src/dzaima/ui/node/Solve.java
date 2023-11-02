@@ -94,38 +94,48 @@ public class Solve {
       }
     }
     
+    int sum = 0;
     for (int i = 0; i < l; i++) {
-      switch (state[i]) {
+      int r;
+      switch (state[i]) { default: throw new IllegalStateException();
         case 0:
-          res[i] = min[i];
+          r = min[i];
           break;
         case 1:
           int minV = min[i];
           int maxV = max[i];
-          int nv = (int) (m*wgt[i]);
-          assert nv >= minV-1 && nv <= maxV+1 : nv+" ("+m+"*"+wgt[i]+") not in "+minV+"…"+maxV; // -1/+1 to allow for float inaccuracy
-          res[i] = Tools.constrain(nv, minV, maxV);
+          int nv = (int) Math.floor(m*wgt[i]);
+          if (nv < minV-1 || nv > maxV) Log.warn("solver", "Bad entry: "+nv+" ("+m+"*"+wgt[i]+") not in "+minV+"…"+maxV);
+          r = Tools.constrain(nv, minV, maxV);
           break;
         case 2:
-          res[i] = max[i];
+          r = max[i];
           break;
+      }
+      res[i] = r;
+      sum+= r;
+    }
+    
+    if (sum < x) {
+      int todo = x-sum;
+      for (int i = l-1; i >= 0; i--) { // reverse to match old solver; could perhaps order by fractional part of m*wgt[i] but whatever
+        if (state[i]==1 && res[i]<max[i]) {
+          res[i]++; sum++;
+          if (0 == --todo) break;
+        }
       }
     }
     
-    // TODO deal with leftover pixels
     
-    
-    int rs = 0;
     boolean bad = false;
     for (int i = 0; i < l; i++) {
       bad|= res[i]<min[i];
       bad|= res[i]>max[i];
-      rs+= res[i];
     }
-    if (bad || rs > x) {
-      System.out.println(x+" "+Arrays.toString(min)+" "+Arrays.toString(max)+" "+Arrays.toString(wgt));
-      System.out.println("  got "+Arrays.toString(res));
-      System.out.println("  exp "+Arrays.toString(solveOld(ch, x, widthArg, y)));
+    if (bad || sum > x) {
+      Log.warn("solver", "Solver of "+l+" elements failed targeting "+x);
+      Log.warn("solver", "min="+Arrays.toString(min)+" max="+Arrays.toString(max)+" wgt="+Arrays.toString(wgt));
+      System.arraycopy(min, 0, res, 0, l);
     }
     
     
