@@ -38,7 +38,7 @@ def call(cmd):
     sys.exit(1)
   
 
-def maven_lib(base, name, version, dir, expected, post = ""):
+def maven_lib(base, name, version, dir, expected, post = "", repo = "https://repo1.maven.org/maven2"):
   jarname = name+"-"+version+post+".jar"
   fname = dir+"/"+jarname
   fname_tmp = fname+".download"
@@ -47,7 +47,7 @@ def maven_lib(base, name, version, dir, expected, post = ""):
     if os.path.dirname(fname):
       mkdirs(os.path.dirname(fname))
     
-    url = "https://repo1.maven.org/maven2/"+base+"/"+name+"/"+version+"/"+jarname
+    url = repo+"/"+base+"/"+name+"/"+version+"/"+jarname
     with open(fname_tmp, 'wb') as f:
       f.write(urllib.request.urlopen(url).read())
     f = open(fname_tmp, "rb")
