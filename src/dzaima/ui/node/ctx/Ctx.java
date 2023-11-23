@@ -126,7 +126,14 @@ public abstract class Ctx {
         }
         addProp(p, args, nodes, props);
       } else {
-        NodeGen nd = g.defn? ((ObjProp) vars.get(rmPrefix(g.name)).val).obj() : getGen(g.name);
+        NodeGen nd;
+        if (g.defn) {
+          Var var = vars.get(rmPrefix(g.name));
+          if (var==null) throw new Error("Path '"+g.name+"' not found for generation");
+          nd = ((ObjProp) var.val).obj();
+        } else {
+          nd = getGen(g.name);
+        }
         if (nd==null) throw new Error(g.name==null? "Encountered node with no name" : "no node defined by name '"+g.name+"'");
         
         Vec<Node> chList = new Vec<>();

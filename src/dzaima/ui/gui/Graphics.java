@@ -55,6 +55,9 @@ public abstract class Graphics {
   public void clip(int x, int y, int w, int h) {
     clip(Rect.xywh(x, y, w, h));
   }
+  public void clipE(int sx, int sy, int ex, int ey) {
+    clip(new Rect(sx, sy, ex, ey));
+  }
   public void clip(Rect r) {
     canvas.clipRect(r.skiaf());
     clip = clip==null? r : clip.and(r);

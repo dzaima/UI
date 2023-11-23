@@ -95,14 +95,12 @@ public class Tools {
     return (f-s)/(e-s)*(ne-ns)+ns;
   }
   
-  public static int constrain(int i, int s, int e) {
-    assert s<=e;
-    return Math.min(Math.max(i, s), e);
-  }
-  public static float constrain(float f, float s, float e) {
-    assert s<=e;
-    return Math.min(Math.max(f, s), e);
-  }
+  public static byte   constrain(byte   i, byte   s, byte   e) { assert s<=e; return (byte)  Math.min(Math.max(i, s), e); }
+  public static short  constrain(short  i, short  s, short  e) { assert s<=e; return (short) Math.min(Math.max(i, s), e); }
+  public static int    constrain(int    i, int    s, int    e) { assert s<=e; return Math.min(Math.max(i, s), e); }
+  public static long   constrain(long   i, long   s, long   e) { assert s<=e; return Math.min(Math.max(i, s), e); }
+  public static float  constrain(float  f, float  s, float  e) { assert s<=e; return Math.min(Math.max(f, s), e); }
+  public static double constrain(double f, double s, double e) { assert s<=e; return Math.min(Math.max(f, s), e); }
   
   public static boolean vs(int col) { return col>>>24 != 0;   } // alpha≠0; is visible
   public static boolean st(int col) { return col>>>24 != 255; } // is see-through

@@ -51,6 +51,9 @@ public class LongVec {
     sz+= t.length;
   }
   
+  public void sort() {
+    Arrays.sort(arr, 0, sz);
+  }
   
   private void dcap() {
     long[] narr = new long[arr.length<<1 | 7];
