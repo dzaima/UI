@@ -49,7 +49,7 @@ public class Solve {
       return res;
     }
     if (x <= minSum) {
-      if (x < minSum) Log.warn("solver", "Solver was given impossible request - x="+x+", sum(min)="+minSum);
+      if (x < minSum) throw new RuntimeException("Solver was given impossible request - x="+x+", sum(min)="+minSum);
       System.arraycopy(min, 0, res, 0, l);
       return res;
     }
