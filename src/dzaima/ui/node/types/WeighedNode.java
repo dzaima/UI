@@ -1,6 +1,7 @@
 package dzaima.ui.node.types;
 
 import dzaima.ui.gui.*;
+import dzaima.ui.gui.Window.CursorType;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
@@ -41,7 +42,12 @@ public class WeighedNode extends Node {
   }
   
   boolean dragging;
-  public void mouseDown(int x, int y, Click c) { if (c.bL()) dragging = false; }
+  public void mouseDown(int x, int y, Click c) {
+    if (c.bL()) {
+      dragging = false;
+      ctx.vw().forceCursor(cursorType());
+    }
+  }
   public void mouseTick(int x, int y, Click c) {
     if (c.bL()) {
       if (!enabled) c.unregister();
@@ -59,7 +65,12 @@ public class WeighedNode extends Node {
     }
   }
   
-  public void mouseUp(int x, int y, Click c) { if (c.bL() && visible && !dragging) c.unregister(); }
+  public void mouseUp(int x, int y, Click c) {
+    if (c.bL()) {
+      if (visible && !dragging) c.unregister();
+      ctx.vw().unforceCursor();
+    }
+  }
   
   public void drawC(Graphics g) {
     if (pad!=0 && Tools.vs(padColor)) {
@@ -81,9 +92,11 @@ public class WeighedNode extends Node {
     mResize();
   }
   
+  public CursorType cursorType() { return v? CursorType.NS_RESIZE : CursorType.EW_RESIZE; }
+  
   private short cPos;
   public void hoverS() { cPos = ctx.vw().pushCursor(null); }
-  public void hoverT(int mx, int my) { ctx.vw().replaceCursor(cPos, withinHandle(mx, my) && enabled? (v? Window.CursorType.NS_RESIZE : Window.CursorType.EW_RESIZE) : null); }
+  public void hoverT(int mx, int my) { ctx.vw().replaceCursor(cPos, withinHandle(mx, my) && enabled? cursorType() : null); }
   public void hoverE() { ctx.vw().popCursor(); }
   
   private int left(int tot) { return tot-pad; } // size left for children

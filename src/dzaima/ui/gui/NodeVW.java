@@ -6,7 +6,7 @@ import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.utils.Vec;
+import dzaima.utils.*;
 
 public abstract class NodeVW extends VirtualWindow {
   public final Node base;
@@ -82,7 +82,18 @@ public abstract class NodeVW extends VirtualWindow {
   public short pushCursor(Window.CursorType t) { cursorStack.add(t); return (short) (cursorStack.sz-1); }
   public void popCursor() { cursorStack.pop(); }
   public void replaceCursor(short pos, Window.CursorType t) { cursorStack.set(pos, t); }
+  
+  private Window.CursorType forcedCursor;
+  public void forceCursor(Window.CursorType t) {
+    if (forcedCursor!=null) Log.error("forceCursor", "Cursor already forced!");
+    forcedCursor = t;
+  }
+  public void unforceCursor() {
+    forcedCursor = null;
+  }
+  
   public Window.CursorType cursorType() {
+    if (forcedCursor!=null) return forcedCursor;
     int i = cursorStack.sz;
     while (--i >= 0) if (cursorStack.get(i) != null) return cursorStack.get(i);
     return Window.CursorType.REGULAR;
