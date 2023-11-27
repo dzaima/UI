@@ -3,7 +3,7 @@ package dzaima.ui.node.types.tabs;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
-import dzaima.ui.node.types.*;
+import dzaima.ui.node.types.StringNode;
 
 public class TabWrapper extends Node {
   public final TabbedNode o;
@@ -48,11 +48,10 @@ public class TabWrapper extends Node {
   
   public void mouseStart(int x, int y, Click c) { if (c.bL() || c.bR()) c.register(this, x, y); }
   public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
+  public void mouseDown(int x, int y, Click c) {
+    if (c.bR()) tab.onRightClick(c);
+  }
   public void mouseUp(int x, int y, Click c) {
-    if (c.bL()) {
-      if (visible) tab.switchTo();
-    } else if (c.bR()) {
-      tab.onRightClick();
-    }
+    if (c.bL() && visible) tab.switchTo();
   }
 }

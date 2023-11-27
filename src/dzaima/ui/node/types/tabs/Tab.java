@@ -1,6 +1,7 @@
 package dzaima.ui.node.types.tabs;
 
 import dzaima.ui.gui.PartialMenu;
+import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 
@@ -38,5 +39,5 @@ public abstract class Tab {
     t.toTab(w);
   }
   
-  public /*open*/ void onRightClick() { }
+  public /*open*/ void onRightClick(Click cl) { }
 }

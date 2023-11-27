@@ -12,23 +12,11 @@ public class WindowSplitNode extends WeighedNode {
     super(ctx, ks, vs);
   }
   
-  
   public boolean wantClick(Click c) {
     return super.wantClick(c)  ||  c.bR() && (canMerge() || canUnhide());
   }
   
-  public void mouseTick(int x, int y, Click c) { if (c.bR()) c.onClickEnd(); else super.mouseTick(x, y, c); }
-  
-  public boolean canMerge() {
-    if (!visible || ch.sz!=2) return false;
-    for (Node c : ch) if (!(c instanceof TabbedNode)) return false;
-    return true;
-  }
-  public boolean canUnhide() {
-    return ch.filter(n -> n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS).sz!=0;
-  }
-  
-  public void mouseUp(int x, int y, Click c) {
+  public void mouseDown(int x, int y, Click c) {
     if (c.bR()) {
       PartialMenu m = new PartialMenu(gc);
       if (canMerge()) m.add(gc.getProp("tabbed.mergeMenu").gr(), "base_merge", () -> {
@@ -50,10 +38,19 @@ public class WindowSplitNode extends WeighedNode {
           if (n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS) ((TabbedNode) n).setMode(TabbedNode.Mode.ALWAYS);
         }
       });
-      m.open(ctx);
-      return;
+      m.open(ctx, c);
+    } else {
+      super.mouseDown(x, y, c);
     }
-    super.mouseUp(x, y, c);
+  }
+  
+  public boolean canMerge() {
+    if (!visible || ch.sz!=2) return false;
+    for (Node c : ch) if (!(c instanceof TabbedNode)) return false;
+    return true;
+  }
+  public boolean canUnhide() {
+    return ch.filter(n -> n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS).sz!=0;
   }
   
   private static final String[] k_dir = new String[]{"dir"};
