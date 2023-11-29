@@ -236,6 +236,9 @@ public class LwjglWindow extends WindowImpl {
   public void enqueue(Runnable r) {
     queue.add(r);
   }
+  public void runOnUIThread(Runnable r) {
+    queue.add(r);
+  }
   
   public boolean needsDraw() { return false; }
   public void startDraw(boolean needed) { }

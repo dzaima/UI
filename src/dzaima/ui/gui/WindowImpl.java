@@ -52,7 +52,8 @@ public abstract class WindowImpl {
     for (Runnable c : cleaners) c.run();
   }
   
-  public abstract void enqueue(Runnable o);
+  public abstract void enqueue(Runnable r); // can be called from any thread; runs r during next tick
+  public abstract void runOnUIThread(Runnable r); // can be called from any thread; runs r at an arbitrary point on the UI thread (i.e. always can be replaced with enqueue, but not the other way around)
   public abstract void runEvents();
   public abstract boolean intentionallyLong();
   

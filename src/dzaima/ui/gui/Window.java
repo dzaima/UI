@@ -83,7 +83,8 @@ public abstract class Window {
   public void closeRequested() { closeOnNext(); } // called when user wants to close window
   
   public Devtools createTools() { return impl.createTools(); }
-  public void enqueue(Runnable o) { impl.enqueue(o); }
+  public void enqueue(Runnable r) { impl.enqueue(r); } // can be called from any thread; runs r during next tick
+  public void runOnUIThread(Runnable r) { impl.runOnUIThread(r); } // can be called from any thread; runs r at an arbitrary point on the UI thread (i.e. always can be replaced with enqueue, but not the other way around)
   
   public enum WindowType {
     NORMAL, POPUP

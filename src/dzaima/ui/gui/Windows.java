@@ -50,9 +50,6 @@ public class Windows {
     switch (getManager()) {
       case JWM: {
         App.start(() -> fn.accept(w));
-        // App.init();
-        // fn.accept(w);
-        // App.start();
         break;
       }
       case LWJGL: {

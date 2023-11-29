@@ -155,6 +155,9 @@ public class JWMWindow extends WindowImpl {
     queue.add(r);
     requestTick();
   }
+  public void runOnUIThread(Runnable r) {
+    App.runOnUIThread(r);
+  }
   
   public boolean needsDraw() {
     return layer.uninitialized;
