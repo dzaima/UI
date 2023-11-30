@@ -122,7 +122,7 @@ public class FMgr extends NodeWindow {
   }
   public void load() {
     info.clearCh();
-    tableScroll.toFirst(true);
+    tableScroll.toXY0(true);
     clearDirReqs();
     refs = new Vec<>();
     Vec<Path> ch;
@@ -132,8 +132,8 @@ public class FMgr extends NodeWindow {
       TextNode t = new TextNode(info.ctx, new String[]{"italics"}, new Prop[]{EnumProp.TRUE});
       t.add(new StringNode(info.ctx, "failed to load"));
       info.add(t);
-      System.err.println("Failed to get directory listing:");
-      e.printStackTrace();
+      Log.warn("fmgr", "Failed to get directory listing:");
+      Log.stacktraceHere("fmgr");
       refresh();
       return;
     }

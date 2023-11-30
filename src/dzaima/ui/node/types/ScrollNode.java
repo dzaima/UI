@@ -5,10 +5,10 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
+import dzaima.ui.node.utils.Scroller;
 import dzaima.utils.*;
 
-public class ScrollNode extends FrameNode {
-  public int ox, oy; // target offset
+public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   private int chW, chH;
   boolean hVis, vVis, hOpen, vOpen, tempOverlap; // TODO not do temp thing
   
@@ -18,22 +18,44 @@ public class ScrollNode extends FrameNode {
     aTick();
   }
   
+  public boolean scrollStop() { return !visible; }
+  public XY scrollCurr() {
+    Node c=ch();
+    return new XY(-c.dx, -c.dy);
+  }
+  public XY scrollMax() {
+    isz();
+    return new XY(hOpen? chW-iw : 0, vOpen? chH-ih : 0);
+  }
+  public void scrollSetCurr(int x, int y) {
+    Node c = ch();
+    c.dx = -x;
+    c.dy = -y;
+    mRedraw();
+  }
+  public XY scrollTarget() { return Scroller.getTarget(this); }
+  
+  private static class NodeScroll {
+    private final Node n;
+    private final Mode stX, stY;
+    private final int offX, offY;
+    NodeScroll(Node node, Mode stX, int offX, Mode stY, int offY) {
+      n = node;
+      this.stX = stX; this.offX = offX;
+      this.stY = stY; this.offY = offY;
+    }
+  }
+  private static final ExternalField<ScrollNode, Vec<NodeScroll>> FLD_NODE_SCROLL = new ExternalField<>("ScrollNode FLD_NODE_SCROLL");
   public enum Mode { NONE, PARTLY_OFFSCREEN, FULLY_OFFSCREEN, SMOOTH, INSTANT } // TODO split into two, to allow smooth & instant variations of only-on-offscreen
-  private Node stNode;
-  private Mode stX=Mode.NONE, stY=Mode.NONE;
-  private int offX, offY;
   public static void scrollTo(Node n, Mode x, Mode y) {
     scrollTo(n, x, y, 0, 0);
   }
   public static ScrollNode scrollTo(Node n, Mode x, Mode y, int offX, int offY) {
     ScrollNode sc = nearestScrollNode(n);
     if (sc==null) return null;
-    // if (n==sc.ch() && offX==0 && offY==0) return; // TODO is this needed?
-    sc.stNode = n;
-    if (x!=Mode.NONE) { sc.stX = x; sc.offX = offX; }
-    if (y!=Mode.NONE) { sc.stY = y; sc.offY = offY; }
-    sc.ignoreStart();
-    sc.ignoreEnd();
+    FLD_NODE_SCROLL.getOrSet(sc, Vec::of).add(new NodeScroll(n, x, offX, y, offY));
+    sc.ignoreYS();
+    sc.ignoreYE();
     return sc;
   }
   public static ScrollNode nearestScrollNode(Node n) {
@@ -41,10 +63,6 @@ public class ScrollNode extends FrameNode {
     while (!(p instanceof ScrollNode) && p!=null) p = p.p;
     if (p==null) return null;
     return (ScrollNode) p;
-  }
-  
-  public boolean stable() {
-    return stNode==null && !ignoreS && !ignoreE;
   }
   
   
@@ -60,45 +78,26 @@ public class ScrollNode extends FrameNode {
   public Node ch() { return ch.get(0); }
   
   
-  public void instant(int x, int y) {
-    Node ch = ch();
-    ox+= x; ch.dx+= x;
-    oy+= y; ch.dy+= y;
-    mRedraw();
+  
+  public boolean atYS(int err) {
+    return scrollTarget().y < err;
   }
-  public void smooth(int x, int y) {
-    ox+= x;
-    oy+= y;
-    mRedraw();
+  public boolean atYE(int err) {
+    return scrollTarget().y+err >= chH-ih;
   }
-  public void move(int x, int y, boolean instant) {
-    if (instant) instant(x, y);
-    else smooth(x, y);
+  int distYE() {
+    return chH-ih - scrollTarget().y;
   }
   
   
-  public boolean atStart(int err) {
-    return -oy < err;
-  }
-  int distEnd() {
-    return oy+chH-ih;
-  }
-  public boolean atEnd(int err) {
-    return oy-err<=ih-chH;
-  }
+  private static final ExternalField<ScrollNode, Boolean> FLD_XE = new ExternalField<>("ScrollNode FLD_XE");
+  private static final ExternalField<ScrollNode, Boolean> FLD_YE = new ExternalField<>("ScrollNode FLD_YE");
+  public void toXS(boolean instant) { FLD_XE.clear(this); Scroller.targetSetX(this, 0, instant); ignoreFocus(); }
+  public void toYS(boolean instant) { FLD_YE.clear(this); Scroller.targetSetY(this, 0, instant); ignoreFocus(); }
+  public void toXE(boolean instant) { FLD_XE.set(this, instant); mRedraw(); }
+  public void toYE(boolean instant) { FLD_YE.set(this, instant); mRedraw(); }
+  public void toXY0(boolean instant) { toXS(instant); toYS(instant); }
   
-  
-  public void toXS(boolean instant) { ox = 0; if (instant) ch().dx = 0; ignoreFocus(true); }
-  public void toYS(boolean instant) { oy = 0; if (instant) ch().dy = 0; ignoreFocus(true); }
-  public void toFirst(boolean instant) { toXS(instant); toYS(instant); }
-  
-  public int toLastState = 0; // 0-none; 1-smooth; 2-instant
-  public void toLast(boolean instant) {
-    mRedraw();
-    toLastState = Math.max(toLastState, instant?2:1);
-  }
-  private boolean toRight;
-  public void toXE() { mRedraw(); toRight = true; }
   
   
   public int fillW() {
@@ -133,7 +132,7 @@ public class ScrollNode extends FrameNode {
   
   
   public static boolean cornerVertical = false; // whether the corner of two scrollbars should be occupied by the vertical one. TODO theme?
-  int iw, ih; // inner width/height
+  int iw, ih; // inner (shown content) width/height
   public void isz() {
     iw = vVis? w-barSize : w; // TODO these should be just w/h for style=over
     ih = hVis? h-barSize : h;
@@ -141,19 +140,12 @@ public class ScrollNode extends FrameNode {
   
   private void processToLast() {
     isz();
-    if (toLastState!=0) {
-      oy = ih-chH;
-      ox = 0;
-      limit();
-      if (toLastState==2) {
-        ch().dy = oy;
-        ch().dx = 0;
-      }
-      toLastState = 0;
-    }
+    Boolean jx = FLD_XE.getAndClear(this); if (jx!=null) Scroller.targetSetX(this, chW-iw, jx);
+    Boolean jy = FLD_YE.getAndClear(this); if (jy!=null) Scroller.targetSetY(this, chH-ih, jy);
   }
   public void drawCh(Graphics g, boolean full) {
     processToLast();
+    isz();
     g.push();
     g.clip(0, 0, iw, ih);
     ch().draw(g, full);
@@ -172,12 +164,6 @@ public class ScrollNode extends FrameNode {
     
     processToLast();
     isz();
-    if (toRight) {
-      ox = iw-chW;
-      limit();
-      c.dx = ox;
-      toRight = false;
-    }
     if (hVis | vVis) {
       if (vVis) {
         int vH = cornerVertical? h : ih;
@@ -210,40 +196,23 @@ public class ScrollNode extends FrameNode {
     }
   }
   public void tickC() {
-    Node c = ch();
-    if (ox!=c.dx | oy!=c.dy) {
-      float speed = (float) Math.pow(gc.getProp("scroll.smooth").f(), gc.deltaNs*60e-9);
-      int ndx = (int) (c.dx*speed + ox*(1-speed)); c.dx = ndx==c.dx? ox : ndx;
-      int ndy = (int) (c.dy*speed + oy*(1-speed)); c.dy = ndy==c.dy? oy : ndy;
-      mRedraw();
-    }
+    Scroller.tick(this);
     if ((flags&RS_CH)==0) evalScrollTo();
   }
   private void evalScrollTo() {
-    if (stNode!=null) {
+    for (NodeScroll e : FLD_NODE_SCROLL.getAndClearOrDefault(this, Vec::of)) {
       Node c = ch();
-      XY rel = stNode==c? XY.ZERO : stNode.relPos(c);
-      int rx = rel.x+offX;
-      int ry = rel.y+offY;
-      isz();
-      if (move(stX, rx, rx+stNode.w, clipSX-ox, clipEX-ox)) ox = limitX((clipSX+clipEX)/2 - rx);
-      if (move(stY, ry, ry+stNode.h, clipSY-oy, clipEY-oy)) oy = limitY((clipSY+clipEY)/2 - ry);
-      if (stX==Mode.INSTANT) c.dx = ox;
-      if (stY==Mode.INSTANT) c.dy = oy;
-      stX = stY = Mode.NONE;
-      stNode = null;
+      Node n = e.n;
+      XY rel = c==n? XY.ZERO : n.relPos(c);
+      int rx = rel.x+e.offX;
+      int ry = rel.y+e.offY;
+      
+      XY t = scrollTarget();
+      if (move(e.stX, rx, rx+n.w, clipSX+t.x, clipEX+t.x)) Scroller.targetSetX(this, rx - (clipSX+clipEX)/2, e.stX==Mode.INSTANT);
+      if (move(e.stY, ry, ry+n.h, clipSY+t.y, clipEY+t.y)) Scroller.targetSetY(this, ry - (clipSY+clipEY)/2, e.stY==Mode.INSTANT);
+      
       mRedraw();
     }
-  }
-  
-  private int limitX(int x) { if (!hOpen) return 0; return -Math.max(0, Math.min(-x, chW-iw)); }
-  private int limitY(int y) { if (!vOpen) return 0; return -Math.max(0, Math.min(-y, chH-ih)); }
-    
-  private void limit() {
-    isz();
-    int pox = ox; ox = limitX(ox);
-    int poy = oy; oy = limitY(oy);
-    if (pox!=ox || poy!=oy) mRedraw();
   }
   
   public Node findCh(int x, int y) { return ch(); }
@@ -253,12 +222,7 @@ public class ScrollNode extends FrameNode {
     if (dx==0 && yMode==OFF) dx=dy;
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
-    PropI s = gc.getProp("scroll.nodeSpeed");
-    if (s.type()!='0') { Log.error("scroll", "scroll.nodeSpeed should be a number"); return true; }
-    float sz = s.f();
-    ox+= (int)(dx*sz);
-    oy+= (int)(dy*sz);
-    limit();
+    Scroller.scrollInput(this, dx, dy);
     return true;
   }
   
@@ -283,61 +247,67 @@ public class ScrollNode extends FrameNode {
   public void mouseTick(int x, int y, Click cl) {
     int dx = cl.dx;
     int dy = cl.dy;
-    Node c = ch();
     if (selBar==2) {
       int vH = cornerVertical? h : ih;
       float barProp = ih/(float)chH; // modified copy-paste from drawC
       float thH = Math.max(gc.em, barProp*ih);
       float d = dy * (chH-ih) / (vH-thH);
-      oy-= d;
-      limit();
-      c.dy = oy;
+      Scroller.deltaDrag(this, 0, (int) d);
     } else if (selBar==1) {
       float barProp = iw/(float)chW;
       float thW = Math.max(gc.em, barProp*iw);
-      ox-= dx * (chW-iw) / (iw-thW);
-      limit();
-      c.dx = ox;
-    } else { // TODO fancy sliding
+      float d = dx * (chW-iw) / (iw-thW);
+      Scroller.deltaDrag(this, (int) d, 0);
+    } else { // TODO fancy bounce-back around edges, velocity decay upon release
       assert selBar==3;
-      ox+= dx;
-      oy+= dy;
-      limit();
-      c.dx = ox;
-      c.dy = oy;
+      Scroller.deltaDrag(this, -dx, -dy);
     }
     mRedraw();
   }
   
   public boolean key(int x, int y, Key key, int scancode, KeyAction a) {
     if (super.key(x, y, key, scancode, a)) return true;
-    if (a.release) return false;
-    if (key.k_home()) {
-      toFirst(false);
-      return true;
-    }
-    if (key.k_end()) {
-      toLast(false);
-      return true;
+    boolean instant = false;
+    switch (gc.keymap(key, a, "scroll")) {
+      case "toXYs": toXY0(instant); break;
+      case "toXYe": toXE(instant); toYE(instant); break;
+      case "toXs": toXS(instant); break;
+      case "toYs": toYS(instant); break;
+      case "toXe": toYE(instant); break;
+      case "toYe": toXE(instant); break;
     }
     return false;
   }
   
   
   
-  public boolean ignoreE, ignoreS, ignoreFocus;
-  public void ignoreEnd() { ignoreE = true; }
-  public void ignoreStart() { ignoreS = true; }
-  public void ignoreFocus(boolean v) { ignoreFocus = v; }
+  private boolean ignoreYE, ignoreYS, ignoreFocus;
+  // don't attempt to pin the specified location on the next resize
+  public void ignoreYS() { ignoreYS = true; }
+  public void ignoreYE() { ignoreYE = true; }
+  public void ignoreFocus() { ignoreFocus = true; }
+  
+  public boolean ignoresYS() { return ignoreYS; }
+  public boolean ignoresYE() { return ignoreYE; }
+  
   public void resized() {
-    
-    Node focusEl = w==-1 && stNode!=null? stNode : getBest(0, (clipSY+clipEY)/2-oy);
+    Node focusEl;
+    Vec<NodeScroll> nds = FLD_NODE_SCROLL.get(this); // TODO perhaps shouldn't do this
+    if (w==-1 && nds!=null) {
+      focusEl = nds.peek().n;
+    } else {
+      XY t = scrollTarget();
+      focusEl = getBest(
+        (clipSX+clipEX)/2 + t.x,
+        (clipSY+clipEY)/2 + t.y
+      );
+    }
     if (focusEl==this) focusEl = null;
     XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
-    boolean atStart = atStart(2) && !ignoreS; ignoreS = false;
-    boolean atEnd   = atEnd  (2) && !ignoreE; ignoreE = false;
-    int de = distEnd();
+    boolean atYS = atYS(2) && !ignoreYS; ignoreYS = false;
+    boolean atYE = atYE(2) && !ignoreYE; ignoreYE = false;
+    int de = distYE();
     
     Node c = ch();
     int wCov = yMode==OFF | yMode==HIDDEN | tempOverlap? 0 : barSize;
@@ -353,16 +323,15 @@ public class ScrollNode extends FrameNode {
     mRedraw();
     
     XY fE = focusEl==null? XY.ZERO : focusEl.relPos(this);
-    
     isz();
-    if (atStart) {
+    if (atYS) {
       // do nothing
-    } else if (atEnd) {
-      instant(0, de-distEnd());
+    } else if (atYE) {
+      Scroller.deltaTranslate(this, 0, distYE()-de);
     } else if (!ignoreFocus) {
-      instant(fS.x-fE.x, fS.y-fE.y);
+      Scroller.deltaTranslate(this, fE.x-fS.x, fE.y-fS.y);
     }
-    limit();
     evalScrollTo();
+    ignoreFocus = false;
   }
 }

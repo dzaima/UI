@@ -26,6 +26,14 @@ scroll.barCol   = #333 // background color of scrollbar
 scroll.thumbCol = #666 // main color
 scroll.barSize  = 1em  // width
 scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
+scroll.keys {
+  toXYs = { "home" } // scroll vertically & horizontally to the start
+  toXYe = { } // scroll vertically & horizontally to the end
+  toYs = { "end" } // ... axis-separate components of the above
+  toXs = { }
+  toXe = { }
+  toYe = { }
+}
 
 uw.handleWidth = 0.3em
 uw.pad = 0.1em
