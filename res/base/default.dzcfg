@@ -183,6 +183,7 @@ devtools {
       btn { style=rect "GC" id=gc }
       btn { style=rect "frame" id=requestFrame }
       btn { style=rect "reset tree state" id=resetTreeState }
+      btn { style=rect "ExternalField stats" id=extFldStats }
     }
     
     scroll { tempOverlap=true bg=bg.back

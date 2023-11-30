@@ -102,6 +102,7 @@ public class Devtools extends NodeWindow implements Hijack {
     ((BtnNode) base.ctx.id("resetTreeState")).setFn(b -> {
       if (currVW!=null) resetTreeState(new Vec<>(), currVW.base);
     });
+    ((BtnNode) base.ctx.id("extFldStats")).setFn(b -> ExternalField.logStats());
     String t = insp.getTitle();
     base.ctx.id("infoL").add(new StringNode(base.ctx, t==null? "(null title)" : t));
     if (insp instanceof NodeWindow) newVW(((NodeVW) ((NodeWindow) insp).vws.get(0)));
@@ -187,7 +188,7 @@ public class Devtools extends NodeWindow implements Hijack {
       Node path = base.ctx.id("path"); path.clearCh();
       if (nSel!=null && nSel.visible) {
         path.add(new StringNode(base.ctx, path(nSel)));
-        ((ScrollNode) base.ctx.id("pathScroll")).toXE();
+        ((ScrollNode) base.ctx.id("pathScroll")).toXE(true);
       } else path.add(new StringNode(base.ctx, ""));
     }
     highlight = nHL;
