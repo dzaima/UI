@@ -1,6 +1,6 @@
 package dzaima.utils;
 
-public class XY {
+public final class XY {
   public static final XY ZERO = new XY(0, 0);
   public static final XY INF = new XY(Tools.BIG, Tools.BIG);
   public final int x, y;
@@ -23,13 +23,10 @@ public class XY {
     return this.x<=that.x & this.y<=that.y;
   }
   
-  public XY max(int x2, int y2) {
-    return new XY(Math.max(x, x2), Math.max(y, y2));
-  }
-  
-  public String toString() {
-    return "("+x+" "+y+")";
-  }
+  public XY min(int x2, int y2) { return new XY(Math.min(x, x2), Math.min(y, y2)); }
+  public XY max(int x2, int y2) { return new XY(Math.max(x, x2), Math.max(y, y2)); }
+  public XY min(XY t) { return min(t.x, t.y); }
+  public XY max(XY t) { return max(t.x, t.y); }
   
   public XY add(int dx, int dy) { return new XY(x+dx, y+dy); }
   public XY sub(int dx, int dy) { return new XY(x-dx, y-dy); }
@@ -41,4 +38,13 @@ public class XY {
     y-= y0; int yd = y<0? -y : y>h? y-h : 0;
     return Math.max(xd, yd);
   }
+  
+  public boolean equals(Object o) {
+    if (!(o instanceof XY)) return false; 
+    XY t = (XY) o;
+    return x==t.x && y==t.y;
+  }
+  public int hashCode() { return 31*x + y; }
+  
+  public String toString() { return "("+x+" "+y+")"; }
 }
