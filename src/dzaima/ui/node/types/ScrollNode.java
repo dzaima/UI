@@ -332,6 +332,7 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
       Scroller.deltaTranslate(this, fE.x-fS.x, fE.y-fS.y);
     }
     evalScrollTo();
+    Scroller.resized(this);
     ignoreFocus = false;
   }
 }

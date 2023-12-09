@@ -53,6 +53,10 @@ public abstract class Scroller {
     mk(n).translate_i(n, dx, dy);
   }
   
+  public static void resized(ScrollNode n) {
+    mk(n);
+  }
+  
   private static Scroller mk(Scrollable n) {
     return FLD.getOrInit(n, ExpDecayScroller::new);
   }
