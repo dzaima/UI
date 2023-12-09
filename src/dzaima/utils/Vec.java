@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.*;
 
 @SuppressWarnings("unchecked")
-public class Vec<T> implements Iterable<T> {
+public final class Vec<T> implements Iterable<T> {
   T[] arr;
   public int sz;
   static Object[] EMPTY = new Object[0];
@@ -153,6 +153,16 @@ public class Vec<T> implements Iterable<T> {
       if (f.test(c)) return c;
     }
     return null;
+  }
+  
+  public int binarySearch(Predicate<T> f) { // index of the first entry matching f, or sz if none do
+    int s=-1, e=sz; // e incl
+    while (s+1<e) {
+      int m = (s+e)/2;
+      if (f.test(arr[m])) e = m;
+      else s = m;
+    }
+    return e;
   }
   
   
