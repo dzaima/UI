@@ -3,7 +3,6 @@ package dzaima.ui.node.types.editable;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Log;
 
 public class TextFieldNode extends EditNode {
   private int bgCol, padY;

@@ -255,6 +255,7 @@ public abstract class Ctx {
     map.put("textfield", TextFieldNode::new);
     map.put("codearea", CodeAreaNode::new);
     map.put("codefield", CodeFieldNode::new);
+    map.put("menufield", MenuFieldNode::new);
     map.put("scroll", ScrollNode::new);
     map.put("reorderable", ReorderableNode::new);
     map.put("tree", TreeNode::new);

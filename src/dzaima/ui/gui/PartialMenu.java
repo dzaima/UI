@@ -5,6 +5,7 @@ import dzaima.ui.gui.Popup;
 import dzaima.ui.gui.config.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.ctx.Ctx;
+import dzaima.ui.node.types.editable.MenuFieldNode;
 import dzaima.utils.*;
 
 import java.util.function.*;
@@ -44,6 +45,15 @@ public class PartialMenu {
   
   public void addSep() {
     if (gr.ch.sz!=0) gr.ch.add(gc.getProp("partialMenu.sep").gr());
+  }
+  
+  public void addField(String init, Consumer<String> onModified) {
+    add(gc.getProp("menu.menuField").gr(), s -> false);
+    onBuild(fm -> {
+      MenuFieldNode f = (MenuFieldNode) fm.node.ctx.id("name");
+      f.append(init);
+      f.onModified = () -> onModified.accept(f.getAll());
+    });
   }
   
   private Vec<Consumer<Popup.RightClickMenu>> onBuild = new Vec<>();

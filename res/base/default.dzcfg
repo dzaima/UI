@@ -96,6 +96,10 @@ menu {
     next = { "down" }
     accept = { "tab" "space" "enter" }
   }
+  
+  menuField = pad { y=menu.padY x=menu.padR
+    scroll { y=off x=hidden menufield { id=name family=str.defaultFont bg=#333 } }
+  }
 }
 
 tree.bg1 = bg.bg1
