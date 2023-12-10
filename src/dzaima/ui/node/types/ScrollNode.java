@@ -219,7 +219,8 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   
   public boolean scroll(int x, int y, float dx, float dy) {
     if (super.scroll(x, y, dx, dy)) return true;
-    if (dx==0 && yMode==OFF) dx=dy;
+    if (!hOpen && !vOpen) return false;
+    if (dx==0 && yMode==OFF) dx = dy;
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
     Scroller.scrollInput(this, dx, dy);
