@@ -40,4 +40,6 @@ public abstract class Tab {
   }
   
   public /*open*/ void onRightClick(Click cl) { }
+  
+  protected final void onRightClick() { } // deprecated version of the above
 }
