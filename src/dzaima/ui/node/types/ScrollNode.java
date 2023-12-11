@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.*;
+import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.utils.Scroller;
 import dzaima.utils.*;
 

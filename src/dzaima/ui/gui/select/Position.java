@@ -8,13 +8,18 @@ import dzaima.utils.Vec;
 import io.github.humbleui.skija.paragraph.Paragraph;
 
 public class Position {
-  public final Node n;
+  public final Node n; // deepest matching node
   public final Vec<PosPart> ss;
   protected Position(Node n, Vec<PosPart> ss) {
     this.n = n;
     this.ss = ss;
   }
   
+  
+  
+  public static Position make(Selectable s, Node n, int pos) {
+    return new Position(n, Vec.of(new PosPart(0, s, pos, n)));
+  }
   
   public static Position getPosition(Node c, int fx, int fy) {
     Vec<PosPart> ss = new Vec<>();
@@ -30,9 +35,9 @@ public class Position {
       if (c instanceof Selectable && ((Selectable) c).selectable()) {
         Selectable s = (Selectable) c;
         switch (s.selType()) { default: throw new IllegalStateException();
-          case "v": ss.add(new PosPart(depth, s, fy < n.h/2? 0 : 1)); break;
-          case "h": ss.add(new PosPart(depth, s, fx < n.w/2? 0 : 1)); break;
-          case "text": ss.add(textTodo.add(new PosPart(depth, s, -1))); break; // keep the latest one
+          case "v": ss.add(new PosPart(depth, s, fy < n.h/2? 0 : 1, n)); break;
+          case "h": ss.add(new PosPart(depth, s, fx < n.w/2? 0 : 1, n)); break;
+          case "text": ss.add(textTodo.add(new PosPart(depth, s, -1, null))); break; // keep the latest one
         }
       }
       nextText(n, textTodo, fx, fy);

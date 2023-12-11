@@ -17,14 +17,15 @@ public class STextNode extends TextNode implements Selectable {
     super(ctx, ibeam? IBEAM_K : KS_NONE, ibeam? IBEAM_V : VS_NONE);
   }
   
-  public boolean selectS(Selection s) {
+  public void selectS(Selection s) {
     mRedraw();
-    return InlineNode.scanSelection(s, new InlineNode.SubSelConsumer() {
+    s.setSorted(InlineNode.scanSelection(s, new InlineNode.SubSelConsumer() {
       public void addString(StringNode nd, int s, int e) {
         nd.flags|= StringNode.FL_SEL;
       }
       public void addNode(Node nd) { }
-    });
+    }));
+    if (!isFocused()) focusMe();
   }
   
   public void selectE(Selection s) {

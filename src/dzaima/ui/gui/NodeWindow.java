@@ -67,7 +67,7 @@ public class NodeWindow extends Window {
   
   ///////// focus \\\\\\\\\
   public Node _focusNode;
-  public void focus(Node n) {
+  public void focus(Node n) { // TODO can this fast-path if _focusNode==n?
     Node prev = _focusNode;
     _focusNode = n;
     if (prev != null) prev.focusE();
@@ -95,7 +95,7 @@ public class NodeWindow extends Window {
   private Position selStart;
   public void startSelection(Position p) {
     if (selection!=null) {
-      selection.end();
+      selection.ended();
       selection = null;
     }
     selStart = p;
@@ -105,13 +105,13 @@ public class NodeWindow extends Window {
     Selection psel = selection;
     Selection nsel = Position.select(selStart, p);
     if (psel==null || nsel==null || psel.c!=nsel.c || !psel.aS.equals(nsel.aS) || !psel.bS.equals(nsel.bS)) {
-      if (psel!=null) psel.end();
-      if (nsel!=null) nsel.start();
+      if (psel!=null) psel.ended();
+      if (nsel!=null) nsel.started();
       selection = nsel;
     }
   }
   public void endSelection() {
-    if (selection!=null) selection.end();
+    if (selection!=null) selection.ended();
     selection = null;
     selStart = null;
   }

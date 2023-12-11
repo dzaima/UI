@@ -1,7 +1,7 @@
 package dzaima.ui.gui.select;
 
 public interface Selectable {
-  boolean selectS(Selection s);
+  void selectS(Selection s);
   void selectE(Selection s);
   String selType();
   
