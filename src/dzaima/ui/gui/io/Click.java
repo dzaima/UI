@@ -133,7 +133,10 @@ public class Click {
     if (nextItem()) {
       assert state==1 || state==2;
       if (state==1) tickClick();
-      else endClick();
+      else {
+        state = 1;
+        endClick();
+      }
     }
   }
   public void replace(RequestImpl n, int x, int y) { // TODO don't take x/y?
