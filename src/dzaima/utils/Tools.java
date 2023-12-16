@@ -103,7 +103,7 @@ public class Tools {
   public static double constrain(double f, double s, double e) { assert s<=e; return Math.min(Math.max(f, s), e); }
   
   public static boolean vs(int col) { return col>>>24 != 0;   } // alpha≠0; is visible
-  public static boolean st(int col) { return col>>>24 != 255; } // is see-through
+  public static boolean st(int col) { return col>>>24 != 255; } // is see-through aka at least partly transparent
   public static int argb1  (float a, float r, float g, float b) { return csh(a,1,256,24) | csh(r,1,256,16) | csh(g,1,256,8) | csh(b,1,256,0); }
   public static int argb255(float a, float r, float g, float b) { return csh(a,255,1,24) | csh(r,255,1,16) | csh(g,255,1,8) | csh(b,255,1,0); }
   private static int csh(float c, int x, int m, int sh) {

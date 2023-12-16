@@ -17,7 +17,7 @@ public class WrapNode extends Node {
   public int maxW() { return ch.get(0).maxW(); }
   public int minH(int w) { return ch.get(0).minH(w); }
   public int maxH(int w) { return ch.get(0).maxH(w); }
-  public void resized() {
+  protected void resized() {
     ch.get(0).resize(w, h, 0, 0);
   }
 }

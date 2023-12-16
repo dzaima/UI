@@ -17,7 +17,6 @@ public class OverlapNode extends WrapNode {
   public Consumer<Node> resized;
   
   public void drawCh(Graphics g, boolean full) {
-    assert ch.get(0).p==this;
     ch.get(0).draw(g, full);
     if (draw!=null) draw.accept(this, g);
   }
