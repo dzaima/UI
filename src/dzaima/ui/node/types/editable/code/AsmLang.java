@@ -1,7 +1,6 @@
 package dzaima.ui.node.types.editable.code;
 
 import dzaima.ui.gui.Font;
-import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
@@ -9,11 +8,18 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class AsmLang extends Lang {
-  public static LangState.Keywords sizes = new LangState.Keywords(
+  private static LangState.Keywords x86_sizes = new LangState.Keywords(
     "ptr","byte","word","dword","qword","tword","mmword","xmmword","ymmword","zmmword"
   );
+  private static Pattern x86_regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
   
-  public static Pattern regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
+  public static Lang new_x86(Font f) {
+    return new AsmLang(f, s -> x86_regs.matcher(s).matches(), s -> x86_sizes.has(s.toLowerCase().toCharArray()));
+  }
+  public static Lang new_generic(Font f) {
+    return new AsmLang(f, s -> false, s -> false);
+  }
+  
   
   public static int[] cols = new int[]{
     0xffD2D2D2, // 0 default
@@ -30,23 +36,23 @@ public class AsmLang extends Lang {
     return styles[v];
   }
   
-  public AsmLang(Font f) {
-    this(f, c -> regs.matcher(c).matches());
-  }
-  public AsmLang(Font f, Predicate<String> isReg) {
-    super(new AsmLang.AsmState(isReg));
+  public AsmLang(Font f, Predicate<String> isReg, Predicate<String> isKW) {
+    super(new AsmLang.AsmState(isReg, isKW));
     styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new AsmLang(f, ((AsmState) init).isReg); }
+  public Lang font(Font f) { return new AsmLang(f, ((AsmState) init).isReg, ((AsmState) init).isKW); }
   
   
   static class AsmState extends LangState<AsmLang.AsmState> {
-    Predicate<String> isReg;
-    public AsmState(Predicate<String> isReg) { this.isReg = isReg; }
+    Predicate<String> isReg, isKW;
+    public AsmState(Predicate<String> isReg, Predicate<String> isKW) {
+      this.isReg = isReg;
+      this.isKW = isKW;
+    }
   
     public AsmLang.AsmState after(int sz, char[] p, byte[] b) {
       if (sz==0) return this;
-      AsmLang.AsmState r = new AsmLang.AsmState(isReg);
+      AsmLang.AsmState r = new AsmLang.AsmState(isReg, isKW);
       r.eval(sz, p, b);
       return r;
     }
@@ -96,7 +102,7 @@ public class AsmLang extends Lang {
               String str = new String(val);
               byte t = (byte) (firstWord? 2 : 4);
               if (i<sz && s[i]==':') { t = 4; i++; }
-              else if (sizes.has(str.toLowerCase().toCharArray())) t = 3;
+              else if (isKW.test(str)) t = 3;
               else if (isReg.test(str)) t = 7;
               r[li] = t;
               firstWord = false;

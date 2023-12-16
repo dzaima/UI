@@ -19,7 +19,9 @@ public class Langs {
     addLang("BQN",     BQNLang::new, "bqn");
     addLang("APL",     APLLang::new, "apl");
     addLang("Singeli", SingeliLang::new, "singeli");
-    addLang("Assembly",AsmLang::new, "asm", "s");
+    addLang("x86 assembly", AsmLang::new_x86, "asm", "s");
+    addLang("generic assembly", AsmLang::new_generic);
+    addLang("assembly", AsmLang::new_generic);
     defLang = new Language("Text", new String[0], TextLang::new);
   }
   
