@@ -20,13 +20,14 @@ public abstract class Node implements Click.RequestImpl {
   public short flags = RD_ME|RD_CH|RS_ME|RS_CH|PROPS|ANYCT|MTICK;
   @SuppressWarnings("PointlessBitwiseExpression") // ugh
   public static final short RD_ME = 1<<0; // redraw this; if present, RD_CH must also be
-  public static final short RD_CH = 1<<1; // redraw children
-  public static final short RS_ME = 1<<2; // resize this; if present, RS_CH must also be
-  public static final short RS_CH = 1<<3; // resize children
-  public static final short PROPS = 1<<4; // whether props have been modified
-  public static final short ATICK = 1<<5; // whether this always needs tick
-  public static final short MTICK = 1<<6; // whether this needs tick on the next frame
-  public static final short ANYCT = 1<<7; // whether any child has PROPS/ATICK/MTICK
+  public static final short RD_AL = 1<<1; // always redraw this when redrawing any children
+  public static final short RD_CH = 1<<2; // some children need redrawing
+  public static final short RS_ME = 1<<3; // resize this; if present, RS_CH must also be
+  public static final short RS_CH = 1<<4; // resize children
+  public static final short PROPS = 1<<5; // whether props have been modified
+  public static final short ATICK = 1<<6; // whether this always needs tick
+  public static final short MTICK = 1<<7; // whether this needs tick on the next frame
+  public static final short ANYCT = 1<<8; // whether any child has PROPS/ATICK/MTICK
   public static final short F_C1 = 1<<14;
   public static final short F_C2 = (short) (1<<15);
   
@@ -207,7 +208,7 @@ public abstract class Node implements Click.RequestImpl {
   
   public final void draw(Graphics g, boolean full) { // called only by NodeWindow & drawCh; full only matters when !g.redraw
     assert visible : "Node "+Devtools.debugMe(this)+" not visible during draw";
-    boolean meR = (flags&RD_ME)!=0 || full || g.redraw;
+    boolean meR = (flags&(RD_ME|RD_AL))!=0 || full || g.redraw;
     boolean chR = (flags&RD_CH)!=0 || meR;
     if (!chR) return;
     flags&= ~(RD_ME|RD_CH);
