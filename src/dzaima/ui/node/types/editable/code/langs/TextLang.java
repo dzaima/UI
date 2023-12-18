@@ -1,7 +1,6 @@
 package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
-import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 public class TextLang extends Lang {

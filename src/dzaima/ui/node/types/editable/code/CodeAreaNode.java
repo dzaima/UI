@@ -6,6 +6,7 @@ import dzaima.ui.gui.undo.UndoManager;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.editable.*;
+import dzaima.ui.node.types.editable.code.langs.*;
 import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 

@@ -1,4 +1,4 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import java.util.*;
 

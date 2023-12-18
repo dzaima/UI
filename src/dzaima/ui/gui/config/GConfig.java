@@ -5,7 +5,7 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.prop.*;
-import dzaima.ui.node.types.editable.code.Langs;
+import dzaima.ui.node.types.editable.code.langs.Langs;
 import dzaima.utils.*;
 
 import java.awt.*;

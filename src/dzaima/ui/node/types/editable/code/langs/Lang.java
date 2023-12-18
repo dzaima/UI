@@ -1,4 +1,4 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
 import io.github.humbleui.skija.paragraph.TextStyle;

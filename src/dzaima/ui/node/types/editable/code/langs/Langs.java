@@ -1,6 +1,5 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
-import dzaima.ui.node.types.editable.code.langs.*;
 import dzaima.utils.Vec;
 
 import java.util.HashMap;
