@@ -1,6 +1,7 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
@@ -27,19 +28,14 @@ public class SingeliLang extends Lang {
     0xffD2D2D2, // 6 invocation
     0xff72c3d3, // 7 builtin
   };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
-  }
   
-  SingeliState init;
-  public SingeliLang(Font f) {
+  public SingeliLang() {
     super(new SingeliState());
-    styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new SingeliLang(f); }
-  public LangState<?> init() { return init; }
   
+  protected TextStyle[] genStyles(Font f) {
+    return colors(cols, f);
+  }
   
   static class SingeliState extends LangState<SingeliState> {
     boolean mlc;

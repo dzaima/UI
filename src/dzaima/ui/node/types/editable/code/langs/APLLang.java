@@ -1,6 +1,7 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
@@ -18,16 +19,12 @@ public class APLLang extends Lang {
     0xffFFFF00, // 8 diamond
     0xffDD99FF, // 9 arr
   };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
-  }
-  
-  public APLLang(Font f) {
+  public APLLang() {
     super(new APLState());
-    styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new APLLang(f); }
+  protected TextStyle[] genStyles(Font f) {
+    return colors(cols, f);
+  }
   
   private static class APLState extends LangState<APLState> {
     public Chars fns = new Chars("^⌹⍳⍴!%*+,-<=>?|~⊢⊣⌷≤≥≠∨∧÷×∊↑↓○⌈⌊⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⍕⍎⍪≡≢⍷⍸⊆⊇⍧⍮√ϼ…");

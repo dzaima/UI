@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class CodeAreaNode extends EditNode {
   public Language lang;
-  private Lang langInst;
+  private Lang.LangInst langInst;
   public int padLns, padChrs; // TODO negative numbers add screen height (so -padLns are visible when scrolled all the way down)
   public int drawOffX2 = 0;
   
@@ -128,7 +128,7 @@ public class CodeAreaNode extends EditNode {
     if (calcNs>MAX_NS) { mRedraw(); return; }
     int sy = ey;
     while (sy>=0 && ln(sy).startDirty) sy--;
-    LangState<?> c = langInst.init; // should only be used if sy==-1
+    LangState<?> c = langInst.l.init; // should only be used if sy==-1
     for (int i = Math.max(0, sy); i <= ey; i++) {
       CodeLine l = ln(i);
       if (l.startDirty && !c.equals(l.start)) {

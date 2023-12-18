@@ -1,6 +1,7 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
@@ -24,19 +25,13 @@ public class CLang extends Lang {
     0xffCC7832, // 4 keyword/string escape
     0xff81A2BE, // 5 class
   };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
-  }
   
-  CState init;
-  public CLang(Font f) {
+  public CLang() {
     super(new CState());
-    styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new CLang(f); }
-  public LangState<?> init() { return init; }
-  
+  protected TextStyle[] genStyles(Font f) {
+    return colors(cols, f);
+  }
   
   static class CState extends LangState<CState> {
     boolean mlc;

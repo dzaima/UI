@@ -1,7 +1,8 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 
 import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 import java.util.Arrays;
@@ -19,16 +20,14 @@ public class BQNLang extends Lang {
     0xffFFFF00, // 8 control
     0xffDD99FF, // 9 arr
   };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
+  
+  public BQNLang() {
+    super(new BQNState());
   }
   
-  public BQNLang(Font f) {
-    super(new BQNState());
-    styles = Lang.colors(cols, f);
+  protected TextStyle[] genStyles(Font f) {
+    return colors(cols, f);
   }
-  public Lang font(Font f) { return new BQNLang(f); }
   
   public static int codePointAt(char[] a, int i, int sz) {
     char c1 = a[i];

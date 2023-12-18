@@ -1,20 +1,19 @@
-package dzaima.ui.node.types.editable.code;
+package dzaima.ui.node.types.editable.code.langs;
 
 import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.*;
 import io.github.humbleui.skija.paragraph.TextStyle;
 
 public class TextLang extends Lang {
   public static int[] cols = { 0xffD2D2D2 };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
+  
+  protected TextStyle[] genStyles(Font f) {
+    return colors(cols, f);
   }
   
-  public TextLang(Font f) {
+  public TextLang() {
     super(new TextState());
-    styles = Lang.colors(cols, f);
   }
-  public Lang font(Font f) { return new TextLang(f); }
   
   static class TextState extends LangState<TextState> {
     public TextState after(int sz, char[] p, byte[] b) { return this; }

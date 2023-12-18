@@ -1,10 +1,9 @@
 package dzaima.ui.node.types.editable.code;
 
-import dzaima.ui.gui.Font;
+import dzaima.ui.node.types.editable.code.langs.*;
 import dzaima.utils.Vec;
 
 import java.util.HashMap;
-import java.util.function.Function;
 
 public class Langs {
   public final Vec<Language> langs = new Vec<>();
@@ -14,19 +13,19 @@ public class Langs {
   public Language defLang;
   
   public Langs() {
-    addLang("Java",    JavaLang::new, "java");
-    addLang("C",       CLang::new, "c", "h", "cc", "cpp", "hh", "hpp", "cxx", "hxx"); // temporarily includes c++ extensions too
-    addLang("BQN",     BQNLang::new, "bqn");
-    addLang("APL",     APLLang::new, "apl");
-    addLang("Singeli", SingeliLang::new, "singeli");
-    addLang("x86 assembly", AsmLang::new_x86, "asm", "s");
-    addLang("generic assembly", AsmLang::new_generic);
-    addLang("assembly", AsmLang::new_generic);
-    defLang = new Language("Text", new String[0], TextLang::new);
+    addLang("APL",     new APLLang(), "apl");
+    addLang("Java",    new JavaLang(), "java");
+    addLang("C",       new CLang(), "c", "h", "cc", "cpp", "hh", "hpp", "cxx", "hxx"); // temporarily includes c++ extensions too
+    addLang("BQN",     new BQNLang(), "bqn");
+    addLang("Singeli", new SingeliLang(), "singeli");
+    addLang("assembly", AsmLang.GENERIC);
+    addLang("generic assembly", AsmLang.GENERIC);
+    addLang("x86 assembly", AsmLang.X86, "asm", "s");
+    defLang = new Language("Text", new String[0], new TextLang());
   }
   
-  public void addLang(String name, Function<Font, Lang> gen, String... ext) {
-    Language l = new Language(name, ext, gen);
+  public void addLang(String name, Lang lang, String... ext) {
+    Language l = new Language(name, ext, lang);
     for (String c : ext) extMap.put(c, l);
     nameMap.put(name.toLowerCase(), l);
     langs.add(l);
