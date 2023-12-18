@@ -16,8 +16,8 @@ public abstract class Lang {
     public final Font font;
     private final TextStyle[] styles;
     
-    protected final int indentLen;
-    protected final char indentChar;
+    public final int indentLen;
+    public final char indentChar;
     
     protected LangInst(Lang l, Font font, TextStyle[] styles) {
       this.l = l;
