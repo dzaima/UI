@@ -11,26 +11,38 @@ public abstract class AsmLang extends Lang {
   protected abstract boolean isKW(String s);
   protected abstract boolean isPrefix(String s);
   
-  public static final AsmLang X86 = new AsmLang() {
-    private final LangState.Keywords x86_sizes = new LangState.Keywords("ptr","byte","word","dword","qword","tword","mmword","xmmword","ymmword","zmmword");
-    private final LangState.Keywords x86_prefixes = new LangState.Keywords(
-      "data16", "data32", "addr16", "addr32", "rex64",
-      "xacquire", "xrelease", "acquire", "release",
-      "lock", "rep", "repe", "repz", "repne", "repnz", "notrack"
-    );
-    private final Pattern x86_regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
-    protected boolean isReg(String s) { return x86_regs.matcher(s).matches(); }
-    protected boolean isKW(String s) { return x86_sizes.has(s.toLowerCase().toCharArray()); }
-    protected boolean isPrefix(String s) { return x86_prefixes.has(s.toLowerCase().toCharArray()); }
-  };
-  
   public static final AsmLang GENERIC = new AsmLang() {
     protected boolean isReg(String s) { return false; }
     protected boolean isKW(String s) { return false; }
     protected boolean isPrefix(String s) { return false; }
   };
   
+  public static final AsmLang X86 = new AsmLang() {
+    private final LangState.Keywords sizes = new LangState.Keywords("ptr","byte","word","dword","qword","tword","mmword","xmmword","ymmword","zmmword");
+    private final LangState.Keywords prefixes = new LangState.Keywords(
+      "data16", "data32", "addr16", "addr32", "rex64",
+      "xacquire", "xrelease", "acquire", "release",
+      "lock", "rep", "repe", "repz", "repne", "repnz", "notrack"
+    );
+    private final Pattern regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
+    protected boolean isReg(String s) { return regs.matcher(s).matches(); }
+    protected boolean isKW(String s) { return sizes.has(s.toLowerCase().toCharArray()); }
+    protected boolean isPrefix(String s) { return prefixes.has(s.toLowerCase().toCharArray()); }
+  };
   
+  public static final AsmLang RISCV = new AsmLang() {
+    private final Pattern regs = Pattern.compile("[xfv]([12]?[0-9]|3[01])|zero|ra|[sgf]p|tp|t[0-6]|s[0-9]|s1[01]|f?a[0-7]|f[ts]([0-9]|1[01])");
+    protected boolean isReg(String s) { return regs.matcher(s).matches(); }
+    protected boolean isKW(String s) { return false; }
+    protected boolean isPrefix(String s) { return false; }
+  };
+  
+  public static final AsmLang AARCH64 = new AsmLang() {
+    private final Pattern regs = Pattern.compile("sp|pc|cpsr|fpsr|fpcr|[vqdshb]([012]?\\d|30|31)(\\.\\d*[bhsd])?|[wxr]([012]?\\d|30|zr)");
+    protected boolean isReg(String s) { return regs.matcher(s).matches(); }
+    protected boolean isKW(String s) { return false; }
+    protected boolean isPrefix(String s) { return false; }
+  };
   
   public static int[] cols = new int[]{
     0xffD2D2D2, // 0 default
