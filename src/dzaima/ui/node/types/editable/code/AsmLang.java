@@ -13,10 +13,15 @@ public abstract class AsmLang extends Lang {
   
   public static final AsmLang X86 = new AsmLang() {
     private final LangState.Keywords x86_sizes = new LangState.Keywords("ptr","byte","word","dword","qword","tword","mmword","xmmword","ymmword","zmmword");
+    private final LangState.Keywords x86_prefixes = new LangState.Keywords(
+      "data16", "data32", "addr16", "addr32", "rex64",
+      "xacquire", "xrelease", "acquire", "release",
+      "lock", "rep", "repe", "repz", "repne", "repnz", "notrack"
+    );
     private final Pattern x86_regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
     protected boolean isReg(String s) { return x86_regs.matcher(s).matches(); }
     protected boolean isKW(String s) { return x86_sizes.has(s.toLowerCase().toCharArray()); }
-    protected boolean isPrefix(String s) { return false; }
+    protected boolean isPrefix(String s) { return x86_prefixes.has(s.toLowerCase().toCharArray()); }
   };
   
   public static final AsmLang GENERIC = new AsmLang() {
@@ -97,14 +102,17 @@ public abstract class AsmLang extends Lang {
             if (nameS(c) || c=='.') {
               i++;
               while (i<sz && (nameM(s[i]) || s[i]=='.')) i++;
-              char[] val = Arrays.copyOfRange(s, li, i);
-              String str = new String(val);
+              
+              String str = new String(s, li, i-li);
+              
               byte t = (byte) (firstWord? 2 : 4);
-              if (i<sz && s[i]==':') { t = 4; i++; }
+              if (firstWord && i<sz && s[i]==':') { t = 4; i++; }
               else if (l.isKW(str)) t = 3;
               else if (l.isReg(str)) t = 7;
+              else {
+                if (!firstWord || !l.isPrefix(str)) firstWord = false;
+              }
               r[li] = t;
-              firstWord = false;
             } else {
               r[i++] = 0;
             }
@@ -119,5 +127,5 @@ public abstract class AsmLang extends Lang {
   public static boolean ws(int c) { return c==' '|c=='\n'; }
   public static boolean dig(int c) { return c>='0' & c<='9'; }
   public static boolean nameS(int c) { return c>='a' & c<='z'  |  c>='A' & c<='Z'  |  c=='_'; }
-  public static boolean nameM(int c) { return nameS(c) || dig(c); }
+  public static boolean nameM(int c) { return nameS(c) || dig(c) || c=='@'; }
 }
