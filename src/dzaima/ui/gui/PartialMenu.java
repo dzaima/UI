@@ -1,8 +1,7 @@
 package dzaima.ui.gui;
 
 import dzaima.ui.eval.*;
-import dzaima.ui.gui.Popup;
-import dzaima.ui.gui.config.*;
+import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.types.editable.MenuFieldNode;

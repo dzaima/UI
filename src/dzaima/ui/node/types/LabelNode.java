@@ -4,8 +4,6 @@ import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.ui.node.types.CheckboxNode;
-import dzaima.ui.node.types.WrapNode;
 
 public class LabelNode extends WrapNode {
   public LabelNode(Ctx ctx, String[] ks, Prop[] vs) {

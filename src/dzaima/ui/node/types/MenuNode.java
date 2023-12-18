@@ -1,6 +1,6 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.eval.*;
+import dzaima.ui.eval.PNode;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.*;

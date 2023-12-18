@@ -1,11 +1,8 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.gui.*;
-import dzaima.ui.gui.io.*;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.*;
 
 public class PackedListNode extends FrameNode {
   public PackedListNode(Ctx ctx, String[] ks, Prop[] vs) {

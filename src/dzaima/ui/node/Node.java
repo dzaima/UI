@@ -6,7 +6,7 @@ import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.ui.node.types.*;
+import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 
 import java.util.function.Function;

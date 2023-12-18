@@ -1,6 +1,6 @@
 package dzaima.ui.node.prop;
 
-import dzaima.utils.*;
+import dzaima.utils.ColorUtils;
 
 public class ColProp extends PropI {
   

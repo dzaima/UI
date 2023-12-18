@@ -11,7 +11,7 @@ import dzaima.ui.node.types.editable.code.*;
 import dzaima.ui.node.types.table.*;
 import dzaima.ui.node.types.tabs.*;
 import dzaima.ui.node.types.tree.*;
-import dzaima.utils.*;
+import dzaima.utils.Vec;
 
 import java.util.*;
 

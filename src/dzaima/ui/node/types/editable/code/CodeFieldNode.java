@@ -4,7 +4,6 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.undo.UndoManager;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.Log;
 
 public class CodeFieldNode extends CodeAreaNode {
   private int bgCol, padY;

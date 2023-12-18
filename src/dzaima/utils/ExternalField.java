@@ -1,6 +1,6 @@
 package dzaima.utils;
 
-import java.util.*;
+import java.util.WeakHashMap;
 import java.util.function.*;
 
 public class ExternalField<O, F> {

@@ -4,7 +4,6 @@ import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.MenuNode;
-import dzaima.ui.node.types.editable.TextFieldNode;
 
 public class MenuFieldNode extends TextFieldNode {
   public MenuFieldNode(Ctx ctx, String[] ks, Prop[] vs) {

@@ -4,7 +4,6 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.ui.node.types.VNode;
 
 public abstract class ATreeNode extends Node {
   public boolean open = true;

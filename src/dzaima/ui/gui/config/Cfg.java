@@ -5,7 +5,7 @@ import dzaima.ui.gui.io.Key;
 import dzaima.ui.node.prop.*;
 import dzaima.utils.Tools;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class Cfg {
   public final Cfg p;

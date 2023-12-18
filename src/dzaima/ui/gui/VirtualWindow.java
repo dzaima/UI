@@ -2,7 +2,7 @@ package dzaima.ui.gui;
 
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
-import dzaima.utils.*;
+import dzaima.utils.Rect;
 import io.github.humbleui.skija.*;
 
 public abstract class VirtualWindow {

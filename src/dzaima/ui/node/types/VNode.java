@@ -1,10 +1,10 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.gui.*;
+import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Prop;
-import dzaima.utils.*;
+import dzaima.utils.XY;
 
 public class VNode extends FrameNode {
   

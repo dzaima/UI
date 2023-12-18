@@ -1,6 +1,6 @@
 package dzaima.ui.gui;
 
-import dzaima.ui.eval.*;
+import dzaima.ui.eval.PNode;
 import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 import io.github.humbleui.skija.*;

@@ -1,6 +1,6 @@
 package dzaima.ui.node.types;
 
-import dzaima.ui.gui.*;
+import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.Window.CursorType;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
