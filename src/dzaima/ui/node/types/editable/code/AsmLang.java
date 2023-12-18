@@ -24,7 +24,7 @@ public abstract class AsmLang extends Lang {
       "xacquire", "xrelease", "acquire", "release",
       "lock", "rep", "repe", "repz", "repne", "repnz", "notrack"
     );
-    private final Pattern regs = Pattern.compile("(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
+    private final Pattern regs = Pattern.compile("%?(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
     protected boolean isReg(String s) { return regs.matcher(s).matches(); }
     protected boolean isKW(String s) { return sizes.has(s.toLowerCase().toCharArray()); }
     protected boolean isPrefix(String s) { return prefixes.has(s.toLowerCase().toCharArray()); }
@@ -32,8 +32,9 @@ public abstract class AsmLang extends Lang {
   
   public static final AsmLang RISCV = new AsmLang() {
     private final Pattern regs = Pattern.compile("[xfv]([12]?[0-9]|3[01])|zero|ra|[sgf]p|tp|t[0-6]|s[0-9]|s1[01]|f?a[0-7]|f[ts]([0-9]|1[01])");
+    private final LangState.Keywords kw = new LangState.Keywords("%pcrel_hi", "%pcrel_lo", "%got_pcrel_hi");
     protected boolean isReg(String s) { return regs.matcher(s).matches(); }
-    protected boolean isKW(String s) { return false; }
+    protected boolean isKW(String s) { return kw.has(s.toCharArray()); }
     protected boolean isPrefix(String s) { return false; }
   };
   
@@ -90,9 +91,6 @@ public abstract class AsmLang extends Lang {
             }
             i++;
             break;
-          case '%':
-            r[i++] = 7;
-            break;
           case '<':
             r[i++] = 6;
             while (i<sz && s[i-1]!='>') i++;
@@ -111,7 +109,7 @@ public abstract class AsmLang extends Lang {
             }
             // fallthrough
           default:
-            if (nameS(c) || c=='.') {
+            if (nameS(c) || c=='.' || c=='%') {
               i++;
               while (i<sz && (nameM(s[i]) || s[i]=='.')) i++;
               
