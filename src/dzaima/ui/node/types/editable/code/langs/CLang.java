@@ -25,7 +25,6 @@ public class CLang extends Lang {
     0xffCC7832, // 4 keyword/string escape
     0xff81A2BE, // 5 class
   };
-  
   public CLang() {
     super(new CState());
   }

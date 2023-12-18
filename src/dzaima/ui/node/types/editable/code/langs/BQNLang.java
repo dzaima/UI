@@ -20,11 +20,9 @@ public class BQNLang extends Lang {
     0xffFFFF00, // 8 control
     0xffDD99FF, // 9 arr
   };
-  
   public BQNLang() {
     super(new BQNState());
   }
-  
   protected TextStyle[] genStyles(Font f) {
     return colors(cols, f);
   }

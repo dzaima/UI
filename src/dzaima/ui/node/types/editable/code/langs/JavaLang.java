@@ -15,11 +15,9 @@ public class JavaLang extends Lang {
     0xffCC7832, // 4 keyword/string escape
     0xff81A2BE, // 5 class
   };
-  
   public JavaLang() {
     super(new JavaState());
   }
-  
   protected TextStyle[] genStyles(Font f) {
     return colors(cols, f);
   }

@@ -12,7 +12,7 @@ import io.github.humbleui.skija.paragraph.TextStyle;
 import java.util.Arrays;
 
 public class CodeAreaNode extends EditNode {
-  public Language lang;
+  public Lang lang;
   private Lang.LangInst langInst;
   public int padLns, padChrs; // TODO negative numbers add screen height (so -padLns are visible when scrolled all the way down)
   public int drawOffX2 = 0;
@@ -41,13 +41,13 @@ public class CodeAreaNode extends EditNode {
     lnR = gc.em;
   }
   
-  public void setLang(Language l) {
+  public void setLang(Lang l) {
     lang = l;
     updLang();
   }
   
   public void updLang() {
-    langInst = lang.inst(f);
+    langInst = lang.forFont(f);
     modFrom(0, 0);
     for (int i = 0; i < lns.sz; i++) {
       Line l = lns.get(i);

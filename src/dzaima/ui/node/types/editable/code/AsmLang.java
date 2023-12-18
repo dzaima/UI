@@ -37,11 +37,6 @@ public abstract class AsmLang extends Lang {
     0xffCE9178, // 6 strings
     0xff5B73B2, // 7 registers
   };
-  public TextStyle[] styles;
-  public TextStyle style(byte v) {
-    return styles[v];
-  }
-  
   public AsmLang() {
     super(new AsmState(null));
     ((AsmState) init).l = this;

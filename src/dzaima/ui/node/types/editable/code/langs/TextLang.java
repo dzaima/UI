@@ -6,11 +6,9 @@ import io.github.humbleui.skija.paragraph.TextStyle;
 
 public class TextLang extends Lang {
   public static int[] cols = { 0xffD2D2D2 };
-  
   protected TextStyle[] genStyles(Font f) {
     return colors(cols, f);
   }
-  
   public TextLang() {
     super(new TextState());
   }

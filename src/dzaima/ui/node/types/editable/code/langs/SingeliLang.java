@@ -9,7 +9,7 @@ public class SingeliLang extends Lang {
   public static LangState.Keywords types = new LangState.Keywords(
     "void","i8","i16","i32","i64","u1","u8","u16","u32","u64","f32","f64","Size"
   );
-  public static LangState.Keywords keyw = new LangState.Keywords(
+  public static LangState.Keywords kw = new LangState.Keywords(
     "_","include","fn","oper",
     "config","def","extend","local",
     "do","while","if","else","and","or","not",
@@ -28,11 +28,9 @@ public class SingeliLang extends Lang {
     0xffD2D2D2, // 6 invocation
     0xff72c3d3, // 7 builtin
   };
-  
   public SingeliLang() {
     super(new SingeliState());
   }
-  
   protected TextStyle[] genStyles(Font f) {
     return colors(cols, f);
   }
@@ -84,7 +82,7 @@ public class SingeliLang extends Lang {
           default:
             if (nameS(c)) {
               while (i<sz && nameM(s[i])) i++;
-              byte t0 = (byte) (types.has(s, li, i)? 5 : keyw.has(s, li, i)? 4 : 0);
+              byte t0 = (byte) (types.has(s, li, i)? 5 : kw.has(s, li, i)? 4 : 0);
               if (t0==0 && i<sz) {
                 while (i<sz && ws(s[i])) i++;
                 if (i<sz && s[i]=='{') t0 = 6;
