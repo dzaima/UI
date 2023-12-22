@@ -211,7 +211,7 @@ public abstract class InlineNode extends Node {
     if (n instanceof InlineNode) for (Node c : n.ch) scanNode(c, ssc);
   }
   public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
-    Node gp = (Node) s.c;
+    Node gp = s.cNode();
     
     Node aC = s.aS.ln; Vec<Node> aP = new Vec<>(); while (aC!=gp) aC = aP.add(aC).p;
     Node bC = s.bS.ln; Vec<Node> bP = new Vec<>(); while (bC!=gp) bC = bP.add(bC).p;

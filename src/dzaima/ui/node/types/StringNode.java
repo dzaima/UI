@@ -114,7 +114,7 @@ public class StringNode extends InlineNode {
   
   public void bg(Graphics g, boolean full) {
     pbg(g, full);
-    XY sel = ctx.win().selectionRange(this);
+    XY sel = ctx.win().stringSelection(this);
     int ss = sel==null? -1 : sel.x;
     int se = sel==null? -1 : sel.y;
     if (words!=null && (Tools.vs(colBG) || sel!=null)) {

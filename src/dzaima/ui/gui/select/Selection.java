@@ -19,19 +19,24 @@ public class Selection {
     assert aS.sn == bS.sn;
   }
   
-  public void started() {
-    c.selectS(this);
+  public Node cNode() {
+    return (Node) c;
   }
+  
+  public void invalidate() {
+    Node n = cNode();
+    n.ctx.win().invalidateSelection(n);
+  }
+  
   public void setSorted(boolean rev) {
     if (rev) { sS=bS; eS=aS; }
     else     { sS=aS; eS=bS; }
   }
   
-  public void ended() {
-    c.selectE(this);
+  public void onStarted() {
+    c.selectS(this);
   }
-  
-  public void end() {
-    ((Node) c).ctx.win().endSelection();
+  public void onEnded() {
+    c.selectE(this);
   }
 }

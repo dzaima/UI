@@ -25,7 +25,6 @@ public class STextNode extends TextNode implements Selectable {
       }
       public void addNode(Node nd) { }
     }));
-    if (!isFocused()) focusMe();
   }
   
   public void selectE(Selection s) {
@@ -50,19 +49,15 @@ public class STextNode extends TextNode implements Selectable {
   
   public void mouseDown(int x, int y, Click c) {
     NodeWindow w = ctx.win();
-    w.startSelection(Position.getPosition(this, x, y));
-    w.focus(this);
+    w.startFocusSelection(Position.getPosition(this, x, y));
   }
   
   public void mouseTick(int x, int y, Click c) {
-    ctx.win().continueSelection(Position.getPosition(this, x, y));
+    ctx.win().continueFocusSelection(Position.getPosition(this, x, y));
   }
   
   public void focusE() {
-    NodeWindow w = ctx.win();
-    if (w.selection!=null && w.selection.c==this) {
-      w.endSelection();
-    }
+    ctx.win().invalidateSelection(this);
   }
   
   public void hoverS() { if (gc.boolD(this, "ibeam", false)) ctx.vw().pushCursor(Window.CursorType.IBEAM); }

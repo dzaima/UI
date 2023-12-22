@@ -67,8 +67,9 @@ public class NodeWindow extends Window {
   
   ///////// focus \\\\\\\\\
   public Node _focusNode;
-  public void focus(Node n) { // TODO can this fast-path if _focusNode==n?
+  public void focus(Node n) {
     Node prev = _focusNode;
+    if (prev == n) return;
     _focusNode = n;
     if (prev != null) prev.focusE();
     if (n == null) return;
@@ -91,35 +92,37 @@ public class NodeWindow extends Window {
   
   
   ///////// selection \\\\\\\\\
-  public Selection selection;
   private Position selStart;
-  public void startSelection(Position p) {
+  public Selection selection;
+  public void startFocusSelection(Position p) {
     if (selection!=null) {
-      selection.ended();
+      selection.onEnded();
       selection = null;
     }
     selStart = p;
   }
-  public void continueSelection(Position p) {
+  public void continueFocusSelection(Position p) {
     if (selStart==null) return;
     Selection psel = selection;
     Selection nsel = Position.select(selStart, p);
     if (psel==null || nsel==null || psel.c!=nsel.c || !psel.aS.equals(nsel.aS) || !psel.bS.equals(nsel.bS)) {
-      if (psel!=null) psel.ended();
-      if (nsel!=null) nsel.started();
+      if (psel!=null) psel.onEnded();
+      if (nsel!=null) {
+        nsel.cNode().focusMe();
+        nsel.onStarted();
+      }
       selection = nsel;
     }
   }
-  public void endSelection() {
-    if (selection!=null) selection.ended();
+  public void invalidateSelection() { // keeps selStart, allowing a following continueFocusSelection without startFocusSelection to select with the same start
+    if (selection!=null) selection.onEnded();
     selection = null;
-    selStart = null;
   }
-  public XY selectionRange(StringNode n) {
+  public void invalidateSelection(Node n) {
+    if (selection!=null && selection.c==n) invalidateSelection();
+  }
+  public XY stringSelection(StringNode n) {
     if ((n.flags&StringNode.FL_SEL)==0) return null;
-    return selectionRange2(n);
-  }
-  private XY selectionRange2(StringNode n) {
     if (selection==null) return null;
     PosPart sS = selection.sS; boolean sB = sS.ln == n;
     PosPart eS = selection.eS; boolean eB = eS.ln == n;
