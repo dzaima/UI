@@ -75,11 +75,9 @@ public class NodeWindow extends Window {
     if (n == null) return;
     
     NodeVW vw = n.ctx.vw();
-    if (vw.base.visible) {
-      assert n.visible;
-      n.focusS();
-      focusedVW = vw;
-    }
+    if (vw.base.visible) assert n.visible;
+    n.focusS();
+    focusedVW = vw;
   }
   public void focusVW(VirtualWindow vw) {
     assert vws.indexOf(vw)!=-1;
