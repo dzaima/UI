@@ -15,7 +15,8 @@ public abstract class Tab {
   }
   
   public abstract Node show();
-  public /*open*/ void hide() { }
+  public /*open*/ void onShown() { } // called once after show()
+  public /*open*/ void onHidden() { } // called once after onShown()
   
   public abstract String name();
   public final void nameUpdated() {
@@ -33,10 +34,8 @@ public abstract class Tab {
     });
   }
   
-  public /*open*/ void switchTo() { // override to run an action on any selection of this tab
-    TabbedNode t = w.o;
-    if (!t.visible) return;
-    t.toTab(w);
+  public /*open*/ void switchTo() { // explicit selection; override to run an action on any selection of this tab
+    w.o.toTab(w);
   }
   
   public /*open*/ void onRightClick(Click cl) { }

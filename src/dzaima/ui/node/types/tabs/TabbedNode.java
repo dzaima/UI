@@ -192,12 +192,13 @@ public class TabbedNode extends Node {
     if (prevTab!=c) {
       if (prevTab!=null) {
         prevTab.open = false;
-        prevTab.hide();
+        prevTab.onHidden();
         remove(ch.sz-1, ch.sz);
       }
       if (c!=null) {
         c.open = true;
         add(c.show());
+        c.onShown();
       }
       prevTab = c;
     }
