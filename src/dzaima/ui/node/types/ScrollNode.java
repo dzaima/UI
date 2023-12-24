@@ -233,7 +233,7 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
     if (c.bL()) {
       boolean yS = y > h-barSize;
       boolean xS = x > w-barSize;
-      if (yS && xS) selBar = cornerVertical || !hVis? 2 : 0;
+      if (yS && xS) selBar = vVis? 2 : hVis? 1 : 0;
       else if (vVis && xS) selBar = 2;
       else if (hVis && yS) selBar = 1;
       else selBar = gc.dragScroll? 3 : 0;
