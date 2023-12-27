@@ -4,8 +4,8 @@ import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
-import dzaima.utils.*;
+import dzaima.ui.node.prop.*;
+import dzaima.utils.Tools;
 import io.github.humbleui.skija.*;
 
 public class SvgIconNode extends Node {
@@ -14,8 +14,8 @@ public class SvgIconNode extends Node {
   private Paint col;
   private int w, h;
   private float sc;
-  public SvgIconNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public SvgIconNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public void propsUpd() { super.propsUpd();

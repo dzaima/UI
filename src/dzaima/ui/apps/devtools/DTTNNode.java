@@ -11,13 +11,12 @@ import dzaima.utils.Log;
 import java.util.HashMap;
 
 public class DTTNNode extends TNNode { // devtools tree node node
-  public static final String[] DT_KS = {"family"};
-  public static final Prop  [] DT_VS = {new StrProp("DejaVu Sans Mono")};
+  public static final Props DT_PROPS = Props.of("family", new StrProp("DejaVu Sans Mono"));
   public final Devtools d;
   public final Node insp;
   
   public DTTNNode(Devtools d, Ctx ctx, Node insp) {
-    super(ctx, DT_KS, DT_VS, false, true);
+    super(ctx, DT_PROPS, false, true);
     this.d = d;
     this.insp = insp;
     add(new StringNode(ctx, "?"));

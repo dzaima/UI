@@ -56,6 +56,7 @@ public class FRef {
     } catch (Exception ignored) { }
   }
   
+  private static final Props ALX_RIGHT = Props.of("alX", new EnumProp("right"));
   public Node updNode() {
     Ctx ctx = m.ftb.ctx;
     node.clearCh();
@@ -63,7 +64,7 @@ public class FRef {
     int d = dir? dirSize.get() : -1;
     node.add(new StringNode(ctx, d==-1? size : d+" items"));
     node.add(new StringNode(ctx, type));
-    Node tn = new HNode(ctx, new String[]{"alX"}, new Prop[]{new EnumProp("right")});
+    Node tn = new HNode(ctx, ALX_RIGHT);
     tn.add(new StringNode(ctx, time));
     node.add(tn);
     return node;
@@ -73,7 +74,7 @@ public class FRef {
     public final FRef r;
     
     public FileRow(FRef r) {
-      super(r.m.ftb.ctx, Node.KS_NONE, Node.VS_NONE);
+      super(r.m.ftb.ctx, Props.none());
       this.r = r;
     }
     

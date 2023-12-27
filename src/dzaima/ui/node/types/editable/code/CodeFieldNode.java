@@ -3,17 +3,17 @@ package dzaima.ui.node.types.editable.code;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.undo.UndoManager;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class CodeFieldNode extends CodeAreaNode {
   private int bgCol, padY;
   private float radius;
   
-  public CodeFieldNode(Ctx ctx, String[] ks, Prop[] vs) {
-    this(ctx, ks, vs, new UndoManager(ctx.gc));
+  public CodeFieldNode(Ctx ctx, Props props) {
+    this(ctx, props, new UndoManager(ctx.gc));
   }
-  public CodeFieldNode(Ctx ctx, String[] ks, Prop[] vs, UndoManager um) {
-    super(ctx, ks, vs, false, um);
+  public CodeFieldNode(Ctx ctx, Props props, UndoManager um) {
+    super(ctx, props, false, um);
   }
   
   public void propsUpd() { super.propsUpd();

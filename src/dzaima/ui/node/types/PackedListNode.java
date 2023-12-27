@@ -2,11 +2,11 @@ package dzaima.ui.node.types;
 
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class PackedListNode extends FrameNode {
-  public PackedListNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public PackedListNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   protected boolean v;

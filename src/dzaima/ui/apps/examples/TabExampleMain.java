@@ -6,7 +6,7 @@ import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.types.StringNode;
 import dzaima.ui.node.types.tabs.*;
 import dzaima.utils.Tools;
@@ -50,9 +50,9 @@ public class TabExampleMain extends NodeWindow {
   
   
   static class TestTabbedNode extends TabbedNode {
-    public TestTabbedNode(Ctx ctx, String[] ks, Prop[] vs) {
-      super(ctx, ks, vs);
-      String n = vs[0].str();
+    public TestTabbedNode(Ctx ctx, Props props) {
+      super(ctx, props);
+      String n = props.values().get(0).str();
       addTab(new Tab(ctx) { public Node show() { return new StringNode(ctx, "text in "+name()); } public String name() { return n+" tab 1"; } });
       addTab(new Tab(ctx) { public Node show() { return new StringNode(ctx, "text in "+name()); } public String name() { return n+" tab 2"; } });
     }

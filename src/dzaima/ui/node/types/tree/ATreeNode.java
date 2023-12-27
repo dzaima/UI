@@ -3,7 +3,7 @@ package dzaima.ui.node.types.tree;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public abstract class ATreeNode extends Node {
   public boolean open = true;
@@ -14,8 +14,8 @@ public abstract class ATreeNode extends Node {
   public boolean even;
   public int startN;
   
-  public ATreeNode(Ctx ctx, String[] ks, Prop[] vs, int startN) {
-    super(ctx, ks, vs);
+  public ATreeNode(Ctx ctx, Props props, int startN) {
+    super(ctx, props);
     this.startN = startN;
   }
   

@@ -4,17 +4,17 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.Tools;
 
 public class TNNode extends ATreeNode {
-  public TNNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs, 1);
+  public TNNode(Ctx ctx, Props props) {
+    super(ctx, props, 1);
     openable = gc.boolD(this, "openable", true);
     open = openable && gc.boolD(this, "open", true);
   }
-  public TNNode(Ctx ctx, String[] ks, Prop[] vs, boolean open, boolean openable) {
-    super(ctx, ks, vs, 1);
+  public TNNode(Ctx ctx, Props props, boolean open, boolean openable) {
+    super(ctx, props, 1);
     this.open = open;
     this.openable = openable;
     assert openable || !open;

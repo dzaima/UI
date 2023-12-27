@@ -3,7 +3,7 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.*;
 
@@ -17,7 +17,7 @@ public class StringNode extends InlineNode {
   public static final short FLS_SEL = FL_SEL;
   
   public StringNode(Ctx ctx, String s) {
-    super(ctx, KS_NONE, VS_NONE);
+    super(ctx, Props.none());
     assert s!=null;
     this.s = s;
   }

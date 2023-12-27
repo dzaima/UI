@@ -120,6 +120,8 @@ public class FMgr extends NodeWindow {
       focus(n);
     }
   }
+  
+  private static final Props ITALICS = Props.of("italics", EnumProp.TRUE);
   public void load() {
     info.clearCh();
     tableScroll.toXY0(true);
@@ -129,7 +131,7 @@ public class FMgr extends NodeWindow {
     try {
       ch = FOp.list(path);
     } catch (Exception e) {
-      TextNode t = new TextNode(info.ctx, new String[]{"italics"}, new Prop[]{EnumProp.TRUE});
+      TextNode t = new TextNode(info.ctx, ITALICS);
       t.add(new StringNode(info.ctx, "failed to load"));
       info.add(t);
       Log.warn("fmgr", "Failed to get directory listing:");

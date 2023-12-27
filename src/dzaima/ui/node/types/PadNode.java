@@ -4,14 +4,14 @@ import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.*;
 
 public class PadNode extends Node {
   
   private int pL, pU, pX, pY, bgCol;
-  public PadNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public PadNode(Ctx ctx, Props props) {
+    super(ctx, props);
     if (hasProp("bgCol")) Log.warn("Using incorrect 'bgCol' property");
   }
   public void propsUpd() { super.propsUpd();

@@ -3,14 +3,14 @@ package dzaima.ui.node.types.table;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 
 public class TRTNode extends Node { // table row template node
   public TableNode t;
   
   int bg; boolean hasBg;
-  public TRTNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public TRTNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public void propsUpd() { super.propsUpd();
     Prop p = getPropN("bg");

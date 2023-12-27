@@ -3,15 +3,15 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 import io.github.humbleui.skija.Image;
 
 public class ImgNode extends Node { // TODO remove
   private String url;
   private float sc;
-  public ImgNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public ImgNode(Ctx ctx, Props props) {
+    super(ctx, props);
     Log.warn("'img' node is deprecated");
   }
   

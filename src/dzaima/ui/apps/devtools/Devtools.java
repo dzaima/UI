@@ -319,8 +319,8 @@ public class Devtools extends NodeWindow implements Hijack {
         }
       }
       
-      for (int i = 0; i < insp.ks.length; i++) {
-        addRow(infoT, insp.ks[i], insp.vs[i].toString());
+      for (Pair<String, Prop> c : insp.props.entries()) {
+        addRow(infoT, c.a, c.b.toString());
       }
     }
   }

@@ -5,12 +5,12 @@ import dzaima.ui.gui.Window.CursorType;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.Tools;
 
 public class WeighedNode extends Node {
-  public WeighedNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public WeighedNode(Ctx ctx, Props props) {
+    super(ctx, props);
     weight = gc.fD(this, "weight", 0.5f);
     enabled = gc.boolD(this, "enabled", true);
   }

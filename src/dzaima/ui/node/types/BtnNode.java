@@ -4,7 +4,7 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 import java.util.function.Consumer;
@@ -18,8 +18,8 @@ public class BtnNode extends Node {
   // style==2:
   private int radius;
   private int widthMode; // 0-min; 1-max; 2-inherit
-  public BtnNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public BtnNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   private boolean cursor;

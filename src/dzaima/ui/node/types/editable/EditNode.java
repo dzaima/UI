@@ -5,7 +5,7 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.undo.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.*;
@@ -28,9 +28,9 @@ public class EditNode extends Node {
   public int drawOffX, drawOffY;
   public int tsz;
   public boolean cursorWhenUnfocused;
-  public EditNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline) { this(ctx, ks, vs, multiline, new UndoManager(ctx.gc)); }
-  public EditNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline, UndoManager um) { // in case you want a more global undo/redo
-    super(ctx, ks, vs);
+  public EditNode(Ctx ctx, Props props, boolean multiline) { this(ctx, props, multiline, new UndoManager(ctx.gc)); }
+  public EditNode(Ctx ctx, Props props, boolean multiline, UndoManager um) { // in case you want a more global undo/redo
+    super(ctx, props);
     aTick();
     this.um = um;
     this.multiline = multiline;

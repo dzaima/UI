@@ -3,13 +3,13 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class VSepNode extends Node {
   private int color;
   private int px, py, ih;
-  public VSepNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public VSepNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public void propsUpd() { super.propsUpd();

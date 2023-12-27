@@ -13,8 +13,8 @@ import java.util.Objects;
 public class MenuNode extends Node {
   public Popup obj;
   
-  public MenuNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public MenuNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   short padY;
@@ -78,12 +78,11 @@ public class MenuNode extends Node {
   }
   
   public static class MINode extends Node {
-    public MINode(Ctx ctx, String[] ks, Prop[] vs) {
-      super(ctx, ks, vs);
+    public MINode(Ctx ctx, Props props) {
+      super(ctx, props);
     }
-    private static final String[] ID_K = new String[]{"id"};
     public MINode(Ctx ctx, String ct, String id) {
-      super(ctx, ID_K, new Prop[]{new EnumProp(id)});
+      super(ctx, Props.of("id", new EnumProp(id)));
       add(new StringNode(ctx, ct));
     }
     

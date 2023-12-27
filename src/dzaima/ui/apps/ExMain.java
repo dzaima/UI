@@ -69,11 +69,11 @@ public class ExMain extends NodeWindow {
   }
   
   private static class FormatNode extends WrapNode {
-    public FormatNode(Ctx ctx, String[] ks, Prop[] vs) {
-      super(ctx, ks, vs);
+    public FormatNode(Ctx ctx, Props props) {
+      super(ctx, props);
       String s = getProp("str").str();
-      for (int i = 0; i < ks.length; i++) {
-        if (ks[i].charAt(0)=='v') s = s.replace('%'+ks[i].substring(1), vs[i].toString().replaceAll(".*=", ""));
+      for (Pair<String, Prop> c : props.entries()) {
+        if (c.a.charAt(0)=='v') s = s.replace('%'+c.a.substring(1), c.b.toString().replaceAll(".*=", ""));
       }
       add(new StringNode(ctx, s));
     }

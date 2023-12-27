@@ -5,7 +5,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 
@@ -14,8 +14,7 @@ import java.util.function.Function;
 public abstract class Node implements Click.RequestImpl {
   public final Ctx ctx;
   public final GConfig gc;
-  public final String[] ks;
-  public       Prop  [] vs;
+  public Props props;
   public final Vec<Node> ch;
   public short flags = RD_ME|RD_CH|RS_ME|RS_CH|PROPS|ANYCT|MTICK;
   @SuppressWarnings("PointlessBitwiseExpression") // ugh
@@ -34,11 +33,10 @@ public abstract class Node implements Click.RequestImpl {
   public Node p;
   public boolean visible = false;
   
-  public Node(Ctx ctx, String[] ks, Prop[] vs) {
+  public Node(Ctx ctx, Props props) {
     this.ctx = ctx;
     this.gc = ctx.gc;
-    this.ks = ks;
-    this.vs = vs;
+    this.props = props;
     this.ch = new Vec<>(); // TODO maybe have a global empty Vec such that this isn't a wasted allocation?
   }
   
@@ -148,24 +146,19 @@ public abstract class Node implements Click.RequestImpl {
   ///////// properties \\\\\\\\\
   public static final String[] KS_NONE = new String[0];
   public static final Prop  [] VS_NONE = new Prop[0];
-  @Deprecated public int id(String k) {
-    for (int i = 0; i < ks.length; i++) if (ks[i].equals(k)) return i;
-    return -1;
-  }
-  @Deprecated public void set(int i, Prop p) {
-    vs = vs.clone(); // stupid, but whatever. maybe add flag?
-    vs[i] = p;
-    mProp();
-  }
+  
   public Prop getProp(String name) {
-    return vs[id(name)];
+    return props.get(name);
   }
   public Prop getPropN(String name) {
-    int i = id(name);
-    return i==-1? null : vs[i];
+    return props.getNullable(name);
+  }
+  public void setProp(String name, Prop p) {
+    props = props.with(name, p);
+    mProp();
   }
   public boolean hasProp(String name) {
-    return id(name)!=-1;
+    return props.has(name);
   }
   
   public /*open*/ void propsUpd() { mResize(); } // probably rare enough. overriders can choose to not call anyways
@@ -365,7 +358,7 @@ public abstract class Node implements Click.RequestImpl {
   }
   
   public Vec<Prop> getProps() {
-    return Vec.ofNew(vs);
+    return props.values();
   }
   public final Vec<Prop> addProps(Vec<Prop> prev, String... names) {
     for (String n : names) if (n!=null) prev.add(gc.getCfgProp(n));

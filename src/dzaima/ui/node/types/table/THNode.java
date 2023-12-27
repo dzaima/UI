@@ -3,13 +3,13 @@ package dzaima.ui.node.types.table;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.Tools;
 
 public class THNode extends TRTNode {
-  public THNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public THNode(Ctx ctx, Props props) {
+    super(ctx, props);
     aTick();
   }
   

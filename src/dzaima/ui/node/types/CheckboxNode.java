@@ -4,14 +4,14 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import io.github.humbleui.skija.Path;
 
 import java.util.function.Consumer;
 
 public class CheckboxNode extends Node {
-  public CheckboxNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public CheckboxNode(Ctx ctx, Props props) {
+    super(ctx, props);
     Prop e = getPropN("enabled");
     if (e!=null) enabled = e.b();
   }

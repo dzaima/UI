@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.utils.Scroller;
 import dzaima.utils.*;
 
@@ -13,8 +13,8 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   boolean hVis, vVis, hOpen, vOpen, tempOverlap; // TODO not do temp thing
   
   private int barCol, thumbCol, barSize, xMode, yMode;
-  public ScrollNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public ScrollNode(Ctx ctx, Props props) {
+    super(ctx, props);
     aTick();
   }
   

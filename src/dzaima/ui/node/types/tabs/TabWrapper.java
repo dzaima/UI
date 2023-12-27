@@ -3,6 +3,7 @@ package dzaima.ui.node.types.tabs;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.types.StringNode;
 
 public class TabWrapper extends Node {
@@ -12,7 +13,7 @@ public class TabWrapper extends Node {
   public boolean sel;
   
   public TabWrapper(TabbedNode o, Tab t) {
-    super(o.ctx, KS_NONE, VS_NONE);
+    super(o.ctx, Props.none());
     add(new StringNode(o.ctx, t.name()));
     this.o = o;
     tab = t;

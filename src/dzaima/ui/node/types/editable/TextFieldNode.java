@@ -2,14 +2,14 @@ package dzaima.ui.node.types.editable;
 
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class TextFieldNode extends EditNode {
   private int bgCol, padY;
   private float radius;
   
-  public TextFieldNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs, false);
+  public TextFieldNode(Ctx ctx, Props props) {
+    super(ctx, props, false);
   }
   public void propsUpd() { super.propsUpd();
     drawOffX = gc.len(this, "padX", "textfield.padX");

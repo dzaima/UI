@@ -8,8 +8,8 @@ import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.WeighedNode;
 
 public class WindowSplitNode extends WeighedNode {
-  public WindowSplitNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public WindowSplitNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public boolean wantClick(Click c) {
@@ -53,9 +53,8 @@ public class WindowSplitNode extends WeighedNode {
     return ch.filter(n -> n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS).sz!=0;
   }
   
-  private static final String[] k_dir = new String[]{"dir"};
-  private static final Prop[] v_v = new Prop[]{new EnumProp("v")};
-  private static final Prop[] v_h = new Prop[]{new EnumProp("h")};
+  private static final Props dir_v = Props.of("dir", new EnumProp("v"));
+  private static final Props dir_h = Props.of("dir", new EnumProp("h"));
   public static void onTabRightClick(PartialMenu m, Tab t) {
     m.add(t.ctx.gc.getProp("tabbed.splitMenu").gr(), s -> {
       boolean v, r; // vertical, reverse
@@ -70,8 +69,8 @@ public class WindowSplitNode extends WeighedNode {
       Node wp = w.p;
       if (t.w.visible && wp!=null) {
         w.removeTab(w.tabIndex(t));
-        WindowSplitNode sp = new WindowSplitNode(wp.ctx, k_dir, v? v_v : v_h);
-        TabbedNode t1 = new TabbedNode(wp.ctx, KS_NONE, VS_NONE);
+        WindowSplitNode sp = new WindowSplitNode(wp.ctx, v? dir_v : dir_h);
+        TabbedNode t1 = new TabbedNode(wp.ctx, Props.none());
         
         wp.replace(wp.ch.indexOf(w), t0 -> {
           sp.add(r? t1 : t0);

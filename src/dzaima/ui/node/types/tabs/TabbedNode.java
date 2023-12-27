@@ -5,20 +5,20 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ReorderableNode;
 import dzaima.utils.*;
 
 public class TabbedNode extends Node {
-  public TabbedNode(Ctx ctx, String[] ks, Prop[] vs) {
-    this(ctx, ks, vs, findTL(ctx, ks, vs));
+  public TabbedNode(Ctx ctx, Props props) {
+    this(ctx, props, findTL(ctx, props));
   }
   
-  public TabbedNode(Ctx ctx, String[] ks, Prop[] vs, PNodeGroup tl) {
-    super(ctx, ks, vs);
+  public TabbedNode(Ctx ctx, Props props, PNodeGroup tl) {
+    super(ctx, props);
     Box<TabReorderNode> l = new Box<>();
-    tabListW = ctx.makeKV(tl, "list", (Ctx.NodeGen) (ctx2, ks2, vs2) -> {
-      TabReorderNode r = new TabReorderNode(ctx2, ks2, vs2);
+    tabListW = ctx.makeKV(tl, "list", (Ctx.NodeGen) (ctx2, props2) -> {
+      TabReorderNode r = new TabReorderNode(ctx2, props2);
       assert !l.has();
       l.set(r);
       return r;
@@ -51,8 +51,8 @@ public class TabbedNode extends Node {
   }
   private static class TabReorderNode extends ReorderableNode {
     boolean wasSel, firstMove, canceledReorder;
-    public TabReorderNode(Ctx ctx, String[] ks, Prop[] vs) {
-      super(ctx, ks, vs);
+    public TabReorderNode(Ctx ctx, Props props) {
+      super(ctx, props);
     }
     
     public boolean shouldReorder(int idx, Node n) {
@@ -123,8 +123,9 @@ public class TabbedNode extends Node {
     tlH = gc.len(this, "padD", "tabbed.padD")+tlU;
   }
   
-  private static PNodeGroup findTL(Ctx ctx, String[] ks, Prop[] vs) {
-    for (int i = 0; i < ks.length; i++) if (ks[i].equals("bar")) return vs[i].gr();
+  private static PNodeGroup findTL(Ctx ctx, Props props) {
+    Prop b = props.getNullable("bar");
+    if (b!=null) return b.gr();
     return ctx.gc.getProp("tabbed.bar").gr();
   }
   

@@ -3,12 +3,12 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 public class TextNode extends InlineNode {
-  public TextNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public TextNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public void addInline(InlineSolver sv) {

@@ -2,13 +2,13 @@ package dzaima.ui.node.types;
 
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class HNode extends FrameNode {
   
   private int pad;
-  public HNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public HNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public void propsUpd() { super.propsUpd();
     pad = gc.pxD(this, "pad", 0);

@@ -3,11 +3,11 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class LabelNode extends WrapNode {
-  public LabelNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public LabelNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public Node getFor() {
     return ctx.id(getProp("for").val());

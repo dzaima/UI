@@ -4,7 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.undo.UndoManager;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.types.editable.*;
 import dzaima.ui.node.types.editable.code.langs.*;
 import dzaima.utils.*;
@@ -20,9 +20,9 @@ public class CodeAreaNode extends EditNode {
   
   public boolean lineNumbering;
   int lnBg, lnCol;
-  public CodeAreaNode(Ctx ctx, String[] ks, Prop[] vs) { this(ctx, ks, vs, true, new UndoManager(ctx.gc)); }
-  public CodeAreaNode(Ctx ctx, String[] ks, Prop[] vs, boolean multiline, UndoManager um) {
-    super(ctx, ks, vs, multiline, um);
+  public CodeAreaNode(Ctx ctx, Props props) { this(ctx, props, true, new UndoManager(ctx.gc)); }
+  public CodeAreaNode(Ctx ctx, Props props, boolean multiline, UndoManager um) {
+    super(ctx, props, multiline, um);
     setLang(gc.langs().defLang);
     lineNumbering = multiline;
   }

@@ -34,11 +34,10 @@ public interface SerializableTab {
   
   
   static Node deserialize_rec(Ctx ctx, PNodeGroup g, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
-    final String[] WK = new String[]{"dir"};
     HashMap<String, Prop> p = props(g);
     switch (g.name) {
       case "split": {
-        WindowSplitNode r = new WindowSplitNode(ctx, WK, new Prop[]{new EnumProp(p.get("d").val())});
+        WindowSplitNode r = new WindowSplitNode(ctx, Props.of("dir", new EnumProp(p.get("d").val())));
         r.setModifiable(p.get("e").b());
         r.setWeight(p.get("w").f());
         for (PNode c : g.ch) {
@@ -48,7 +47,7 @@ public interface SerializableTab {
         return r;
       }
       case "tabbed": {
-        TabbedNode tn = new TabbedNode(ctx, Node.KS_NONE, Node.VS_NONE);
+        TabbedNode tn = new TabbedNode(ctx, Props.none());
         String m = p.get("m").val();
         tn.setMode(m.equals("a")? TabbedNode.Mode.ALWAYS : m.equals("m")? TabbedNode.Mode.WHEN_MULTIPLE : TabbedNode.Mode.NEVER);
         int sel = p.get("s").i();

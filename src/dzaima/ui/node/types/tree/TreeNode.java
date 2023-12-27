@@ -2,15 +2,15 @@ package dzaima.ui.node.types.tree;
 
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class TreeNode extends ATreeNode {
   public boolean defaultClosed = true;
   
   
   public int indent, bg1, bg2, bgSel;
-  public TreeNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs, 0);
+  public TreeNode(Ctx ctx, Props props) {
+    super(ctx, props, 0);
     depth = 0;
     base = this;
   }

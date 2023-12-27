@@ -5,14 +5,14 @@ import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 import java.util.function.Consumer;
 
 public abstract class InlineNode extends Node {
-  public InlineNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public InlineNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public short sX, sY1, sY2; // first line coords
   public short eX, eY1, eY2; // last line coords; TODO could use h for eY2?
@@ -127,7 +127,7 @@ public abstract class InlineNode extends Node {
   
   public static class LineEnd extends InlineNode implements StringifiableNode {
     private final boolean returnNewline;
-    public LineEnd(Ctx ctx, boolean returnNewline) { super(ctx, KS_NONE, VS_NONE); this.returnNewline = returnNewline; }
+    public LineEnd(Ctx ctx, boolean returnNewline) { super(ctx, Props.none()); this.returnNewline = returnNewline; }
     protected void addInline(InlineSolver sv) { sv.x = sv.w; }
     protected void baseline(int asc, int dsc, int h) { }
     public String asString() {
@@ -136,7 +136,7 @@ public abstract class InlineNode extends Node {
   }
   
   public static class FullBlock extends InlineNode {
-    public FullBlock(Ctx ctx) { super(ctx, KS_NONE, VS_NONE); }
+    public FullBlock(Ctx ctx) { super(ctx, Props.none()); }
     protected void addInline(InlineSolver sv) {
       if (sv.x!=0) sv.nl();
       Node c = ch.get(0);
@@ -159,8 +159,8 @@ public abstract class InlineNode extends Node {
     public int minH(int w) { return ch.get(0).minH(w); }
   }
   public static class TANode extends InlineNode {
-    public TANode(Ctx ctx, String[] ks, Prop[] vs) {
-      super(ctx, ks, vs);
+    public TANode(Ctx ctx, Props props) {
+      super(ctx, props);
     }
     
     protected String mode() { Prop m = getPropN("mode"); return m==null? "top" : m.val(); }

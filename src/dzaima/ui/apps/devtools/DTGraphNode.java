@@ -4,13 +4,13 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 public class DTGraphNode extends Node {
   Devtools t;
   
-  public DTGraphNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public DTGraphNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public int minH(int w) {

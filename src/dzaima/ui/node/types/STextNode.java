@@ -8,13 +8,12 @@ import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
 
 public class STextNode extends TextNode implements Selectable {
-  public STextNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public STextNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
-  private static String[] IBEAM_K = new String[]{"ibeam"};
-  private static Prop[] IBEAM_V = new Prop[]{EnumProp.TRUE};
+  private static final Props IBEAM_PROPS = Props.of("ibeam", EnumProp.TRUE);
   public STextNode(Ctx ctx, boolean ibeam) {
-    super(ctx, ibeam? IBEAM_K : KS_NONE, ibeam? IBEAM_V : VS_NONE);
+    super(ctx, ibeam? IBEAM_PROPS : Props.none());
   }
   
   public void selectS(Selection s) {

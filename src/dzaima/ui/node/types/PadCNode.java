@@ -2,20 +2,20 @@ package dzaima.ui.node.types;
 
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.Tools;
 
 public class PadCNode extends Node {
   public float u,l,d,r;
   protected int lI,uI,dwI,dhI;
   public PadCNode(Ctx ctx, Node ch, float l, float r, float u, float d) {
-    super(ctx, KS_NONE, VS_NONE);
+    super(ctx, Props.none());
     add(ch);
     this.u = u; this.d = d;
     this.l = l; this.r = r;
   }
-  public PadCNode(Ctx ctx, String[] ks, Prop[] vs, float l, float r, float u, float d) {
-    super(ctx, ks, vs);
+  public PadCNode(Ctx ctx, Props props, float l, float r, float u, float d) {
+    super(ctx, props);
     this.u = u; this.d = d;
     this.l = l; this.r = r;
   }

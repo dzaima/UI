@@ -3,14 +3,14 @@ package dzaima.ui.node.types.table;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 
 import java.util.Arrays;
 
 public class TableNode extends Node { // TODO table is very unfinished
   
-  public TableNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public TableNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public boolean clip;
   public int bg1, bg2, bgH, bgSel, sepCol, sepY;

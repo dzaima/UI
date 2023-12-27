@@ -156,7 +156,7 @@ public abstract class Ctx {
           assert Vec.of(vs).filter(Objects::isNull).sz == 0;
         }
         
-        Node res = nd.make(this, ks, vs);
+        Node res = nd.make(this, Props.ofKV(ks, vs));
         for (int i = 0; i < ks.length; i++) {
           if (ks[i].equals("id")) {
             String id = vs[i].val();
@@ -230,7 +230,7 @@ public abstract class Ctx {
   }
   
   public interface NodeGen {
-    Node make(Ctx ctx, String[] ks, Prop[] vs);
+    Node make(Ctx ctx, Props props);
   }
   
   

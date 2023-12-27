@@ -3,14 +3,14 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.XY;
 
 public class VNode extends FrameNode {
   
   private int pad;
-  public VNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public VNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   public void propsUpd() { super.propsUpd();
     pad = gc.pxD(this, "pad", 0);

@@ -3,14 +3,14 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.XY;
 
 import java.util.function.*;
 
 public class OverlapNode extends WrapNode {
-  public OverlapNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public OverlapNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public BiConsumer<Node, Graphics> draw;

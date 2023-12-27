@@ -4,12 +4,12 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.utils.*;
 
 public class ReorderableNode extends PackedListNode {
-  public ReorderableNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public ReorderableNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public /*open*/ boolean shouldReorder(int idx, Node n) { return true; }
@@ -176,7 +176,7 @@ public class ReorderableNode extends PackedListNode {
     public final ReorderableNode r;
     
     public PlaceholderNode(Ctx ctx, Node n, ReorderableNode r) {
-      super(ctx, KS_NONE, VS_NONE);
+      super(ctx, Props.none());
       this.n = n;
       this.r = r;
       add(n);

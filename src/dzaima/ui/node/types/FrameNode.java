@@ -3,12 +3,12 @@ package dzaima.ui.node.types;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 public abstract class FrameNode extends Node {
-  public FrameNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public FrameNode(Ctx ctx, Props props) {
+    super(ctx, props);
     if (hasProp("width")) Log.warn("Using incorrect 'width' property");
     if (hasProp("height")) Log.warn("Using incorrect 'height' property");
     if (hasProp("xalign")) Log.warn("Using incorrect 'xalign' property");

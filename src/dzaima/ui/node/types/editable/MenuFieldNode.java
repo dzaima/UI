@@ -2,12 +2,12 @@ package dzaima.ui.node.types.editable;
 
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.Props;
 import dzaima.ui.node.types.MenuNode;
 
 public class MenuFieldNode extends TextFieldNode {
-  public MenuFieldNode(Ctx ctx, String[] ks, Prop[] vs) {
-    super(ctx, ks, vs);
+  public MenuFieldNode(Ctx ctx, Props props) {
+    super(ctx, props);
   }
   
   public Runnable onModified;
