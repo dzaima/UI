@@ -62,6 +62,7 @@ public abstract class Ctx {
   }
   
   public Prop[] finishProps(PNodeGroup g, HashMap<String, Var> vars) {
+    if (g.allProps!=null) return g.vs;
     Prop[] vs = g.vs;
     for (int i = 0; i < vs.length; i++) {
       if (vs[i]==null) {
@@ -83,7 +84,7 @@ public abstract class Ctx {
   
   
   
-  private static class Var {
+  public static class Var {
     boolean used;
     final Prop val;
     final HashMap<String, Var> ctx;
@@ -112,7 +113,7 @@ public abstract class Ctx {
   private String rmPrefix(String k) {
     return k.startsWith("$")? k.substring(1) : k;
   }
-  public void makeHere(PNode pn, HashMap<String, Var> vars, Vec<Node> nodes, HashMap<String, Prop> props) {
+  private void makeHere(PNode pn, HashMap<String, Var> vars, Vec<Node> resList, HashMap<String, Prop> resProps) {
     if (pn instanceof PNodeGroup) {
       PNodeGroup g = (PNodeGroup) pn;
       
@@ -124,28 +125,29 @@ public abstract class Ctx {
           String k = g.ks[i];
           args.put(rmPrefix(k), new Var(vs[i], vars));
         }
-        addProp(p, args, nodes, props);
+        makePropHere(p, args, resList, resProps);
       } else {
-        NodeGen nd;
+        NodeGen gen;
         if (g.defn) {
           Var var = vars.get(rmPrefix(g.name));
           if (var==null) throw new Error("Path '"+g.name+"' not found for generation");
-          nd = ((ObjProp) var.val).obj();
+          gen = var.val.obj();
         } else {
-          nd = getGen(g.name);
+          gen = getGen(g.name);
         }
-        if (nd==null) throw new Error(g.name==null? "Encountered node with no name" : "no node defined by name '"+g.name+"'");
+        if (gen==null) throw new Error(g.name==null? "Encountered node with no name" : "no node defined by name '"+g.name+"'");
         
         Vec<Node> chList = new Vec<>();
         HashMap<String, Prop> chProps = new HashMap<>();
         for (PNode c : g.ch) makeHere(c, vars, chList, chProps);
         
         String[] ks = g.ks;
-        Prop[] vs = finishProps(g, vars);
+        Props props1;
         if (!chProps.isEmpty()) {
           int i = ks.length;
           HashSet<String> pks = new HashSet<>(Arrays.asList(ks));
           ks = Arrays.copyOf(ks, i+chProps.size());
+          Prop[] vs = finishProps(g, vars);
           vs = Arrays.copyOf(vs, ks.length);
           for (Map.Entry<String, Prop> e : chProps.entrySet()) {
             if (pks.contains(e.getKey())) throw new Error("Multiple definitions of property '"+e.getKey()+"'");
@@ -153,45 +155,47 @@ public abstract class Ctx {
             vs[i] = e.getValue();
             i++;
           }
-          assert Vec.of(vs).filter(Objects::isNull).sz == 0;
+          assert Vec.of(vs).indexOf(null) == -1;
+          props1 = Props.ofKV(ks, vs);
+        } else {
+          props1 = g.allProps!=null? g.allProps : Props.ofKV(ks, finishProps(g, vars));
         }
         
-        Node res = nd.make(this, Props.ofKV(ks, vs));
-        for (int i = 0; i < ks.length; i++) {
-          if (ks[i].equals("id")) {
-            String id = vs[i].val();
-            if (id==null) throw new Error("id property must be an enum");
-            if (ids.put(id, res)!=null) throw new Error("Multiple elements with the id "+id);
-            break;
-          }
+        Node nd = gen.make(this, props1);
+        Prop idProp = props1.getNullable("id");
+        if (idProp!=null) {
+          String id = idProp.val();
+          if (id==null) throw new Error("id property must be an enum");
+          if (ids.put(id, nd)!=null) throw new Error("Multiple elements with the id "+id);
         }
-        for (Node c : chList) res.add(c);
-        nodes.add(res);
+        
+        for (Node c : chList) nd.add(c);
+        resList.add(nd);
       }
     } else if (pn instanceof PNode.PNodeStr) {
-      nodes.add(new StringNode(this, ((PNode.PNodeStr) pn).s));
+      resList.add(new StringNode(this, ((PNode.PNodeStr) pn).s));
     } else if (pn instanceof PNode.PNodeDefn) {
       Var v = getVar(vars, ((PNode.PNodeDefn) pn).s);
-      addProp(v.val, v.ctx, nodes, props);
+      makePropHere(v.val, v.ctx, resList, resProps);
     }
   }
   
-  private void addProp(Prop val, HashMap<String, Var> args, Vec<Node> nodes, HashMap<String, Prop> props) {
+  private void makePropHere(Prop val, HashMap<String, Var> args, Vec<Node> resList, HashMap<String, Prop> resProps) { // try to expand a Prop to a node
     if (val instanceof GrProp) {
       PNodeGroup g = val.gr();
       if (g.name!=null) {
-        makeHere(g, args, nodes, props);
+        makeHere(g, args, resList, resProps);
       } else {
-        for (PNode c : g.ch) makeHere(c, args, nodes, props);
+        for (PNode c : g.ch) makeHere(c, args, resList, resProps);
         Prop[] vs = finishProps(g, args);
         for (int i = 0; i < vs.length; i++) {
-          if (props.put(g.ks[i], vs[i])!=null) throw new Error("Multiple definitions of property '"+g.ks[i]+"'");
+          if (resProps.put(g.ks[i], vs[i])!=null) throw new Error("Multiple definitions of property '"+g.ks[i]+"'");
         }
       }
     } else if (val instanceof StrProp) {
-      nodes.add(new StringNode(this, ((StrProp) val).s));
+      resList.add(new StringNode(this, ((StrProp) val).s));
     } else if (val instanceof ObjProp && val.obj() instanceof Node) {
-      nodes.add(val.obj());
+      resList.add(val.obj());
     } else throw new Error(val.toString()+" isn't a node type");
   }
   

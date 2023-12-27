@@ -7,6 +7,7 @@ import java.util.Arrays;
 public abstract class Props {
   public static Props ofKV(String[] ks, Prop[] vs) {
     if (ks.length==0) return Props0.EMPTY;
+    if (ks.length==1) return of(ks[0], vs[0]);
     return new PropsKV(ks, vs);
   }
   public static Props none() {

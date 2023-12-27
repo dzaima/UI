@@ -1,7 +1,7 @@
 package dzaima.ui.eval;
 
 import dzaima.ui.node.Node;
-import dzaima.ui.node.prop.Prop;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
 import java.util.*;
@@ -11,6 +11,7 @@ public class PNodeGroup extends PNode {
   public final boolean defn;
   public final String[] ks;
   public final Prop[] vs; // only properties which are contant known; contains null elements otherwise
+  public final Props allProps; // non-null only if all props are known
   
   public final Vec<PrsField> props;
   public final Vec<PNode> ch;
@@ -21,10 +22,13 @@ public class PNodeGroup extends PNode {
     this.props = props; int sz = props.sz;
     ks = sz==0? Node.KS_NONE : new String[sz];
     vs = sz==0? Node.VS_NONE : new Prop  [sz];
+    boolean allKnown = true;
     for (int i = 0; i < sz; i++) {
       ks[i] = props.get(i).name;
       vs[i] = Prop.makeConstProp(props.get(i));
+      allKnown&= vs[i]!=null;
     }
+    allProps = allKnown? Props.ofKV(ks, vs) : null;
     if (Tools.DBG) {
       HashSet<String> seen = new HashSet<>();
       for (String c : ks) {
