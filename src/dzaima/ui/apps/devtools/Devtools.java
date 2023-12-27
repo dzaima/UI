@@ -63,9 +63,9 @@ public class Devtools extends NodeWindow implements Hijack {
     }
     
     text = insp.getClass().getSimpleName();
-    if (text.equals("")) {
+    if (text.isEmpty()) {
       Class<?> c = insp.getClass();
-      while (c.getSimpleName().equals("")) c = c.getSuperclass();
+      while (c.getSimpleName().isEmpty()) c = c.getSuperclass();
       text = c.getSimpleName();
       
       Class<?> ec = insp.getClass().getEnclosingClass();
