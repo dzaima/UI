@@ -148,18 +148,26 @@ public abstract class Node implements Click.RequestImpl {
   ///////// properties \\\\\\\\\
   public static final String[] KS_NONE = new String[0];
   public static final Prop  [] VS_NONE = new Prop[0];
-  public int id(String k) {
+  @Deprecated public int id(String k) {
     for (int i = 0; i < ks.length; i++) if (ks[i].equals(k)) return i;
     return -1;
   }
-  public void set(int i, Prop p) {
+  @Deprecated public void set(int i, Prop p) {
     vs = vs.clone(); // stupid, but whatever. maybe add flag?
     vs[i] = p;
     mProp();
   }
-  public void setCfg(int i, String path) {
-    set(i, gc.getProp(path));
+  public Prop getProp(String name) {
+    return vs[id(name)];
   }
+  public Prop getPropN(String name) {
+    int i = id(name);
+    return i==-1? null : vs[i];
+  }
+  public boolean hasProp(String name) {
+    return id(name)!=-1;
+  }
+  
   public /*open*/ void propsUpd() { mResize(); } // probably rare enough. overriders can choose to not call anyways
   
   

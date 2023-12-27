@@ -1,5 +1,6 @@
 package dzaima.ui.node;
 
+import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 
 import java.util.Arrays;
@@ -27,10 +28,10 @@ public class Solve {
     Vec<Ent> vs = new Vec<>();
     
     for (int i = 0; i < l; i++) {
-      Node c = ch.get(i); int wid = c.id("weight");
+      Node c = ch.get(i); Prop weight = c.getPropN("weight");
       int minV = min[i] = y? c.minH(widthArg) : c.minW(); minSum+= minV;
       int maxV = max[i] = y? c.maxH(widthArg) : c.maxW(); maxSum+= maxV;
-      float wV = wgt[i] = wid==-1? 1 : c.vs[wid].f();
+      float wV = wgt[i] = weight==null? 1 : weight.f();
       lx-= minV;
       if (minV == maxV) {
         state[i] = 2;

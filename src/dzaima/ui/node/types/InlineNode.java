@@ -163,7 +163,7 @@ public abstract class InlineNode extends Node {
       super(ctx, ks, vs);
     }
     
-    protected String mode() { int id = id("mode"); return id==-1? "top" : vs[id].val(); }
+    protected String mode() { Prop m = getPropN("mode"); return m==null? "top" : m.val(); }
     protected void baseline(int asc, int dsc, int h) {
       Node n = ch.get(0);
       switch (mode()) {
@@ -177,8 +177,8 @@ public abstract class InlineNode extends Node {
       Node n = ch.get(0);
       boolean maxW = false;
       
-      int width = id("width");
-      if (width!=-1) switch (vs[width].val()) { default: Log.error("node 'ta'", "width should be either min or max");
+      Prop width = getPropN("width");
+      if (width!=null) switch (width.val()) { default: Log.error("node 'ta'", "width should be either min or max"); break;
         case "min": maxW = false; break;
         case "max": maxW = true; break;
       }

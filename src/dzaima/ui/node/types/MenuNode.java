@@ -92,9 +92,8 @@ public class MenuNode extends Node {
     short padL, padR, padX, padU;
     float bindW;
     public Vec<PNode> keys() {
-      int ki = id("key");
-      if (ki==-1) return null;
-      return vs[ki].gr().ch;
+      Prop k = getPropN("key");
+      return k==null? null : k.gr().ch;
     }
     public void propsUpd() { super.propsUpd();
       padL = (short) gc.getProp("menu.padL").len();
@@ -152,7 +151,7 @@ public class MenuNode extends Node {
     public void mouseTick(int x, int y, Click c) { c.onClickEnd(); }
     public void mouseUp(int x, int y, Click c) { if (visible) run(); }
     public void run() {
-      menu().obj.menuItem(vs[id("id")].val());
+      menu().obj.menuItem(getProp("id").val());
     }
     
     public void resized() {

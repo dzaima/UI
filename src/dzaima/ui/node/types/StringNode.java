@@ -314,6 +314,6 @@ public class StringNode extends InlineNode {
   }
   
   public Vec<Prop> getProps() {
-    return addProps(super.getProps(), p instanceof InlineNode || id("color")==-1? "str.color" : null);
+    return addProps(super.getProps(), p instanceof InlineNode || hasProp("color")? "str.color" : null);
   }
 }

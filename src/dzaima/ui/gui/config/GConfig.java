@@ -115,86 +115,86 @@ public class GConfig {
   
   // TODO make these more consistent
   public int col(Node n, String k, String thKey) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].col();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.col();
     return getCfgProp(thKey).col();
   }
   public String val(Node n, String k, String thKey) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].val();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.val();
     return getCfgProp(thKey).val();
   }
   public String str(Node n, String k, String thKey) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].str();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.str();
     return getCfgProp(thKey).str();
   }
   public int len(Node n, String k, String thKey) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     return getCfgProp(thKey).len();
   }
   public float lenF(Node n, String k, String thKey) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     return getCfgProp(thKey).len();
   }
   
   public String valD(Node n, String k, String def) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].val();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.val();
     return def;
   }
   public int lenD(Node n, String k, int defPx) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     return defPx;
   }
   public String strD(Node n, String k, String def) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].str();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.str();
     return def;
   }
   public int emD(Node n, String k, double d) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     return Tools.ceil(d*em);
   }
   public int pxD(Node n, String k, int i) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     return i;
   }
   public int colD(Node n, String k, int c) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].col();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.col();
     return c;
   }
   public int intD(Node n, String k, int i) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].i();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.i();
     return i;
   }
   public float fD(Node n, String k, float f) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].f();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.f();
     return f;
   }
   public boolean boolD(Node n, String k, boolean b) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].b();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.b();
     return b;
   }
   
   
   public Integer col(Node n, String k) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].col();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.col();
     return null;
   }
   public int lenReq(Node n, String k) {
-    int id = n.id(k);
-    if (id>=0) return n.vs[id].len();
+    Prop p = n.getPropN(k);
+    if (p!=null) return p.len();
     throw new Error(n.getClass().getSimpleName()+": Property "+k+" required");
   }
   

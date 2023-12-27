@@ -19,27 +19,19 @@ public class SvgIconNode extends Node {
   }
   
   public void propsUpd() { super.propsUpd();
-    String nsrc = vs[id("src")].str();
+    String nsrc = getProp("src").str();
     if (!nsrc.equals(src)) {
       src = nsrc;
       p = Path.makeFromSVGString(src);
     }
-    int iwi = id("iw");
-    int ihi = id("ih");
-    if (iwi==-1 && ihi==-1) {
-      Log.warn("node 'svgicon'", "Using old parameters");
-      sc = vs[id("sz")].f()*gc.em*(1f/169);
-      w = Tools.ceil(vs[id("w")].f()*sc);
-      h = Tools.ceil(vs[id("h")].f()*sc);
-    } else {
-      int iw = vs[iwi].i();
-      int ih = vs[ihi].i();
-      int rwi = id("w");
-      int rhi = id("h");
-      assert (rwi==-1) != (rhi==-1) : Devtools.debugMe(this)+": svgicon must have exactly one of 'w' and 'h'";
-      if (rwi!=-1) { w=vs[rwi].len(); sc=w*1f/iw; h=Tools.ceil(sc*ih); }
-      else         { h=vs[rhi].len(); sc=h*1f/ih; w=Tools.ceil(sc*iw); }
-    }
+    int iw = getProp("iw").i();
+    int ih = getProp("ih").i();
+    Prop rw = getPropN("w");
+    Prop rh = getPropN("h");
+    assert (rw==null) != (rh==null) : Devtools.debugMe(this)+": svgicon must have exactly one of 'w' and 'h'";
+    if (rw!=null) { w=rw.len(); sc=w*1f/iw; h=Tools.ceil(sc*ih); }
+    else          { h=rh.len(); sc=h*1f/ih; w=Tools.ceil(sc*iw); }
+    if (col!=null) col.close();
     col = new Paint().setColor(gc.col(this, "color", "icon.color"));
   }
   

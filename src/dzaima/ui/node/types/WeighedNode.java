@@ -20,7 +20,7 @@ public class WeighedNode extends Node {
   protected int handleWidth, pad, padColor;
   public void propsUpd() {
     super.propsUpd();
-    switch (vs[id("dir")].val()) { default: throw new RuntimeException("Bad uw \"dir\" value "+vs[id("dir")]);
+    switch (getProp("dir").val()) { default: throw new RuntimeException("Bad uw \"dir\" value "+getProp("dir"));
       case "v": v=true; break;
       case "h": v=false; break;
     }

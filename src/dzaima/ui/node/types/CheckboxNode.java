@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 public class CheckboxNode extends Node {
   public CheckboxNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
-    int e = id("enabled");
-    if (e!=-1) enabled = vs[e].b();
+    Prop e = getPropN("enabled");
+    if (e!=null) enabled = e.b();
   }
   
   public boolean enabled;
@@ -51,8 +51,8 @@ public class CheckboxNode extends Node {
   
   
   Prop prop(String name) {
-    int id = id(name);
-    if (id!=-1) return vs[id];
+    Prop val = getPropN(name);
+    if (val!=null) return val;
     return gc.getProp("checkbox."+name);
   }
   

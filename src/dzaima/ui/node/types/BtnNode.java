@@ -26,14 +26,14 @@ public class BtnNode extends Node {
   public void propsUpd() { super.propsUpd();
     String styleS = gc.val(this, "style", "btn.style");
     
-    int padId = id("pad");
-    if (padId==-1) {
+    Prop pad = getPropN("pad");
+    if (pad==null) {
       padX = gc.len(this, "padX", "btn.padX");
       padY = gc.len(this, "padY", "btn.padY");
-    } else padX=padY = vs[padId].len();
-    int wId = id("w");
-    if (wId == -1) widthMode = 0;
-    else switch (vs[wId].val()) { default: Log.error("node 'btn'", "'w' parameter must be either \"min\", \"max\", or \"inherit\""); break;
+    } else padX=padY = pad.len();
+    Prop w = getPropN("w");
+    if (w == null) widthMode = 0;
+    else switch (w.val()) { default: Log.error("node 'btn'", "'w' parameter must be either \"min\", \"max\", or \"inherit\""); break;
       case "min": widthMode=0; break;
       case "max": widthMode=1; break;
       case "inherit": widthMode=2; break;

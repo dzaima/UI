@@ -71,7 +71,7 @@ public class ExMain extends NodeWindow {
   private static class FormatNode extends WrapNode {
     public FormatNode(Ctx ctx, String[] ks, Prop[] vs) {
       super(ctx, ks, vs);
-      String s = vs[id("str")].str();
+      String s = getProp("str").str();
       for (int i = 0; i < ks.length; i++) {
         if (ks[i].charAt(0)=='v') s = s.replace('%'+ks[i].substring(1), vs[i].toString().replaceAll(".*=", ""));
       }

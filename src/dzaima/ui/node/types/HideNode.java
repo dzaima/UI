@@ -12,7 +12,7 @@ public class HideNode extends Node {
   }
   
   public void propsUpd() { mRedraw();
-    hidden = vs[id("hide")].b();
+    hidden = getProp("hide").b();
   }
   
   public int minW(     ) { return ch.get(0).minW( ); }

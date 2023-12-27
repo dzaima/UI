@@ -12,10 +12,10 @@ public class PadNode extends Node {
   private int pL, pU, pX, pY, bgCol;
   public PadNode(Ctx ctx, String[] ks, Prop[] vs) {
     super(ctx, ks, vs);
+    if (hasProp("bgCol")) Log.warn("Using incorrect 'bgCol' property");
   }
   public void propsUpd() { super.propsUpd();
     bgCol = gc.colD(this, "bg", 0);
-    if (id("bgCol")!=-1) Log.warn("warning: using old bgCol property");
     int all = gc.pxD(this, "all", 0);
     int l = gc.pxD(this, "l", 0);
     int r = gc.pxD(this, "r", 0);

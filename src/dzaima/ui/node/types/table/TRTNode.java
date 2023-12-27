@@ -13,9 +13,9 @@ public class TRTNode extends Node { // table row template node
     super(ctx, ks, vs);
   }
   public void propsUpd() { super.propsUpd();
-    int id = id("bg");
-    hasBg = id>=0;
-    if (hasBg) bg = vs[id].col();
+    Prop p = getPropN("bg");
+    hasBg = p!=null;
+    if (hasBg) bg = p.col();
   }
   
   public void shown() { super.shown();

@@ -13,7 +13,7 @@ public class PackedListNode extends FrameNode {
   protected int pad;
   public void propsUpd() {
     super.propsUpd();
-    switch (vs[id("dir")].val()) { default: throw new RuntimeException("Bad PackedListNode \"dir\" value "+vs[id("dir")]);
+    switch (getProp("dir").val()) { default: throw new RuntimeException("Bad PackedListNode \"dir\" value "+getProp("dir"));
       case "v": v=true; break;
       case "h": v=false; break;
     }

@@ -27,7 +27,7 @@ public class ReorderableNode extends PackedListNode {
   protected int mode;
   public void propsUpd() {
     super.propsUpd();
-    switch (vs[id("mode")].val()) { default: throw new RuntimeException("Bad ReorderableNode \"mode\" value "+vs[id("mode")]);
+    switch (getProp("mode").val()) { default: throw new RuntimeException("Bad ReorderableNode \"mode\" value "+getProp("mode"));
       case "none": mode = 0; break;
       case "drag": mode = 1; break;
       case "instant": mode = 2; break;

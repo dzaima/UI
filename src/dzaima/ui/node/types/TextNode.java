@@ -44,8 +44,8 @@ public class TextNode extends InlineNode {
   Typeface tf;
   public void propsUpd() { super.propsUpd();
     tsz = gc.pxD(this, "tsz", -1);
-    int cId = id("color"); hasCol = cId>=0; if (hasCol) col   = vs[cId].col();
-    int bId = id("bg");    hasBg  = bId>=0; if (hasBg)  bgCol = vs[bId].col();
+    Prop c = getPropN("color"); hasCol = c!=null; if (hasCol) col   = c.col();
+    Prop b = getPropN("bg");    hasBg  = b!=null; if (hasBg)  bgCol = b.col();
     mode = 0;
     if (gc.boolD(this, "italics"  , false)) mode|= Typeface.ITALICS;
     if (gc.boolD(this, "bold"     , false)) mode|= Typeface.BOLD;

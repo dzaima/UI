@@ -10,7 +10,7 @@ public class LabelNode extends WrapNode {
     super(ctx, ks, vs);
   }
   public Node getFor() {
-    return ctx.id(vs[id("for")].val());
+    return ctx.id(getProp("for").val());
   }
 
   public void mouseStart(int x, int y, Click c) {

@@ -7,6 +7,7 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.jwm.JWMWindow;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
+import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.*;
 import dzaima.utils.*;
 import io.github.humbleui.skija.impl.Stats;
@@ -75,8 +76,8 @@ public class Devtools extends NodeWindow implements Hijack {
       while (lu < text.length() && Character.isUpperCase(text.charAt(lu))) lu++;
       text = text.substring(0,lu).toLowerCase()+text.substring(lu);
     }
-    int idID = insp.id("id");
-    if (idID!=-1) text+= "#"+insp.vs[idID];
+    Prop id = insp.getPropN("id");
+    if (id!=null) text+= "#"+id;
     return text;
   }
   

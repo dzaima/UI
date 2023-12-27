@@ -35,16 +35,14 @@ public class EditNode extends Node {
     this.um = um;
     this.multiline = multiline;
   
-    int family = id("family");
-    assert family!=-1 : "No font family specified for editable";
-    setFamily(vs[family].str());
+    setFamily(getProp("family").str());
     
     lns.add(createLine(new char[0], 0));
     initCursor();
     
-    int textId = id("text");
+    Prop text = getPropN("text");
     int s = um.pushIgnore();
-    if (textId>=0) insert(0, 0, vs[textId].str());
+    if (text!=null) insert(0, 0, text.str());
     um.popIgnore(s);
   }
   

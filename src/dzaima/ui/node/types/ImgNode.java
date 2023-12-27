@@ -36,8 +36,8 @@ public class ImgNode extends Node { // TODO remove
   }
   private void updSize() {
     sc = gc.imgScale;
-    int mwi = id("maxW"); if (mwi!=-1 && iw*sc > vs[mwi].len()) sc = vs[mwi].len()/(float)iw;
-    int mhi = id("maxH"); if (mhi!=-1 && ih*sc > vs[mhi].len()) sc = vs[mhi].len()/(float)ih;
+    Prop mw = getPropN("maxW"); if (mw!=null && iw*sc > mw.len()) sc = mw.len()/(float)iw;
+    Prop mh = getPropN("maxH"); if (mh!=null && ih*sc > mh.len()) sc = mh.len()/(float)ih;
     aw = Tools.ceil(iw*sc);
     ah = Tools.ceil(ih*sc);
   }
