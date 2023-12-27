@@ -6,7 +6,6 @@ import dzaima.ui.gui.io.*;
 import dzaima.utils.*;
 import io.github.humbleui.skija.*;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryUtil;

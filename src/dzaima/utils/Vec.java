@@ -11,8 +11,8 @@ public final class Vec<T> implements Iterable<T> {
   public Vec() {
     arr = (T[]) EMPTY;
   }
-  public Vec(int sz) {
-    arr = (T[]) new Object[sz];
+  public Vec(int capacity) {
+    arr = (T[]) new Object[capacity];
   }
   public Vec(Vec<T> copy) {
     arr = Arrays.copyOf(copy.arr, copy.sz);

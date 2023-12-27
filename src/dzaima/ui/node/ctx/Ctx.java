@@ -116,7 +116,7 @@ public abstract class Ctx {
     if (pn instanceof PNodeGroup) {
       PNodeGroup g = (PNodeGroup) pn;
       
-      if (g.defn && g.name.indexOf(".")>=0) {
+      if (g.defn && g.name.contains(".")) {
         PropI p = gc.getProp(g.name);
         HashMap<String, Var> args = new HashMap<>();
         Prop[] vs = finishProps(g, vars);
