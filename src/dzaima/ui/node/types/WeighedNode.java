@@ -6,6 +6,7 @@ import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Props;
+import dzaima.ui.node.utils.*;
 import dzaima.utils.Tools;
 
 public class WeighedNode extends Node {
@@ -110,10 +111,10 @@ public class WeighedNode extends Node {
   }
   
   public int minW() {
-    return v? Solve.vMinW(ch) : Solve.hMinW(ch)+pad; 
+    return v? ListUtils.vMinW(ch) : ListUtils.hMinW(ch)+pad; 
   }
   public int minH(int w) {
-    if (v) return Solve.vMinH(ch, w) + pad;
+    if (v) return ListUtils.vMinH(ch, w) + pad;
     Node c0 = ch.get(0);
     Node c1 = ch.get(1);
     int l = left(w);

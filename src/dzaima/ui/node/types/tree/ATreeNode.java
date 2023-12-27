@@ -4,6 +4,7 @@ import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Props;
+import dzaima.ui.node.utils.*;
 
 public abstract class ATreeNode extends Node {
   public boolean open = true;
@@ -21,7 +22,7 @@ public abstract class ATreeNode extends Node {
   
   public void drawCh(Graphics g, boolean full) {
     if (g.clip==null || ch.sz<10) { super.drawCh(g, full); return; }
-    for (int i = Solve.vBinSearch(ch, g.clip.sy); i < ch.sz; i++) {
+    for (int i = ListUtils.vBinSearch(ch, g.clip.sy); i < ch.sz; i++) {
       Node c = ch.get(i);
       if (c.dy+c.h < g.clip.sy) continue; // TODO binary search?
       if (c.dy > g.clip.ey) break;

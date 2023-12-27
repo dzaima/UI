@@ -6,6 +6,7 @@ import dzaima.ui.gui.io.*;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
+import dzaima.ui.node.utils.*;
 import dzaima.utils.*;
 
 import java.util.Objects;
@@ -37,8 +38,8 @@ public class MenuNode extends Node {
     focusDelta(1);
   }
   
-  public int minW() { return Math.max(Solve.vMinW(ch), gc.getProp("menu.minWidth").len()); }
-  public int minH(int w) { return Solve.vMinH(ch, w) + padY*2; }
+  public int minW() { return Math.max(ListUtils.vMinW(ch), gc.getProp("menu.minWidth").len()); }
+  public int minH(int w) { return ListUtils.vMinH(ch, w) + padY*2; }
   
   public void bg(Graphics g, boolean full) {
     g.clear(gc.getProp("menu.bg").col());

@@ -1,5 +1,6 @@
-package dzaima.ui.node;
+package dzaima.ui.node.utils;
 
+import dzaima.ui.node.Node;
 import dzaima.ui.node.prop.Prop;
 import dzaima.utils.*;
 
@@ -126,81 +127,5 @@ public class Solve {
     
     
     return res;
-  }
-  
-  
-  
-  public static int vMinW(Vec<Node> nds) {
-    int r = 0;
-    for (Node c : nds) r = Math.max(c.minW(), r);
-    return r;
-  }
-  public static int vMinH(Vec<Node> nds, int w) {
-    int r = 0;
-    for (Node c : nds) r+= c.minH(w);
-    return r;
-  }
-  public static int hMinW(Vec<Node> nds) {
-    int r = 0;
-    for (Node c : nds) r+= c.minW();
-    return r;
-  }
-  public static int hMinH(Vec<Node> nds, int w) { // TODO this is evil? see adacb997e1b3a90e076a81cd6b7ae803232f95a1
-    int r = 0;
-    for (Node c : nds) r = Math.max(c.minH(w), r);
-    return r;
-  }
-  
-  public static int vMaxW(Vec<Node> nds) {
-    int r = 0;
-    for (Node c : nds) r = Math.max(c.maxW(), r);
-    return r;
-  }
-  public static int vMaxH(Vec<Node> nds, int w) {
-    int r = 0;
-    for (Node c : nds) {
-      r+= c.maxH(w);
-      if (r>=Tools.BIG || r<0) return Tools.BIG;
-    }
-    return r;
-  }
-  public static int hMaxW(Vec<Node> nds) {
-    int r = 0;
-    for (Node c : nds) {
-      r+= c.maxW();
-      if (r>=Tools.BIG || r<0) return Tools.BIG;
-    }
-    return r;
-  }
-  public static int hMaxH(Vec<Node> nds, int w) {
-    int r = 0;
-    for (Node c : nds) r = Math.max(c.maxH(w), r);
-    return r;
-  }
-  
-  
-  
-  public static int vBinSearch(Vec<Node> nds, int y) {
-    int s = 0;
-    int e = nds.sz;
-    while (s+1<e) {
-      int m = (s+e) / 2;
-      Node c = nds.get(m);
-      if (c.dy<=y) s = m;
-      else e = m;
-    }
-    return s;
-  }
-  
-  public static Node findNearestLinear(Vec<Node> nds, int x, int y) {
-    if (nds.sz<2) return nds.sz==0 || nds.get(0).w==-1? null : nds.get(0);
-    int min = Integer.MAX_VALUE, curr;
-    Node best = null;
-    for (Node c : nds) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
-    return best;
-  }
-  public static Node vFindNearest(Vec<Node> nds, int x, int y) {
-    if (nds.sz<20) return findNearestLinear(nds, x, y);
-    return nds.get(vBinSearch(nds, y));
   }
 }

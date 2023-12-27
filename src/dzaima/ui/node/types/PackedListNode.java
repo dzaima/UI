@@ -1,8 +1,10 @@
 package dzaima.ui.node.types;
 
+import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Props;
+import dzaima.ui.node.utils.*;
 
 public class PackedListNode extends FrameNode {
   public PackedListNode(Ctx ctx, Props props) {
@@ -20,16 +22,21 @@ public class PackedListNode extends FrameNode {
     pad = gc.lenD(this, "pad", 0);
   }
   
-  // TODO binary search trimming drawCh
+  public void drawCh(Graphics g, boolean full) {
+    ListUtils.drawCh(g, full, this, v);
+  }
+  public Node nearestCh(int x, int y) {
+    return ListUtils.findNearest(ch, x, y, v);
+  }
   
   public int fillW() {
-    return v? Solve.vMinW(ch)
-            : Solve.hMinW(ch)+Math.max(0, pad*(ch.sz-1));
+    return v? ListUtils.vMinW(ch)
+            : ListUtils.hMinW(ch)+Math.max(0, pad*(ch.sz-1));
   }
   public int fillH(int w) {
     if (!v) w-= Math.max(0, pad*(ch.sz-1));
-    return v? Solve.vMinH(ch, w)+Math.max(0, pad*(ch.sz-1))
-            : Solve.hMinH(ch, w);
+    return v? ListUtils.vMinH(ch, w)+Math.max(0, pad*(ch.sz-1))
+            : ListUtils.hMinH(ch, w);
   }
   protected void resized() {
     boolean r = pad!=0;

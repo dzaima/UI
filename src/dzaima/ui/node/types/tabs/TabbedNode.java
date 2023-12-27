@@ -7,6 +7,7 @@ import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ReorderableNode;
+import dzaima.ui.node.utils.*;
 import dzaima.utils.*;
 
 public class TabbedNode extends Node {
@@ -224,8 +225,8 @@ public class TabbedNode extends Node {
     updated();
   }
   
-  public int minW() { return Solve.vMinW(ch); }
-  public int minH(int w) { return Solve.vMinH(ch, w); }
+  public int minW() { return ListUtils.vMinW(ch); }
+  public int minH(int w) { return ListUtils.vMinH(ch, w); }
   
   public void bg(Graphics g, boolean full) {
     pbg(g, full);

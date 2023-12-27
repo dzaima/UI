@@ -1,8 +1,10 @@
 package dzaima.ui.node.types;
 
+import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.Props;
+import dzaima.ui.node.utils.*;
 
 public class HNode extends FrameNode {
   
@@ -16,7 +18,7 @@ public class HNode extends FrameNode {
   
   public int fillW() {
     if (ch.sz==0) return 0;
-    return Solve.hMinW(ch) + pad*(ch.sz-1);
+    return ListUtils.hMinW(ch) + pad*(ch.sz-1);
   }
   public int fillH(int w) {
     if (ch.sz==0) return 0;
@@ -26,7 +28,9 @@ public class HNode extends FrameNode {
     return h;
   }
   
-  
+  public void drawCh(Graphics g, boolean full) {
+    ListUtils.hDrawCh(g, full, this);
+  }
   
   public void resized() {
     if (ch.sz==0) return;
