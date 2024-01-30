@@ -24,7 +24,7 @@ public abstract class AsmLang extends Lang {
       "xacquire", "xrelease", "acquire", "release",
       "lock", "rep", "repe", "repz", "repne", "repnz", "notrack"
     );
-    private final Pattern regs = Pattern.compile("%?(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+)");
+    private final Pattern regs = Pattern.compile("%?(([re]?(ip|ax|bx|cx|dx|si|di|sp|bp))|[abcd][hl]|(si|di|sp|bp)l|r(8|9|1[0-5])[dwb]?|[cdsefg]s|[xyz]mm([12]?[0-9]|3[01])|[cdt]r[0-9]+|k[0-7])");
     protected boolean isReg(String s) { return regs.matcher(s).matches(); }
     protected boolean isKW(String s) { return sizes.has(s.toLowerCase().toCharArray()); }
     protected boolean isPrefix(String s) { return prefixes.has(s.toLowerCase().toCharArray()); }
