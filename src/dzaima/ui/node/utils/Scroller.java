@@ -114,15 +114,23 @@ public abstract class Scroller {
       tgt = n.scrollCurr();
     }
     
+    private static int towards(int src, int dst, float speed) {
+      float next = src*speed + dst*(1-speed);
+      if (next < src) next = (float)Math.floor(next);
+      else if (next > src) next = (float)Math.ceil(next);
+      if (next == src) return dst;
+      return (int)next;
+    }
     protected void tick_i(Scrollable n) {
       tgt = tgt.min(n.scrollMax());
       XY c = n.scrollCurr();
       if (c.equals(tgt)) { done(); return; }
       GConfig gc = n.gc();
       float speed = (float) Math.pow(gc.getProp("scroll.smooth").f(), gc.deltaNs*60e-9);
-      int nx = (int) (c.x*speed + tgt.x*(1-speed)); nx = nx==c.x? tgt.x : nx;
-      int ny = (int) (c.y*speed + tgt.y*(1-speed)); ny = ny==c.y? tgt.y : ny;
-      n.scrollSetCurr(nx, ny);
+      n.scrollSetCurr(
+        towards(c.x, tgt.x, speed),
+        towards(c.y, tgt.y, speed)
+      );
     }
     
     protected XY getTarget_i(Scrollable n) {
