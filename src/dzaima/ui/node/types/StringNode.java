@@ -195,6 +195,7 @@ public class StringNode extends InlineNode {
           li = newline(li, i, sv, a, b, mut); first = false;
           sv.x = f.width(spl.peek());
           sv.y+= f.hi*(spl.sz-2);
+          if (c.f(Word.F_LN)) { sv.ab(a, b); li = newline(li, i+1, sv, a, b, mut); }
           continue;
         } else { // don't break word; flow to next line and continue as normally
           if (i!=0) sv.ab(a, b);
