@@ -34,6 +34,9 @@ public class Tools {
     }
     return new String(cs);
   }
+  public static String hexLong(long l) {
+    return "0x"+Long.toHexString(l);
+  }
   public static String sha256(byte[] data) {
     MessageDigest d;
     try { d = MessageDigest.getInstance("SHA-256"); }
@@ -187,6 +190,9 @@ public class Tools {
     if (s.endsWith(".0")) return s.substring(0, s.length()-2);
     return s;
   }
+  
+  public static long ulongMax(long a, long b) { return (a+Long.MIN_VALUE) > (b+Long.MIN_VALUE)? a : b; }
+  public static long ulongMin(long a, long b) { return (a+Long.MIN_VALUE) < (b+Long.MIN_VALUE)? a : b; }
   
   public static int ceil(double d) { return (int) Math.ceil(d); }
   public static int ceil( float f) { return (int) Math.ceil(f); }
