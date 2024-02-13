@@ -40,6 +40,7 @@ public class ExMain extends NodeWindow {
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/weighed.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
     // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
+    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/inputs.dzcfg")));
     // gc.addCfg(() -> Tools.readFile(Paths.get("examples/defs.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("example.ui").gr();
     // gc.addCfg(() -> Tools.readFile(Paths.get("examples/solverTests.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("ui").gr(); ctx.put("format", FormatNode::new);
     // ExMain w = new ExMain(gc, ctx, g, "example window");

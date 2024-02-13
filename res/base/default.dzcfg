@@ -147,6 +147,18 @@ checkbox {
   pathCol = #EEE
 }
 
+radio {
+  size = checkbox.size
+  dotSize = 0.2em
+  dotCol = checkbox.pathCol
+  colOff = checkbox.colOff
+  colHover = checkbox.colHover
+  colOn = checkbox.colOn
+  borderColOff = checkbox.borderCol
+  borderColOn  = checkbox.borderCol
+  borderW = checkbox.borderW
+}
+
 codearea.lnCol = str.colorDisabled
 codearea.lnBg = #0000
 

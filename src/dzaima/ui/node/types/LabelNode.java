@@ -12,7 +12,7 @@ public class LabelNode extends WrapNode {
   public Node getFor() {
     return ctx.id(getProp("for").val());
   }
-
+  
   public void mouseStart(int x, int y, Click c) {
     super.mouseStart(x, y, c);
     if (c.bL()) c.register(this, x, y);
@@ -23,7 +23,16 @@ public class LabelNode extends WrapNode {
   public void mouseUp(int x, int y, Click c) {
     if (c.bL()) {
       Node n = getFor();
-      if (n instanceof CheckboxNode) ((CheckboxNode) n).toggle();
+      if (n instanceof Labeled) ((Labeled) n).labelClick();
     }
+  }
+  
+  public void hoverS() { Node n = getFor(); if (n instanceof Labeled) ((Labeled) n).labelHoverS(); }
+  public void hoverE() { Node n = getFor(); if (n instanceof Labeled) ((Labeled) n).labelHoverE(); }
+  
+  public interface Labeled {
+    void labelClick();
+    void labelHoverS();
+    void labelHoverE();
   }
 }

@@ -1,0 +1,37 @@
+pad { bg=#333 all=0.2em
+  h {
+    vl { select=v pad=.1em
+      label { for=lcb1 h { pad=.2em checkbox {id=lcb1} "labeled checkbox 1" } }
+      label { for=lcb2 h { pad=.2em checkbox {id=lcb2} "labeled checkbox 2" } }
+      label { for=lcb3 h { pad=.2em checkbox {id=lcb3} "labeled checkbox 3" } }
+                       h { pad=.2em checkbox {id=ucb1} "unlabeled checkbox 1" }
+                       h { pad=.2em checkbox {id=ucb2} "unlabeled checkbox 2" }
+                       h { pad=.2em checkbox {id=ucb3} "unlabeled checkbox 3" }
+    }
+    hsep{}
+    vl {
+      h {
+        vl {
+          label { for=rba0 h { pad=.2em radio {id=rba0 enabled=true} "radio button 0a" } }
+          label { for=rba1 h { pad=.2em radio {id=rba1 for=rba0}     "radio button 1a" } }
+          label { for=rba2 h { pad=.2em radio {id=rba2 for=rba0}     "radio button 2a" } }
+        }
+        hsep{}
+        vl {
+          label { for=rbb0 h { pad=.2em radio {id=rbb0}                       "radio button 0b" } }
+          label { for=rbb1 h { pad=.2em radio {id=rbb1 for=rbb0 enabled=true} "radio button 1b" } }
+          label { for=rbb2 h { pad=.2em radio {id=rbb2 for=rbb0}              "radio button 2b" } }
+          label { for=rbb3 h { pad=.2em radio {id=rbb3 for=rbb0}              "radio button 3b" } }
+          label { for=rbb4 h { pad=.2em radio {id=rbb4 for=rbb0}              "radio button 4b" } }
+          label { for=rbb2 text { "remote label for radio button 2b" } }
+        }
+      }
+      vsep{}
+      vl {
+        h { pad=.2em radio {id=rbc0}                       "unlabeled radio button 0b" }
+        h { pad=.2em radio {id=rbc1 for=rbc0}              "unlabeled radio button 1b" }
+        h { pad=.2em radio {id=rbc2 for=rbc0 enabled=true} "unlabeled radio button 2b" }
+      }
+    }
+  }
+}
