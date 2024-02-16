@@ -14,12 +14,12 @@ public class RadioNode extends Node implements LabelNode.Labeled {
   }
   
   public boolean enabled, initialized;
-  public Consumer<String> fn;
+  public Consumer<RadioNode> fn;
   
-  public void setFn(Consumer<String> fn) { this.fn = fn; }
+  public void setFn(Consumer<RadioNode> fn) { this.fn = fn; }
   
   short sz;
-  private RadioNode currSelected;
+  private RadioNode base, currSelected;
   public void propsUpd() { mResize();
     sz = (short) prop("size").len();
     
@@ -31,22 +31,36 @@ public class RadioNode extends Node implements LabelNode.Labeled {
     if (enabled) base().currSelected = this;
   }
   
+  public void setBase(RadioNode base) {
+    this.base = base;
+  }
+  
   RadioNode base() {
-    Prop f = getPropN("for");
-    return f==null? this : (RadioNode) ctx.id(f.val());
+    if (base==null) {
+      Prop f = getPropN("for");
+      base = f==null? this : (RadioNode) ctx.id(f.val());
+    }
+    return base;
   }
   
   
-  
-  public void set() {
-    if (enabled) return;
+  public boolean quietSet() { // doesn't run any callbacks, returns if changed
+    if (enabled) return false;
     RadioNode base = base();
     if (base.currSelected!=null) base.currSelected.quietSelfUnset();
     enabled = true;
     base.currSelected = this;
     changed();
-    if (base.fn!=null) base.fn.accept(getProp("id").val());
+    return true;
   }
+  public void set() {
+    if (!quietSet()) return;
+    RadioNode base = base();
+    if (base.fn!=null) base.fn.accept(this);
+  }
+  
+  public void setTo(String id) { ((RadioNode) ctx.id(id)).set(); }
+  public boolean quietSetTo(String id) { return ((RadioNode) ctx.id(id)).quietSet(); }
   
   public void quietSelfUnset() { // doesn't run any callbacks
     if (!enabled) return;
