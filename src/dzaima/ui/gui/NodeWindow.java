@@ -71,13 +71,19 @@ public class NodeWindow extends Window {
     Node prev = _focusNode;
     if (prev == n) return;
     _focusNode = n;
+    boolean vis0 = n==null? false : n.visible;
     if (prev != null) prev.focusE();
     if (n == null) return;
     
+    // in case the above focusE call made n invisible, don't focus anything and don't complain. But otherwise don't allow focusing an invisible node
     NodeVW vw = n.ctx.vw();
-    if (vw.base.visible) assert n.visible;
-    n.focusS();
-    focusedVW = vw;
+    if (vw.base.visible) assert vis0;
+    if (n.visible) {
+      n.focusS();
+      focusedVW = vw;
+    } else {
+      _focusNode = null;
+    }
   }
   public void focusVW(VirtualWindow vw) {
     assert vws.indexOf(vw)!=-1;
