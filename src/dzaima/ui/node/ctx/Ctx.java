@@ -270,6 +270,8 @@ public abstract class Ctx {
     map.put("th", THNode::new);
     map.put("hsep", HSepNode::new);
     map.put("vsep", VSepNode::new);
+    map.put("seph", HSepNode::new);
+    map.put("sepv", VSepNode::new);
     map.put("img", ImgNode::new);
     map.put("hide", HideNode::new);
     map.put("overlap", OverlapNode::new);
