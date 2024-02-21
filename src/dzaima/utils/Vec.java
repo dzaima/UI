@@ -202,6 +202,9 @@ public final class Vec<T> implements Iterable<T> {
   public static <T> Vec<T> ofCollection(Collection<T> vs) {
     return ofReuse((T[]) vs.toArray(new Object[0]));
   }
+  public static <R, T extends R> Vec<R> ofExCollection(Collection<T> vs) {
+    return ofReuse((R[]) vs.toArray(new Object[0]));
+  }
   
   public void clear() {
     arr = (T[]) EMPTY;
