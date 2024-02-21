@@ -270,12 +270,12 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
     if (super.key(x, y, key, scancode, a)) return true;
     boolean instant = false;
     switch (gc.keymap(key, a, "scroll")) {
-      case "toXYs": toXY0(instant); break;
-      case "toXYe": toXE(instant); toYE(instant); break;
-      case "toXs": toXS(instant); break;
-      case "toYs": toYS(instant); break;
-      case "toXe": toYE(instant); break;
-      case "toYe": toXE(instant); break;
+      case "toXYs": toXY0(instant); return true;
+      case "toXYe": toXE(instant); toYE(instant); return true;
+      case "toXs": toXS(instant); return true;
+      case "toYs": toYS(instant); return true;
+      case "toXe": toXE(instant); return true;
+      case "toYe": toYE(instant); return true;
     }
     return false;
   }

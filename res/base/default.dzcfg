@@ -29,10 +29,10 @@ scroll.smooth = .5 // smoothness, 0..1; smaller - faster; bigger - slower
 scroll.keys {
   toXYs = { "home" } // scroll vertically & horizontally to the start
   toXYe = { } // scroll vertically & horizontally to the end
-  toYs = { "end" } // ... axis-separate components of the above
+  toYs = { } // ... axis-separate components of the above
   toXs = { }
   toXe = { }
-  toYe = { }
+  toYe = { "end" }
 }
 
 uw.handleWidth = 0.3em
