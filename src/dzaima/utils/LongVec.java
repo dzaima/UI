@@ -26,8 +26,6 @@ public class LongVec {
   
   
   
-  
-  
   public void insert(int i, long t) {
     if (sz >= arr.length) dcap();
     System.arraycopy(arr, i, arr, i+1, sz-i);
@@ -44,16 +42,24 @@ public class LongVec {
     System.arraycopy(arr, e, arr, s, sz-e);
     sz-= e-s;
   }
-  public void addAll(int i, long[] t) {
-    while (sz+t.length > arr.length) dcap();
-    System.arraycopy(arr, i, arr, i+t.length, sz-i);
-    System.arraycopy(t, 0, arr, i, t.length);
-    sz+= t.length;
+  public void addAll(int i, long[]  t) { addAll(i, t,     0, t.length); }
+  public void addAll(int i, LongVec t) { addAll(i, t.arr, 0, t.sz); }
+  public void addAll(long[]  t) { addAll(sz, t,     0, t.length); }
+  public void addAll(LongVec t) { addAll(sz, t.arr, 0, arr.length); }
+  public void addAll(int i, LongVec t, int s, int e) { addAll(i, t.arr, s, e); }
+  public void addAll(int i, long[]  t, int s, int e) {
+    int l = e-s;
+    while (arr.length < sz+l) dcap();
+    System.arraycopy(arr, i, arr, i+l, sz-i);
+    System.arraycopy(t, s, arr, i, l);
+    sz+= l;
   }
   
   public void sort() {
     Arrays.sort(arr, 0, sz);
   }
+  
+  
   
   private void dcap() {
     long[] narr = new long[arr.length<<1 | 7];

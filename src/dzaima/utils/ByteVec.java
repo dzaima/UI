@@ -35,8 +35,6 @@ public class ByteVec {
   
   
   
-  
-  
   public byte[] get(int s, int e) {
     return Arrays.copyOfRange(arr, s, e);
   }
@@ -58,16 +56,22 @@ public class ByteVec {
     sz+= am;
   }
   
-  public void addAll(int i, byte[] t, int s, int e) {
+  public void addAll(byte[]  t) { addAll(sz, t,     0, t.length); }
+  public void addAll(ByteVec t) { addAll(sz, t.arr, 0, arr.length); }
+  public void addAll(int i, byte[]  t) { addAll(i, t,     0, t.length); }
+  public void addAll(int i, ByteVec t) { addAll(i, t.arr, 0, t.sz); }
+  public void addAll(byte[]  t, int s, int e) { addAll(sz, t,     s, e); }
+  public void addAll(ByteVec t, int s, int e) { addAll(sz, t.arr, s, e); }
+  public void addAll(int i, ByteVec t, int s, int e) { addAll(i, t.arr, s, e); }
+  public void addAll(int i, byte[]  t, int s, int e) {
     int l = e-s;
-    while (sz+l > arr.length) dcap();
+    while (arr.length < sz+l) dcap();
     System.arraycopy(arr, i, arr, i+l, sz-i);
     System.arraycopy(t, s, arr, i, l);
     sz+= l;
   }
-  public void addAll(int i, byte[] t) { addAll(i, t, 0, t.length); }
-  public void addAll(byte[] t, int s, int e) { addAll(sz, t, s, e); }
-  public void addAll(byte[] t) { addAll(sz, t); }
+  
+  
   
   private void dcap() {
     byte[] narr = new byte[arr.length<<1 | 7];
