@@ -39,7 +39,7 @@ public abstract class AsmLang extends Lang {
   };
   
   public static final AsmLang AARCH64 = new AsmLang() {
-    private final Pattern regs = Pattern.compile("sp|pc|cpsr|fpsr|fpcr|[vqdshb]([012]?\\d|30|31)(\\.\\d*[bhsd])?|[wxr]([012]?\\d|30|zr)");
+    private final Pattern regs = Pattern.compile("sp|pc|cpsr|fpsr|fpcr|([vqdshbz]([12]?[0-9]|3[01])|p([0-9]|1[0-5]))(\\.[0-9]*[bhsd])?|[wxr]([012]?[0-9]|30|zr)");
     protected boolean isReg(String s) { return regs.matcher(s).matches(); }
     protected boolean isKW(String s) { return false; }
     protected boolean isPrefix(String s) { return false; }
