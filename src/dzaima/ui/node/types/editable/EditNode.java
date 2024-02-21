@@ -11,7 +11,7 @@ import dzaima.utils.*;
 import io.github.humbleui.skija.paragraph.*;
 
 import java.util.Arrays;
-import java.util.function.IntPredicate;
+import java.util.function.*;
 
 public class EditNode extends Node {
   public final Vec<Line> lns = new Vec<>();
@@ -46,10 +46,15 @@ public class EditNode extends Node {
     um.popIgnore(s);
   }
   
-  
-  protected IntPredicate fn; // return whether enter was consumed
-  public /*open*/ boolean enter(int mod) { if (fn!=null) return fn.test(mod); return false; }
-  public void setFn(IntPredicate fn) { this.fn = fn; }
+  public enum EditAction {
+    TYPED(false,false), UNFOCUS(true,false), ESC(true,false), ENTER(false,true), CUSTOM1(false,false); // TYPED is currently never invoked
+    public final boolean cancel, enter, done;
+    EditAction(boolean c, boolean e) { cancel=c; enter=e; done = c||e; }
+  }
+  public final int M_PASTE = 0x80000000;
+  private BiPredicate<EditAction, Integer> fn; // integer for ENTER action is either the modifier flags, or M_PASTE if from pasting
+  public /*open*/ boolean action(EditAction a, int mod) { if (fn!=null && visible) return fn.test(a, mod); return false; }
+  public void setFn(BiPredicate<EditAction, Integer> fn) { this.fn = fn; } // run on pressing enter (arg is modifiers) or on leaving (arg is -1), return whether enter was consumed
   
   
   public void propsUpd() { super.propsUpd();
@@ -211,7 +216,7 @@ public class EditNode extends Node {
     Line l = lns.get(y);
     if (p==10) {
       if (!multiline) {
-        if (human) enter(0);
+        if (human) action(EditAction.ENTER, M_PASTE);
       } else {
         insertNewlines(x, y, 1);
       }
@@ -350,6 +355,7 @@ public class EditNode extends Node {
   public void focusE() {
     super.focusE();
     isFocused = false;
+    if (fn!=null) action(EditAction.UNFOCUS, 0);
   }
   
   public void hoverS() { ctx.vw().pushCursor(Window.CursorType.IBEAM); }
@@ -675,7 +681,7 @@ public class EditNode extends Node {
     if ((key.mod & ~(Key.M_SHIFT|Key.M_CTRL)) != 0) return false;
     
     if (key.k_enter()) {
-      if (enter(key.mod)) return true;
+      if (action(EditAction.ENTER, key.mod)) return true;
       if (!multiline || !mutable) return true;
       um.pushQ("new line"); for (Cursor c : cs) c.typed(10); sortCursors(); um.pop(); scrollToVis();
     } else if ((key.k_backspace() || key.k_del()) && mutable && anySel()) {
@@ -908,4 +914,6 @@ public class EditNode extends Node {
       return c;
     }
   }
+  
+  @Deprecated public final boolean enter(int mod){throw new IllegalStateException();}
 }

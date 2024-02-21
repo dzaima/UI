@@ -32,7 +32,8 @@ public class FMgr extends NodeWindow {
     Path home = Paths.get(System.getProperty("user.home"));
     path = p;
     pathField = (EditNode) base.ctx.id("path");
-    pathField.setFn(mod -> {
+    pathField.setFn((a, mod) -> {
+      if (a!=EditNode.EditAction.ENTER) return false;
       String ns = FOp.decodeC(pathField.getAll());
       try {
         if (ns!=null) {

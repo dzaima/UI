@@ -15,11 +15,12 @@ public class MenuFieldNode extends TextFieldNode {
     if (onModified!=null) onModified.run();
   }
   
-  public boolean enter(int mod) {
+  public boolean action(EditAction a, int mod) {
+    if (a!=EditAction.ENTER) return false;
     Node b = ctx.vw().base;
     if (b instanceof MenuNode) {
       ((MenuNode) b).obj.close();
     }
-    return super.enter(mod);
+    return super.action(a, mod);
   }
 }
