@@ -191,8 +191,12 @@ public class Tools {
     return s;
   }
   
-  public static long ulongMax(long a, long b) { return (a+Long.MIN_VALUE) > (b+Long.MIN_VALUE)? a : b; }
-  public static long ulongMin(long a, long b) { return (a+Long.MIN_VALUE) < (b+Long.MIN_VALUE)? a : b; }
+  public static boolean ulongGT(long a, long b) { return (a+Long.MIN_VALUE) > (b+Long.MIN_VALUE); }
+  public static boolean ulongLT(long a, long b) { return (a+Long.MIN_VALUE) < (b+Long.MIN_VALUE); }
+  public static boolean ulongGE(long a, long b) { return (a+Long.MIN_VALUE) >= (b+Long.MIN_VALUE); }
+  public static boolean ulongLE(long a, long b) { return (a+Long.MIN_VALUE) <= (b+Long.MIN_VALUE); }
+  public static long ulongMax(long a, long b) { return ulongGT(a,b)? a : b; }
+  public static long ulongMin(long a, long b) { return ulongLT(a,b)? a : b; }
   
   public static int ceil(double d) { return (int) Math.ceil(d); }
   public static int ceil( float f) { return (int) Math.ceil(f); }
