@@ -56,7 +56,7 @@ public interface SerializableTab {
           if (!(c instanceof PNodeGroup)) throw new IllegalStateException("Expected all children to be groups");
           PNodeGroup g2 = (PNodeGroup) c;
           Function<HashMap<String, Prop>, Tab> ctor = ctors.get(g2.name);
-          if (ctor==null) throw new IllegalStateException("No constructor for name "+g2.name+" found");
+          if (ctor==null) throw new IllegalStateException("Deserialization constructor for '"+g2.name+"' not found");
           TabWrapper w = tn.addTab(ctor.apply(props(g2)));
           if (i==sel) tn.toTab(w);
           i++;
