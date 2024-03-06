@@ -31,7 +31,7 @@ public abstract class AsmLang extends Lang {
   };
   
   public static final AsmLang RISCV = new AsmLang() {
-    private final Pattern regs = Pattern.compile("[xfv]([12]?[0-9]|3[01])|zero|ra|[sgf]p|tp|t[0-6]|s[0-9]|s1[01]|f?a[0-7]|f[ts]([0-9]|1[01])");
+    private final Pattern regs = Pattern.compile("[xfv]([12]?[0-9]|3[01])|v0\\.t|zero|ra|[sgf]p|tp|t[0-6]|s[0-9]|s1[01]|f?a[0-7]|f[ts]([0-9]|1[01])");
     private final LangState.Keywords kw = new LangState.Keywords("%pcrel_hi", "%pcrel_lo", "%got_pcrel_hi");
     protected boolean isReg(String s) { return regs.matcher(s).matches(); }
     protected boolean isKW(String s) { return kw.has(s.toCharArray()); }
