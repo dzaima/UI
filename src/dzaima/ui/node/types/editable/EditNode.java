@@ -355,7 +355,7 @@ public class EditNode extends Node {
   public void focusE() {
     super.focusE();
     isFocused = false;
-    if (fn!=null) action(EditAction.UNFOCUS, 0);
+    action(EditAction.UNFOCUS, 0);
   }
   
   public void hoverS() { ctx.vw().pushCursor(Window.CursorType.IBEAM); }
