@@ -8,7 +8,8 @@ public class Langs {
   public Lang defLang;
   public final Vec<Lang> langs = new Vec<>();
   public final HashMap<String, Lang> extMap = new HashMap<>();
-  public final HashMap<String, Lang> nameMap = new HashMap<>();
+  public final HashMap<String, Lang> fromNameMap = new HashMap<>();
+  public final HashMap<Lang, String> toNameMap = new HashMap<>();
   
   public Langs() {
     addLang("APL",     new APLLang(), "apl");
@@ -26,12 +27,13 @@ public class Langs {
   
   public void addLang(String name, Lang lang, String... ext) {
     for (String c : ext) extMap.put(c, lang);
-    nameMap.put(name.toLowerCase(), lang);
+    fromNameMap.put(name.toLowerCase(), lang);
+    toNameMap.put(lang, name);
     langs.add(lang);
   }
   
   public Lang fromNameNullable(String name) {
-    return name==null? null : nameMap.get(name.toLowerCase());
+    return name==null? null : fromNameMap.get(name.toLowerCase());
   }
   public Lang fromName(String name) {
     Lang r = fromNameNullable(name);
@@ -45,5 +47,9 @@ public class Langs {
     Lang l = extMap.get(filename);
     if (l==null) return defLang;
     return l;
+  }
+  
+  public String nameOf(Lang l) {
+    return toNameMap.get(l);
   }
 }
