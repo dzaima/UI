@@ -53,15 +53,16 @@ public class WeighedNode extends Node {
     if (c.bL()) {
       if (!enabled) c.unregister();
       if (dragging || !gc.isClick(c)) {
-        int cw = (v? h : w) - pad;
-        if (!dragging) {
-          weight = handlePos()/cw;
+        int space = (v? h : w) - pad;
+        float w;
+        if (dragging) {
+          w = weight;
+        } else {
+          w = handlePos()/space;
           dragging = true;
         }
-        weight+= (v? c.dy : c.dx) * (1f/cw);
-        if (weight < 0) weight = 0;
-        if (weight > 1) weight = 1;
-        mResize();
+        w+= (v? c.dy : c.dx) * (1f/space);
+        setWeight(Tools.constrain(w, 0, 1));
       }
     }
   }
@@ -90,7 +91,7 @@ public class WeighedNode extends Node {
   }
   public void setWeight(float w) {
     this.weight = w;
-    mResize();
+    mResize(); // incl. redrawing for padding bar
   }
   
   public CursorType cursorType() { return v? CursorType.NS_RESIZE : CursorType.EW_RESIZE; }
@@ -136,6 +137,5 @@ public class WeighedNode extends Node {
       c0.resize(c0f, h, 0, 0);
       c1.resize(left-c0f, h, c0f+pad, 0);
     }
-    if (pad!=0) mRedraw(); // TODO this is very bad
   }
 }
