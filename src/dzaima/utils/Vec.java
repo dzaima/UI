@@ -113,6 +113,14 @@ public final class Vec<T> implements Iterable<T> {
     for (int i = 0; i < sz; i++) if (Objects.equals(arr[i], t)) return i;
     return -1;
   }
+  public boolean every(Predicate<T> f) {
+    for (int i = 0; i < sz; i++) if (!f.test(arr[i])) return false;
+    return true;
+  }
+  public boolean some(Predicate<T> f) {
+    for (int i = 0; i < sz; i++) if (f.test(arr[i])) return true;
+    return false;
+  }
   
   
   public int size() {
