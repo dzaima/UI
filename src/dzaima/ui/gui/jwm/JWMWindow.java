@@ -70,8 +70,7 @@ public class JWMWindow extends WindowImpl {
   
   public void pasteString(Consumer<String> f) {
     ClipboardEntry r = Clipboard.get(ClipboardFormat.TEXT);
-    if (r==null) f.accept(null);
-    else f.accept(r.getString());
+    f.accept(r==null? null : r.getString());
   }
   
   public XY windowPos() {

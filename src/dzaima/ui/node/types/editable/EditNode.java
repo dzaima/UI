@@ -555,7 +555,11 @@ public class EditNode extends Node {
     }
   }
   public void paste() {
-    ctx.win().pasteString(this::pasteText);
+    ctx.win().pasteString(s -> {
+      um.pushQ("paste");
+      pasteText(s);
+      um.pop();
+    });
   }
   
   public static boolean isName(char c) {
@@ -639,7 +643,7 @@ public class EditNode extends Node {
   public int action(Key key, KeyAction a) { // 0-unused; 1-used; 2-won't use
     switch (gc.keymap(key, a, "textarea")) {
       case "copy": copy(); return 1;
-      case "paste": if (mutable) { um.pushQ("paste"); paste(); um.pop(); } return 1;
+      case "paste": if (mutable) paste(); return 1;
       case "cut":
         if (!mutable) return 1;
         um.pushQ("cut");
