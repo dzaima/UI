@@ -12,7 +12,7 @@ public class Log {
     public final int i;
     Level(int i) { this.i = i; }
   }
-  public static Level level = Level.INFO;
+  public static Level level = Level.WARN;
   
   public static abstract class LogConsumer {
     public abstract void log(Level l, String component, String msg);
