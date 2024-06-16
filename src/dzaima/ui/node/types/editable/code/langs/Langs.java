@@ -20,7 +20,7 @@ public class Langs {
     addLang("Singeli", new SingeliLang(), "singeli");
     addLang("assembly", AsmLang.GENERIC);
     addLang("generic assembly", AsmLang.GENERIC);
-    addLang("x86 assembly", AsmLang.X86, "asm", "s");
+    addLang("x86 assembly", AsmLang.X86, "asm", "s", "nasm");
     addLang("risc-v assembly", AsmLang.RISCV);
     addLang("aarch64 assembly", AsmLang.AARCH64);
     defLang = new TextLang();
