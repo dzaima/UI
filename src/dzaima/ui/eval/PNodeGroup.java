@@ -11,7 +11,7 @@ public class PNodeGroup extends PNode {
   public final boolean defn;
   public final String[] ks;
   public final Prop[] vs; // only properties which are contant known; contains null elements otherwise
-  public final Props allProps; // non-null only if all props are known
+  public final Props staticProps; // non-null only if all props are known
   
   public final Vec<PrsField> props;
   public final Vec<PNode> ch;
@@ -28,7 +28,7 @@ public class PNodeGroup extends PNode {
       vs[i] = Prop.makeConstProp(props.get(i));
       allKnown&= vs[i]!=null;
     }
-    allProps = allKnown? Props.ofKV(ks, vs) : null;
+    staticProps = allKnown? Props.ofKV(ks, vs) : null;
     if (Tools.DBG) {
       HashSet<String> seen = new HashSet<>();
       for (String c : ks) {

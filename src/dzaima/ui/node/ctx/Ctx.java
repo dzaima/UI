@@ -61,8 +61,8 @@ public abstract class Ctx {
     return make(pn, vars);
   }
   
-  public Prop[] finishProps(PNodeGroup g, HashMap<String, Var> vars) {
-    if (g.allProps!=null) return g.vs;
+  public Prop[] finishPropList(PNodeGroup g, HashMap<String, Var> vars) {
+    if (g.staticProps!=null) return g.vs;
     Prop[] vs = g.vs;
     for (int i = 0; i < vs.length; i++) {
       if (vs[i]==null) {
@@ -82,6 +82,10 @@ public abstract class Ctx {
     return vs;
   }
   
+  public Props finishProps(PNodeGroup g, HashMap<String, Var> vars) {
+    return g.staticProps!=null? g.staticProps : Props.ofKV(g.ks, finishPropList(g, vars));
+  }
+  
   
   
   public static class Var {
@@ -92,6 +96,7 @@ public abstract class Ctx {
   }
   public static final HashMap<String, Var> NO_VARS = new HashMap<>();
   private static Var getVar(HashMap<String, Var> vars, String k) {
+    if (vars==null) throw new Error("Variable '"+k+"' not found - no variables available");
     Var v = vars.get(k);
     if (v==null) throw new Error("Variable '"+k+"' not found");
     v.used = true;
@@ -120,7 +125,7 @@ public abstract class Ctx {
       if (g.defn && g.name.contains(".")) {
         PropI p = gc.getProp(g.name);
         HashMap<String, Var> args = new HashMap<>();
-        Prop[] vs = finishProps(g, vars);
+        Prop[] vs = finishPropList(g, vars);
         for (int i = 0; i < g.ks.length; i++) {
           String k = g.ks[i];
           args.put(rmPrefix(k), new Var(vs[i], vars));
@@ -147,7 +152,7 @@ public abstract class Ctx {
           int i = ks.length;
           HashSet<String> pks = new HashSet<>(Arrays.asList(ks));
           ks = Arrays.copyOf(ks, i+chProps.size());
-          Prop[] vs = finishProps(g, vars);
+          Prop[] vs = finishPropList(g, vars);
           vs = Arrays.copyOf(vs, ks.length);
           for (Map.Entry<String, Prop> e : chProps.entrySet()) {
             if (pks.contains(e.getKey())) throw new Error("Multiple definitions of property '"+e.getKey()+"'");
@@ -158,7 +163,7 @@ public abstract class Ctx {
           assert Vec.of(vs).indexOf(null) == -1;
           props1 = Props.ofKV(ks, vs);
         } else {
-          props1 = g.allProps!=null? g.allProps : Props.ofKV(ks, finishProps(g, vars));
+          props1 = finishProps(g, vars);
         }
         
         Node nd = gen.make(this, props1);
@@ -187,7 +192,7 @@ public abstract class Ctx {
         makeHere(g, args, resList, resProps);
       } else {
         for (PNode c : g.ch) makeHere(c, args, resList, resProps);
-        Prop[] vs = finishProps(g, args);
+        Prop[] vs = finishPropList(g, args);
         for (int i = 0; i < vs.length; i++) {
           if (resProps.put(g.ks[i], vs[i])!=null) throw new Error("Multiple definitions of property '"+g.ks[i]+"'");
         }
