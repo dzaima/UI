@@ -5,8 +5,8 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.security.*;
-import java.util.Arrays;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.function.*;
 
 @SuppressWarnings({"AssertWithSideEffects", "ConstantConditions"})
 public class Tools {
@@ -79,6 +79,15 @@ public class Tools {
       else s = m;
     }
     return e;
+  }
+  
+  public static <E, K> Vec<Pair<K, Vec<E>>> group(Vec<E> values, Function<E, K> by) {
+    LinkedHashMap<K, Vec<E>> t = new LinkedHashMap<>();
+    for (E v : values) {
+      K k = by.apply(v);
+      t.computeIfAbsent(k, k1 -> new Vec<>()).add(v);
+    }
+    return Vec.ofCollection(t.entrySet()).map(c -> new Pair<>(c.getKey(), c.getValue()));
   }
   
   
