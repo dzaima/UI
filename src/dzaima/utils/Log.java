@@ -23,8 +23,7 @@ public class Log {
   public static void log(Level l, String component, String msg)           { if (l.i>=level.i) _logger.log(l, component, msg); }
   public static void log(Level l, String component, Supplier<String> msg) { if (l.i>=level.i) _logger.log(l, component, msg.get()); }
   
-  public static void info(String msg) { log(Level.INFO,  msg); }
-  public static void warn(String msg) { log(Level.WARN,  msg); }
+  public static void tmp(String msg) { log(Level.INFO, msg); } // for temporary development things
   
   public static void fine (String component, String msg) { log(Level.FINE,  component, msg); }
   public static void info (String component, String msg) { log(Level.INFO,  component, msg); }
