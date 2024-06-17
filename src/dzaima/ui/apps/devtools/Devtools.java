@@ -5,11 +5,13 @@ import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.gui.jwm.JWMWindow;
+import dzaima.ui.gui.select.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.*;
 import dzaima.ui.node.prop.Prop;
 import dzaima.ui.node.types.*;
 import dzaima.utils.*;
+import io.github.humbleui.skija.Paint;
 import io.github.humbleui.skija.impl.Stats;
 
 import java.io.*;
@@ -24,6 +26,7 @@ public class Devtools extends NodeWindow implements Hijack {
   public NodeVW currVW;
   public boolean pick;
   public boolean hlInline = true;
+  public boolean debugSelectionPosition = false;
   DTGraphNode graph;
   
   public Devtools(GConfig gc, Ctx pctx, PNodeGroup g, Window insp, WindowInit i) {
@@ -209,26 +212,41 @@ public class Devtools extends NodeWindow implements Hijack {
   }
   
   
+  private void translateTo(Graphics g, Node n) {
+    XY p = screenPos(n);
+    g.translate(p.x, p.y);
+  }
+  private void highlightNode(Graphics g, Node n, boolean outline) {
+    if (n==null) return;
+    int hlCol1r = 0x7f214283;
+    int hlCol2r = 0x7f215273;
+    Paint hlCol1 = outline? new Paint().setColor(hlCol1r|0xff000000).setStroke(true).setStrokeWidth(2) : g.paintO(hlCol1r);
+    Paint hlCol2 = outline? new Paint().setColor(hlCol2r|0xff000000).setStroke(true).setStrokeWidth(2) : g.paintO(hlCol2r);
+    g.push();
+    translateTo(g, n);
+    if (hlInline && n instanceof InlineNode && ((InlineNode) n).eY2!=0) {
+      InlineNode c = (InlineNode) n;
+      if (c.isSingleLine()) {
+        g.rect(c.sX, c.sY1, c.eX, c.eY2, hlCol1);
+      } else {
+        g.rect(c.sX, c.sY1, c.w, c.sY2, hlCol2);
+        g.rect(0, c.sY2, c.w, c.eY1, hlCol1);
+        g.rect(0, c.eY1, c.eX, c.eY2, hlCol2);
+      }
+    } else {
+      g.rect(0, 0, n.w, n.h, hlCol1);
+    }
+    g.pop();
+  }
   // important: these must only atomically mutate devtools
   public void drawInsp(Graphics g) {
-    if (highlight!=null) {
-      XY p = screenPos(highlight);
-      int hlCol1 = 0x7f214283;
-      int hlCol2 = 0x7f215273;
-      g.translate(p.x, p.y);
-      if (hlInline && highlight instanceof InlineNode && ((InlineNode) highlight).eY2!=0) {
-        InlineNode c = (InlineNode) highlight;
-        if (c.sY1==c.eY1) {
-          g.rect(c.sX, c.sY1, c.eX, c.eY2, hlCol1);
-        } else {
-          g.rect(c.sX, c.sY1, c.w, c.sY2, hlCol2);
-          g.rect(0, c.sY2, c.w, c.eY1, hlCol1);
-          g.rect(0, c.eY1, c.eX, c.eY2, hlCol2);
-        }
-      } else {
-        g.rect(0, 0, highlight.w, highlight.h, hlCol1);
-      }
-      g.translate(-p.x, -p.y);
+    highlightNode(g, highlight, false);
+    
+    drawSelEnd: if (insp instanceof NodeWindow && debugSelectionPosition) {
+      Selection s = ((NodeWindow) insp).selection;
+      if (s==null) break drawSelEnd;
+      Position p = s.b;
+      for (PosPart c : p.ss) highlightNode(g, c.ln, true);
     }
   }
   public boolean hMouseDown(Click cl) {
@@ -301,12 +319,12 @@ public class Devtools extends NodeWindow implements Hijack {
       if (!insp.visible) addRow(infoT, "visible", "false");
       addRow(infoT, "actual width"  , insp.w+"px");
       addRow(infoT, "actual height" , insp.h+"px");
-      addRow(infoT, "position X"    , pos.x+"px");
-      addRow(infoT, "position Y"    , pos.y+"px");
+      addRow(infoT, "screen X"      , pos.x+"px");
+      addRow(infoT, "screen Y"      , pos.y+"px");
       addRow(infoT, "delta X"       , insp.dx+"px");
       addRow(infoT, "delta Y"       , insp.dy+"px");
-      addRow(infoT, "minW"       , insp.minW()+"px");
-      addRow(infoT, "maxW"       , insp.maxW()+"px");
+      addRow(infoT, "minW"          , insp.minW()+"px");
+      addRow(infoT, "maxW"          , insp.maxW()+"px");
       addRow(infoT, "children count", insp.ch.sz+"");
       if (selected instanceof InlineNode) {
         InlineNode c = (InlineNode) selected;

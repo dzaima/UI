@@ -94,7 +94,7 @@ public class Position {
           sum+= w.s.length();
         }
         if (rPos==-1) rPos = str.s.length();
-      } else if (!(c instanceof InlineNode)) {
+      } else if (!(c instanceof InlineNode || c instanceof InlineNode.Scannable)) {
         rPos = fy<0? 0 : fy>c.h? 1 : fx>c.w/2? 1 : 0;
       }
       if (rPos!=-1) {

@@ -16,6 +16,7 @@ public abstract class InlineNode extends Node {
   }
   public short sX, sY1, sY2; // first line coords
   public short eX, eY1, eY2; // last line coords; TODO could use h for eY2?
+  public boolean isSingleLine() { return sY1==eY1 && sY2==eY2; }
   
   public final int maxH(int w) { return minH(w); }
   
@@ -120,7 +121,7 @@ public abstract class InlineNode extends Node {
   }
   public boolean in(int x, int y) {
     if (y>=sY1 && y<eY2) {
-      if (sY1==eY1) return x>=sX && x<eX;
+      if (isSingleLine()) return x>=sX && x<eX;
       else return y<sY2? x>=sX : y>=eY1? x<eX : true;
     }
     return false;
@@ -202,10 +203,15 @@ public abstract class InlineNode extends Node {
     public abstract void addNode(Node nd);
   }
   
+  public interface Scannable {
+    Iterable<Node> scannableCh();
+  }
+  
   public static void scanNode(Node n, SubSelConsumer ssc) {
     if (n instanceof StringNode) ssc.addString((StringNode) n, 0, ((StringNode) n).s.length());
     ssc.addNode(n);
-    if (n instanceof InlineNode) for (Node c : n.ch) scanNode(c, ssc);
+    if (n instanceof Scannable) for (Node c : ((Scannable) n).scannableCh()) scanNode(c, ssc);
+    else if (n instanceof InlineNode) for (Node c : n.ch) scanNode(c, ssc);
   }
   public static boolean scanSelection(Selection s, SubSelConsumer ssc) { // returns if aS>bS
     Node gp = s.cNode();
