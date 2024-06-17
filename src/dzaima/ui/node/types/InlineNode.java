@@ -27,6 +27,7 @@ public abstract class InlineNode extends Node {
   protected abstract void baseline(int asc, int dsc, int h);
   
   public static class InlineSolver {
+    public final InlineNode resized; // node being resized, and thus whose parent should be ignored
     public final int w; // total max width allocated for this
     public final boolean resize;
     public int tcol, tbg;
@@ -37,7 +38,8 @@ public abstract class InlineNode extends Node {
     public int a, b, h; // heights of current line - above baseline, below baseline, and total (for non-inline elements)
     public Vec<InlineNode> ln = new Vec<>(); // last line items to update about baseline info
     
-    public InlineSolver(int w, GConfig gc, boolean resize) {
+    public InlineSolver(InlineNode resized, int w, GConfig gc, boolean resize) {
+      this.resized = resized;
       this.w = w;
       this.f = gc.defFont;
       this.tcol = gc.cfg.get("str.color").col();

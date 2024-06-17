@@ -15,7 +15,7 @@ public class TextNode extends InlineNode {
     Font pf = sv.f;
     int pFG = sv.tcol;
     int pBG = sv.tbg;
-    if (p instanceof InlineNode && sv.resize) {
+    if (p instanceof InlineNode && sv.resized!=this && sv.resize) {
       dx=dy=0;
       w = sv.w;
     }
@@ -99,7 +99,7 @@ public class TextNode extends InlineNode {
     return max + xpad*2;
   }
   public int minH(int w) {
-    InlineSolver sv = new InlineSolver(w, gc, false);
+    InlineSolver sv = new InlineSolver(this, w, gc, false);
     sv.add(this);
     sv.nl();
     return sv.y;
@@ -118,7 +118,7 @@ public class TextNode extends InlineNode {
   public void hoverE() { if (hover) ctx.vw().popCursor(); }
   
   public void resized() {
-    InlineSolver sv = new InlineSolver(w, gc, true);
+    InlineSolver sv = new InlineSolver(this, w, gc, true);
     sv.add(this);
     sv.nl();
   }
