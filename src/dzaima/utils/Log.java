@@ -2,6 +2,7 @@ package dzaima.utils;
 
 import java.io.*;
 import java.time.Instant;
+import java.util.function.Supplier;
 
 public class Log {
   public static LogConsumer _logger = new StdoutLogger();
@@ -18,8 +19,9 @@ public class Log {
     public abstract void log(Level l, String component, String msg);
   }
   
-  public static void log(Level l,                   String msg) { if (l.i>=level.i) _logger.log(l, null,      msg); }
-  public static void log(Level l, String component, String msg) { if (l.i>=level.i) _logger.log(l, component, msg); }
+  public static void log(Level l,                   String msg)           { if (l.i>=level.i) _logger.log(l, null,      msg); }
+  public static void log(Level l, String component, String msg)           { if (l.i>=level.i) _logger.log(l, component, msg); }
+  public static void log(Level l, String component, Supplier<String> msg) { if (l.i>=level.i) _logger.log(l, component, msg.get()); }
   
   public static void info(String msg) { log(Level.INFO,  msg); }
   public static void warn(String msg) { log(Level.WARN,  msg); }
@@ -28,6 +30,11 @@ public class Log {
   public static void info (String component, String msg) { log(Level.INFO,  component, msg); }
   public static void warn (String component, String msg) { log(Level.WARN,  component, msg); }
   public static void error(String component, String msg) { log(Level.ERROR, component, msg); }
+  
+  public static void fine (String component, Supplier<String> msg) { log(Level.FINE,  component, msg); }
+  public static void info (String component, Supplier<String> msg) { log(Level.INFO,  component, msg); }
+  public static void warn (String component, Supplier<String> msg) { log(Level.WARN,  component, msg); }
+  public static void error(String component, Supplier<String> msg) { log(Level.ERROR, component, msg); }
   
   public static void stacktrace(String component, Throwable e) {
     StringWriter w = new StringWriter();
