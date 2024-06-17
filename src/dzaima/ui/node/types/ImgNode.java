@@ -12,7 +12,7 @@ public class ImgNode extends Node { // TODO remove
   private float sc;
   public ImgNode(Ctx ctx, Props props) {
     super(ctx, props);
-    Log.warn("'img' node is deprecated");
+    Log.warn("ui", "'img' node is deprecated");
   }
   
   

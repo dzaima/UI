@@ -38,7 +38,7 @@ public class Typeface {
   private static io.github.humbleui.skija.Typeface n(String name, FontStyle s) {
     io.github.humbleui.skija.Typeface r = fontMgr.matchFamilyStyle(name, s);
     if (r==null) {
-      Log.warn("Warning: Font \""+name+"\" not found; using fallback..");
+      Log.warn("ui", "Warning: Font \""+name+"\" not found; using fallback..");
       return fontCol.defaultFallback();
     }
     return r;

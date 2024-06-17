@@ -38,7 +38,7 @@ public class JWMEventHandler implements Consumer<Event> {
   private void accept0(Event ev) { // TODO this is willy nilly immediately invoking functions on the window without going through the event queue to execute at the proper time
     if (ev instanceof EventFrame) {
       if (w.visible) {
-        if (JWMWindow.DEBUG_UPDATES) Log.info(Time.logStart(w.id)+"EventFrame");
+        if (JWMWindow.DEBUG_UPDATES) Log.info("JWM", w.id+" EventFrame");
         paint();
       }
     } else if (ev instanceof EventWindowScreenChange) {

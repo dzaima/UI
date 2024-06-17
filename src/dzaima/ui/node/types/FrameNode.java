@@ -9,11 +9,11 @@ import dzaima.utils.*;
 public abstract class FrameNode extends Node {
   public FrameNode(Ctx ctx, Props props) {
     super(ctx, props);
-    if (hasProp("width")) Log.warn("Using incorrect 'width' property");
-    if (hasProp("height")) Log.warn("Using incorrect 'height' property");
-    if (hasProp("xalign")) Log.warn("Using incorrect 'xalign' property");
-    if (hasProp("yalign")) Log.warn("Using incorrect 'yalign' property");
-    if (hasProp("bgCol")) Log.warn("Using incorrect 'bgCol' property");
+    if (hasProp("width")) Log.warn("ui", "Using incorrect 'width' property");
+    if (hasProp("height")) Log.warn("ui", "Using incorrect 'height' property");
+    if (hasProp("xalign")) Log.warn("ui", "Using incorrect 'xalign' property");
+    if (hasProp("yalign")) Log.warn("ui", "Using incorrect 'yalign' property");
+    if (hasProp("bgCol")) Log.warn("ui", "Using incorrect 'bgCol' property");
   }
   public void bg(Graphics g, boolean full) {
     Prop p = getPropN("bg");

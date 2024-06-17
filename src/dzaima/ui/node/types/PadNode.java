@@ -12,7 +12,7 @@ public class PadNode extends Node {
   private int pL, pU, pX, pY, bgCol;
   public PadNode(Ctx ctx, Props props) {
     super(ctx, props);
-    if (hasProp("bgCol")) Log.warn("Using incorrect 'bgCol' property");
+    if (hasProp("bgCol")) Log.warn("ui", "Using incorrect 'bgCol' property");
   }
   public void propsUpd() { super.propsUpd();
     bgCol = gc.colD(this, "bg", 0);

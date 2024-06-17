@@ -115,16 +115,16 @@ public class Devtools extends NodeWindow implements Hijack {
   private void resetTreeState(Vec<Node> path, Node p) {
     p.ch.filterInplace((c) -> {
       if (c==null) {
-        Log.warn("removed null child within "+path(path));
+        Log.warn("ui", "removed null child within "+path(path));
         return false;
       }
       path.add(c);
       if (c.p!=p) {
-        Log.warn("Set proper parent for "+path(path)); // TODO write some pretty log of these that can be goto-ed in devtools
+        Log.warn("ui", "Set proper parent for "+path(path)); // TODO write some pretty log of these that can be goto-ed in devtools
         c.p = p;
       }
       if (!c.visible) {
-        Log.warn("Set visible to true for "+path(path));
+        Log.warn("ui", "Set visible to true for "+path(path));
         c.visible = true;
       }
       resetTreeState(path, c);

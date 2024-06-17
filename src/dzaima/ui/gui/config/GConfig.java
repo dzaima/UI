@@ -202,21 +202,21 @@ public class GConfig {
     try {
       new ProcessBuilder(getProp("open.file").str(), p.toAbsolutePath().toString()).start();
     } catch (IOException e) {
-      Log.warn("Failed to open file:");
-      Log.stacktrace("GConfig", e);
+      Log.warn("open", "Failed to open file:");
+      Log.stacktrace("open", e);
     }
   }
   public /*open*/ void openTerminal(Path p) {
     try {
       new ProcessBuilder(getProp("open.terminal").str()).directory(p.toFile()).start();
     } catch (IOException e) {
-      Log.warn("Failed to launch terminal:");
-      Log.stacktrace("GConfig", e);
+      Log.warn("open", "Failed to launch terminal:");
+      Log.stacktrace("open", e);
     }
   }
   public /*open*/ void openLink(String s) {
     if (!s.startsWith("https://") && !s.startsWith("http://")) return; // don't try to open as file
-    switch (getProp("open.link").val()) { default: Log.warn("Invalid open.link value"); break;
+    switch (getProp("open.link").val()) { default: Log.warn("ui", "Invalid open.link value"); break;
       case "xdg": openLinkXDG(s); break;
       case "java": openLinkDesktop(s); break;
     }
@@ -230,12 +230,12 @@ public class GConfig {
             d.browse(new URI(s));
             return;
           } catch (IOException | URISyntaxException e) {
-            Log.warn("Error on using Desktop::browse or URI::new");
-            Log.stacktrace("GConfig", e); // TODO
+            Log.warn("open", "Error on using Desktop::browse or URI::new");
+            Log.stacktrace("open", e);
           };
         }
       }
-      Log.warn("open link: fallback to xdg-open");
+      Log.warn("open", "open link: fallback to xdg-open");
       openLinkXDG(s);
     }, true);
   }
@@ -243,8 +243,8 @@ public class GConfig {
     try {
       new ProcessBuilder("xdg-open", s).start();
     } catch (IOException e) {
-      Log.warn("Failed to open link:");
-      Log.stacktrace("GConfig", e);
+      Log.warn("open", "Failed to open link:");
+      Log.stacktrace("open", e);
     }
   }
   
