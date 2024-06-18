@@ -318,7 +318,7 @@ public class JSON {
   }
   
   public static class Arr extends Val implements Iterable<Val> {
-    public static final Arr E = new Arr(new Val[0]);
+    public static final Arr E = Arr.of();
     public final Val[] items;
     public Arr(Val[] items) { this.items = items; }
     
@@ -328,7 +328,6 @@ public class JSON {
     public int size() { return items.length; }
     public Val get(int i) { return items[i]; }
     
-    public static Arr of(Val... vals) { return new Arr(vals); }
     public static Arr of(Object... args) {
       Val[] vals = new Val[args.length];
       for (int i = 0; i < args.length; i++) vals[i] = fromAny(args[i]);

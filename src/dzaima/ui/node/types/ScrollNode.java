@@ -282,7 +282,7 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   
   
   
-  private boolean ignoreYE, ignoreYS, ignoreFocus;
+  private boolean ignoreYE, ignoreYS, ignoreFocus; // TODO permanent variants in props
   // don't attempt to pin the specified location on the next resize
   public void ignoreYS() { ignoreYS = true; }
   public void ignoreYE() { ignoreYE = true; }

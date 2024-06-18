@@ -74,7 +74,4 @@ public class PartialMenu {
   public void open(Ctx ctx, Click cl) {
     open(ctx, cl, null);
   }
-  public void open(Ctx ctx) {
-    open(ctx, null);
-  }
 }
