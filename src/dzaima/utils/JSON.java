@@ -1,5 +1,7 @@
 package dzaima.utils;
 
+import dzaima.utils.JSON.Val;
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -119,6 +121,15 @@ public class JSON {
         b.append('\n').append(s);
       }
     }
+  }
+  
+  public static Val fromAny(Object obj) {
+    if (obj instanceof String) obj = new Str((String) obj);
+    if (obj instanceof Number) obj = new Num(((Number) obj).doubleValue());
+    if (obj instanceof Boolean) obj = Bool.of((Boolean) obj);
+    if (!(obj instanceof Val)) throw new IllegalStateException("JSON.Obj.fromKV: unknown value class: "+(obj ==null?"null": obj.getClass().getSimpleName()));
+    Val res = (Val) obj;
+    return res;
   }
   
   public static abstract class Val {
@@ -255,11 +266,8 @@ public class JSON {
       for (int i = 0; i < objs.length/2; i++) {
         ks[i] = (String) objs[2*i];
         Object obj = objs[2*i + 1];
-        if (obj instanceof String) obj = new Str((String) obj);
-        if (obj instanceof Number) obj = new Num(((Number) obj).doubleValue());
-        if (obj instanceof Boolean) obj = Bool.of((Boolean) obj);
-        if (!(obj instanceof Val)) throw new IllegalStateException("JSON.Obj.fromKV: unknown value class: "+(obj==null?"null":obj.getClass().getSimpleName()));
-        vs[i] = (Val) obj;
+        Val res = fromAny(obj);
+        vs[i] = res;
       }
       return new Obj(ks, vs);
     }
@@ -319,6 +327,13 @@ public class JSON {
     
     public int size() { return items.length; }
     public Val get(int i) { return items[i]; }
+    
+    public static Arr of(Val... vals) { return new Arr(vals); }
+    public static Arr of(Object... args) {
+      Val[] vals = new Val[args.length];
+      for (int i = 0; i < args.length; i++) vals[i] = fromAny(args[i]);
+      return new Arr(vals);
+    }
     
     public double   num(int i) { return items[i].num(); }
     public int   getInt(int i) { return items[i].asInt(); }
