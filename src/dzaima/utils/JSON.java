@@ -272,8 +272,8 @@ public class JSON {
       }
       return c;
     }
-    public static Obj objPath(Val c, Obj def, String... path) { return path(c, def, path).obj(def); }
-    public static Arr arrPath(Val c, Arr def, String... path) { return path(c, def, path).arr(def); }
+    public static Obj objPath(Val c, Obj def, String... path) { Val r = path(c, def, path); return r==null? null : r.obj(def); }
+    public static Arr arrPath(Val c, Arr def, String... path) { Val r = path(c, def, path); return r==null? null : r.arr(def); }
     
     // must be immediately used in a foreach and the entry object must not be stored, as the iterable, iterator, and entry are all the same object
     public Iterable<Entry> entries() {
