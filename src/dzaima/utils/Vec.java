@@ -70,7 +70,7 @@ public final class Vec<T> implements Iterable<T> {
     int i = 0;
     while (arr[i]!=c) i++;
     System.arraycopy(arr, i+1, arr, i, sz-i-1);
-    sz--;
+    arr[--sz] = null;
     return i;
   }
   public T[] get(int s, int e, Class<T[]> c) {
@@ -78,11 +78,13 @@ public final class Vec<T> implements Iterable<T> {
   }
   public void remove(int s, int e) {
     System.arraycopy(arr, e, arr, s, sz-e);
-    sz-= e-s;
+    int nsz = sz - (e-s);
+    Arrays.fill(arr, nsz, sz, null);
+    sz = nsz;
   }
   public void removeAt(int i) {
     System.arraycopy(arr, i+1, arr, i, sz-i-1);
-    sz--;
+    arr[--sz] = null;
   }
   public <Q extends T> void addAll(int i, Q[] t) {
     addAll(i, t, 0, t.length);
