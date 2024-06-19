@@ -315,8 +315,8 @@ public class EditNode extends Node {
   }
   
   public int minW() { if(wrap) return f.hi*3; getSize(); return pw; }
-  public int minH(int w) { tmpW(w); getSize(); rstW(); return multiline? ph            : f.hi; }
-  public int maxH(int w) { tmpW(w); getSize(); rstW(); return multiline? super.maxH(w) : f.hi; }
+  public int minH(int w) { tmpW(w); getSize(); rstW(); return multiline || wrap? ph            : f.hi; }
+  public int maxH(int w) { tmpW(w); getSize(); rstW(); return multiline || wrap? super.maxH(w) : f.hi; }
   private int aw;
   private void tmpW(int nw) { if (!wrap) return;
     if (nw!=w) for (Line l : lns) l.clearPara();

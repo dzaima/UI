@@ -27,6 +27,6 @@ public class CodeFieldNode extends CodeAreaNode {
     g.rrect(0,0, w,h, radius, bgCol);
   }
   
-  public int minH(int w) { return 2*padY+f.hi; }
-  public int maxH(int w) { return 2*padY+f.hi; }
+  public int minH(int w) { return 2*padY+(wrap? super.minH(w) : f.hi); }
+  public int maxH(int w) { return 2*padY+(wrap? super.maxH(w) : f.hi); }
 }
