@@ -2,6 +2,7 @@ package dzaima.utils;
 
 import java.io.*;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class Log {
@@ -23,7 +24,7 @@ public class Log {
   public static void log(Level l, String component, String msg)           { if (l.i>=level.i) _logger.log(l, component, msg); }
   public static void log(Level l, String component, Supplier<String> msg) { if (l.i>=level.i) _logger.log(l, component, msg.get()); }
   
-  public static void tmp(String msg) { log(Level.INFO, msg); } // for temporary development things
+  public static void tmp(Object msg) { log(Level.INFO, Objects.toString(msg)); } // for temporary development things
   
   public static void fine (String component, String msg) { log(Level.FINE,  component, msg); }
   public static void info (String component, String msg) { log(Level.INFO,  component, msg); }
