@@ -218,10 +218,12 @@ public class Devtools extends NodeWindow implements Hijack {
   }
   private void highlightNode(Graphics g, Node n, boolean outline) {
     if (n==null) return;
-    int hlCol1r = 0x7f214283;
-    int hlCol2r = 0x7f215273;
-    Paint hlCol1 = outline? new Paint().setColor(hlCol1r|0xff000000).setStroke(true).setStrokeWidth(2) : g.paintO(hlCol1r);
-    Paint hlCol2 = outline? new Paint().setColor(hlCol2r|0xff000000).setStroke(true).setStrokeWidth(2) : g.paintO(hlCol2r);
+    int hlCol1r = 0x7f215273;
+    int hlCol2r = 0x7f214283;
+    int full = outline? 0xff000000 : 0;
+    Paint hlCol1 = new Paint().setColor(hlCol1r|full); if (outline) hlCol1.setStroke(true).setStrokeWidth(2);
+    Paint hlCol2 = new Paint().setColor(hlCol2r|full); if (outline) hlCol2.setStroke(true).setStrokeWidth(2);
+    
     g.push();
     translateTo(g, n);
     if (hlInline && n instanceof InlineNode && ((InlineNode) n).eY2!=0) {
