@@ -1,5 +1,7 @@
 package dzaima.ui.node.prop;
 
+import java.util.HashMap;
+
 public class EnumProp extends PropI {
   public final String s;
   
@@ -14,11 +16,15 @@ public class EnumProp extends PropI {
   
   
   public String toString() { return s; }
+  public boolean equals(Object o) { return o instanceof EnumProp && s.equals(((EnumProp) o).s); }
   
   public static EnumProp bool(boolean b) {
     return b? TRUE : FALSE;
   }
-  public static EnumProp TRUE = new EnumProp("true");
-  public static EnumProp FALSE = new EnumProp("false");
-  public boolean equals(Object o) { return o instanceof EnumProp && s.equals(((EnumProp) o).s); }
+  private static final HashMap<String, EnumProp> cache = new HashMap<>();
+  public static EnumProp cache(String name) {
+    return cache.computeIfAbsent(name, EnumProp::new);
+  }
+  public static EnumProp TRUE = cache("true");
+  public static EnumProp FALSE = cache("false");
 }
