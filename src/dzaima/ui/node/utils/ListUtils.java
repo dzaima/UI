@@ -39,7 +39,7 @@ public class ListUtils {
     int r = 0;
     for (Node c : nds) {
       r+= c.maxH(w);
-      if (r>= Tools.BIG || r<0) return Tools.BIG;
+      if (r>=Tools.BIG || r<0) return Tools.BIG;
     }
     return r;
   }

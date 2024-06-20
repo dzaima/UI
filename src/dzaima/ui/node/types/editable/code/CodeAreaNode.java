@@ -179,7 +179,7 @@ public class CodeAreaNode extends EditNode {
     Cursor[] todo = cs.get(0, cs.sz, Cursor[].class);
     for (Cursor c : todo) {
       c.order();
-      for (int y=c.sy, ey=c.ey; y<= ey; y++) {
+      for (int y=c.sy, ey=c.ey; y<=ey; y++) {
         if (y==c.sy)     c.mv(0, y, ln(y).sz(), y);
         else addCursor(cs.sz, 0, y, ln(y).sz(), y);
       }

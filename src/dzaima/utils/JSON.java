@@ -127,7 +127,7 @@ public class JSON {
     if (obj instanceof String) obj = new Str((String) obj);
     if (obj instanceof Number) obj = new Num(((Number) obj).doubleValue());
     if (obj instanceof Boolean) obj = Bool.of((Boolean) obj);
-    if (!(obj instanceof Val)) throw new IllegalStateException("JSON.Obj.fromKV: unknown value class: "+(obj ==null?"null": obj.getClass().getSimpleName()));
+    if (!(obj instanceof Val)) throw new IllegalStateException("JSON.Obj.fromKV: unknown value class: "+(obj==null?"null": obj.getClass().getSimpleName()));
     Val res = (Val) obj;
     return res;
   }

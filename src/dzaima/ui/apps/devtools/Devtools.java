@@ -296,7 +296,7 @@ public class Devtools extends NodeWindow implements Hijack {
     iC.add(new StringNode(iC.ctx, String.format("flush %6.3fms", getTime("flush")/1e6)));
     iC.add(new StringNode(iC.ctx, String.format(" wait %6.3fms", (getTime("frame")-getTime("all"))/1e6)));
     final int[] sum = {0};
-    Stats.allocated.forEach((k, v)-> sum[0]+=v);
+    Stats.allocated.forEach((k, v) -> sum[0]+=v);
     iC.add(new StringNode(iC.ctx, "Skija allocations: "+sum[0]));
     iC.add(new StringNode(iC.ctx, "Skija native calls: "+Stats.nativeCalls));
     if (lastError!=null) iC.add(new StringNode(iC.ctx, lastError));
