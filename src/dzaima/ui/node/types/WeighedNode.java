@@ -91,7 +91,6 @@ public class WeighedNode extends Node {
   }
   public void setWeight(float w) {
     this.weight = w;
-    mResize(); // incl. redrawing for padding bar
   }
   
   public CursorType cursorType() { return v? CursorType.NS_RESIZE : CursorType.EW_RESIZE; }
@@ -123,6 +122,7 @@ public class WeighedNode extends Node {
     return Math.max(c0.minH(c0f), c1.minH(l-c0f));
   }
   
+  private short prevC0f = -1;
   protected void resized() {
     assert ch.sz==2;
     Node c0 = ch.get(0);
@@ -130,6 +130,10 @@ public class WeighedNode extends Node {
     int tot = v? h : w;
     int left = left(tot);
     int c0f = c0f(left, w, c0, c1);
+    if (c0f != prevC0f) { // always not equal if c0f doesn't fit in short, but redrawing too much is fine
+      mRedraw(); // redraw padding bar
+      prevC0f = (short) c0f;
+    }
     if (v) {
       c0.resize(w, c0f, 0, 0);
       c1.resize(w, left-c0f, 0, c0f+pad);
