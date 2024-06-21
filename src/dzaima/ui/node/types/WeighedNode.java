@@ -91,6 +91,7 @@ public class WeighedNode extends Node {
   }
   public void setWeight(float w) {
     this.weight = w;
+    mResize();
   }
   
   public CursorType cursorType() { return v? CursorType.NS_RESIZE : CursorType.EW_RESIZE; }
