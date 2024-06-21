@@ -198,6 +198,9 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   public void tickC() {
     Scroller.tick(this);
     if ((flags&RS_CH)==0) evalScrollTo();
+    ignoreYS = false;
+    ignoreYE = false;
+    ignoreFocus = false;
   }
   private void evalScrollTo() {
     for (NodeScroll e : FLD_NODE_SCROLL.getAndClearOrDefault(this, Vec::of)) {
