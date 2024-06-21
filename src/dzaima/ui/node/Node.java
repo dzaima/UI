@@ -147,17 +147,17 @@ public abstract class Node implements Click.RequestImpl {
   public static final String[] KS_NONE = new String[0];
   public static final Prop  [] VS_NONE = new Prop[0];
   
-  public Prop getProp(String name) {
+  public final Prop getProp(String name) {
     return props.get(name);
   }
-  public Prop getPropN(String name) {
+  public final Prop getPropN(String name) {
     return props.getNullable(name);
   }
-  public void setProp(String name, Prop p) {
+  public final void setProp(String name, Prop p) {
     props = props.with(name, p);
     mProp();
   }
-  public boolean hasProp(String name) {
+  public final boolean hasProp(String name) {
     return props.has(name);
   }
   
@@ -253,7 +253,7 @@ public abstract class Node implements Click.RequestImpl {
   }
   public final void aTick() { flags|= ATICK; anyc(); }
   public final void mTick() { flags|= MTICK; anyc(); }
-  public final void mProp() { flags|= PROPS; anyc(); mResize(); }
+  public final void mProp() { flags|= PROPS; anyc(); }
   private void anyc() {
     Node c = p;
     while (c!=null && (c.flags&ANYCT)==0) { c.flags|= ANYCT; c = c.p; }
