@@ -57,20 +57,23 @@ public class PartialMenu {
   
   private Vec<Consumer<Popup.RightClickMenu>> onBuild = new Vec<>();
   public void onBuild(Consumer<Popup.RightClickMenu> f) { onBuild.add(f); }
+  
   public void open(Ctx ctx, Click cl, Runnable onClose) {
-    if (gr.ch.sz!=0) {
-      Popup.RightClickMenu m = Popup.rightClickMenu(ctx.gc, ctx, gr, s -> {
-        if (s.equals("(closed)") && onClose!=null) onClose.run();
-        for (Predicate<String> c : consumers) {
-          if (c.test(s)) return;
-        }
-        if (s.equals("(closed)")) return;
-        Log.warn("partialmenu", "Nothing consumed menu item '" + s + "'!");
-      });
-      if (cl!=null) m.takeClick(cl);
-      for (Consumer<Popup.RightClickMenu> c : onBuild) c.accept(m);
-    }
+    if (gr.ch.sz!=0) openCustom(cl, onClose, (gr, onClose2) -> Popup.rightClickMenu(ctx.gc, ctx, gr, onClose2));
   }
+  public <T extends Popup.RightClickMenu> T openCustom(Click cl, Runnable onClose, BiFunction<PNodeGroup, Consumer<String>, T> make) {
+    T m = make.apply(gr, s -> {
+      if (s.equals("(closed)") && onClose!=null) onClose.run();
+      for (Predicate<String> c1 : consumers) {
+        if (c1.test(s)) return;
+      }
+      if (!s.equals("(closed)")) Log.warn("partialmenu", "Nothing consumed menu item '"+s+"'!");
+    });
+    if (cl != null) m.takeClick(cl);
+    for (Consumer<Popup.RightClickMenu> c : onBuild) c.accept(m);
+    return m;
+  }
+  
   public void open(Ctx ctx, Click cl) {
     open(ctx, cl, null);
   }
