@@ -19,6 +19,10 @@ public final class Pair<A, B> {
   }
   
   public int hashCode() {
-    return 31*(a!=null? a.hashCode() : 0) + (b!=null? b.hashCode() : 0);
+    return 31*Objects.hashCode(a) + Objects.hashCode(b);
+  }
+  
+  public String toString() {
+    return "("+a+";"+b+")";
   }
 }
