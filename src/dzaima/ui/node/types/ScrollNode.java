@@ -223,7 +223,7 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
     if (dx==0 && yMode==OFF) dx = dy;
     if (!vOpen && dx==0) return false;
     if (!hOpen && dy==0) return false;
-    Scroller.scrollInput(this, dx, dy);
+    Scroller.scrollInput(this, w, h, dx, dy);
     return true;
   }
   

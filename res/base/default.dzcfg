@@ -22,6 +22,7 @@ bg.selU = #404040 // selected text color while unfocused
 
 scroll.globalSpeed = 0.8 // global scrolling speed multiplier
 scroll.nodeSpeed = 1 // speed multiplier in scroll nodes (in addition to scroll.globalSpeed)
+scroll.reduceSpeedAt = 10em // if scrolling in a node below this size, scroll proportionally slower (e.g. with the default value of 10em, vertically scrolling in a 2em-high node will be 5x slower)
 scroll.barCol   = #333 // background color of scrollbar
 scroll.thumbCol = #666 // main color
 scroll.barSize  = 1em  // width

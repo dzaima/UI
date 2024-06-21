@@ -8,12 +8,17 @@ import dzaima.utils.*;
 import java.lang.ref.WeakReference;
 
 public abstract class Scroller {
-  public static void scrollInput(Scrollable n, float dx, float dy) { // scrolls per scroll event data
+  public static void scrollInput(Scrollable n, int w, int h, float dx, float dy) { // scrolls per scroll event data
     if (dx==0 && dy==0) return;
-    PropI p = n.gc().getProp("scroll.nodeSpeed");
-    float sz = -p.f();
+    GConfig gc = n.gc();
+    float speed = gc.getProp("scroll.nodeSpeed").f();
+    float reduce = gc.getProp("scroll.reduceSpeedAt").len();
+    reduce = reduce==0? Float.POSITIVE_INFINITY : 1/reduce;
     // tiny-TODO - should accumulate pixel-fractional values? perhaps should do that at the global level
-    targetDelta(n, (int) (dx*sz), (int) (dy*sz), false);
+    int tdx = (int) (dx*speed*Math.min(1, w*reduce));
+    int tdy = (int) (dy*speed*Math.min(1, h*reduce));
+    if (tdx==0 && tdy==0) return;
+    targetDelta(n, -tdx, -tdy, false);
   }
   
   // TODO don't need clamp? only deltaTranslate should care
