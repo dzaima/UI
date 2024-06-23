@@ -24,6 +24,16 @@ public class Options {
     if (o.items.sz!=1) error("Option '"+k+"' can only be specified once");
     return o.items.get(0).v;
   }
+  public int optOneInt(String k, int def) {
+    String v = optOne(k);
+    if (v==null) return def;
+    try {
+      return Integer.parseInt(v);
+    } catch (NumberFormatException e) {
+      error("Expected integer argument to '"+k+"'");
+      throw new IllegalStateException();
+    }
+  }
   public String reqOne(String k) { // TODO use more
     String s = optOne(k);
     if (s == null) error("Option '"+k+"' required");
