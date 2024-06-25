@@ -4,6 +4,7 @@ import dzaima.ui.eval.*;
 import dzaima.ui.gui.config.GConfig;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.ctx.Ctx;
+import dzaima.ui.node.types.StringNode;
 import dzaima.ui.node.types.editable.MenuFieldNode;
 import dzaima.utils.*;
 
@@ -36,10 +37,11 @@ public class PartialMenu {
   }
   
   private int counter;
-  public void add(String name, Runnable r) {
+  public String add(String name, Runnable r) {
     String id = "base_gen_"+(counter++);
     PNodeGroup g0 = new PNodeGroup("mi", false, Vec.of(new PrsField.NameFld("id", id)), Vec.of(new PNode.PNodeStr(name)));
     add(new PNodeGroup(null, false, new Vec<>(), Vec.of(g0)), id, r);
+    return id;
   }
   
   public void addSep() {
@@ -58,9 +60,19 @@ public class PartialMenu {
   private Vec<Consumer<Popup.RightClickMenu>> onBuild = new Vec<>();
   public void onBuild(Consumer<Popup.RightClickMenu> f) { onBuild.add(f); }
   
-  public void open(Ctx ctx, Click cl, Runnable onClose) {
-    if (gr.ch.sz!=0) openCustom(cl, onClose, (gr, onClose2) -> Popup.rightClickMenu(ctx.gc, ctx, gr, onClose2));
+  public Popup.RightClickMenu open(Ctx ctx, Click cl, Runnable onClose) {
+    if (gr.ch.sz!=0) return openCustom(cl, onClose, (gr, onClose2) -> Popup.rightClickMenu(ctx.gc, ctx, gr, onClose2));
+    return null;
   }
+  public void open(Ctx ctx, Click cl) {
+    open(ctx, cl, null);
+  }
+  
+  public static void updateText(Popup.RightClickMenu menu, String id, String text) {
+    Ctx ctx = menu.node.ctx;
+    ctx.id(id).replace(0, new StringNode(ctx, text));
+  }
+  
   public <T extends Popup.RightClickMenu> T openCustom(Click cl, Runnable onClose, BiFunction<PNodeGroup, Consumer<String>, T> make) {
     T m = make.apply(gr, s -> {
       if (s.equals("(closed)") && onClose!=null) onClose.run();
@@ -72,9 +84,5 @@ public class PartialMenu {
     if (cl != null) m.takeClick(cl);
     for (Consumer<Popup.RightClickMenu> c : onBuild) c.accept(m);
     return m;
-  }
-  
-  public void open(Ctx ctx, Click cl) {
-    open(ctx, cl, null);
   }
 }
