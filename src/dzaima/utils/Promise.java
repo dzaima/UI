@@ -35,6 +35,12 @@ public class Promise<T> {
     return a;
   }
   
+  public static <T> Promise<T> resolved(T value) {
+    Promise<T> a = new Promise<>();
+    a.set(value);
+    return a;
+  }
+  
   public static <T> Promise<T> all(Supplier<T> f, Promise<?>... ps) {
     Promise<T> res = new Promise<>();
     int[] box = new int[]{ps.length};
