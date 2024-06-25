@@ -167,16 +167,18 @@ public class Tools {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
-      throw new QInterruptedException(e); // eh whatever
+      throw makeQuietInterrupted(e); // eh whatever
     }
   }
   
   
-  
-  public static class QInterruptedException extends RuntimeException {
-    public QInterruptedException(InterruptedException e) { super(e); }
-    public QInterruptedException() { }
+  public static RuntimeException makeQuietInterrupted(InterruptedException t) {
+    return new RuntimeException(t);
   }
+  public static boolean isAnyInterrupted(Throwable t) {
+    return t!=null && (t instanceof InterruptedException || t.getCause() instanceof InterruptedException);
+  }
+  
   public interface RunnableThread {
     void run() throws InterruptedException;
   }
@@ -187,7 +189,10 @@ public class Tools {
     Thread t = new Thread(() -> {
       try {
         r.run();
-      } catch (QInterruptedException | InterruptedException ignored) { }
+      } catch (InterruptedException ignored) {
+      } catch (RuntimeException e) {
+        if (!isAnyInterrupted(e)) throw e;
+      }
     });
     t.setDaemon(daemon);
     t.start();
