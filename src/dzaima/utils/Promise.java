@@ -1,32 +1,36 @@
 package dzaima.utils;
 
-import dzaima.utils.Vec;
-
 import java.util.function.*;
 
+@SuppressWarnings("unchecked")
 public class Promise<T> {
-  Vec<Consumer<T>> requesters = new Vec<>();
-  T result;
+  private Object object = new UnresolvedPromise<T>();
+  
+  private static final class UnresolvedPromise<T> {
+    private final Vec<Consumer<T>> consumers = new Vec<>();
+  }
   
   public boolean isResolved() {
-    return requesters==null;
+    return !(object instanceof UnresolvedPromise);
   }
   
   public Promise<T> then(Consumer<T> f) {
-    if (isResolved()) f.accept(result);
-    else requesters.add(f);
+    if (isResolved()) f.accept(get());
+    else consumers().add(f);
     return this;
   }
   public void set(T val) {
     assert !isResolved();
-    result = val;
-    Vec<Consumer<T>> tmp = requesters;
-    requesters = null;
+    Vec<Consumer<T>> tmp = consumers();
+    object = val;
     for (Consumer<T> c : tmp) c.accept(val);
   }
   public T get() { // assumes is already resolved
     assert isResolved();
-    return result;
+    return (T) object;
+  }
+  private Vec<Consumer<T>> consumers() {
+    return ((UnresolvedPromise<T>) object).consumers;
   }
   
   public static <T> Promise<T> create(Consumer<Promise<T>> r) { // create a new promise `a`, immediately invoke `r` with it, and return `a`
