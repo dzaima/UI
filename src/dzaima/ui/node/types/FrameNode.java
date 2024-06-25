@@ -33,7 +33,8 @@ public abstract class FrameNode extends Node {
   private int fillH=-1, fillHArg;
   protected int fillHC(int w) {
     if (fillH!=-1 & w==fillHArg) return fillH;
-    return fillH = fillH(fillHArg = w);
+    fillHArg = w;
+    return fillH = fillH(Math.min(w, maxW()));
   }
   public void mChResize() { super.mChResize();
     fillWC=fillH=-1;
