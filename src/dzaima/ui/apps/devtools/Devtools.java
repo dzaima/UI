@@ -311,7 +311,6 @@ public class Devtools extends NodeWindow implements Hijack {
       // ks.add(new StringNode(base.ctx, "self:open"     )); vs.add(new StringNode(base.ctx, ((DTTNNode) focusNode).open+""));
       // ks.add(new StringNode(base.ctx, "self:openable" )); vs.add(new StringNode(base.ctx, ((DTTNNode) focusNode).openable+""));
       // ks.add(new StringNode(base.ctx, "self:ch.sz"    )); vs.add(new StringNode(base.ctx, focusNode.ch.sz+""));
-      
       addRow(infoT, "flag:mtick"    , Boolean.toString((insp.flags&Node.MTICK)!=0));
       addRow(infoT, "flag:atick"    , Boolean.toString((insp.flags&Node.ATICK)!=0));
       addRow(infoT, "flag:anyct"    , Boolean.toString((insp.flags&Node.ANYCT)!=0));
@@ -319,7 +318,8 @@ public class Devtools extends NodeWindow implements Hijack {
       addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
       addRow(infoT, "field:ctx"     , insp.ctx+"");
       if (!insp.visible) addRow(infoT, "visible", "false");
-      addRow(infoT, "actual width"  , insp.w+"px");
+      int inspW = insp.w;
+      addRow(infoT, "actual width"  , inspW+"px");
       addRow(infoT, "actual height" , insp.h+"px");
       addRow(infoT, "screen X"      , pos.x+"px");
       addRow(infoT, "screen Y"      , pos.y+"px");
@@ -327,6 +327,8 @@ public class Devtools extends NodeWindow implements Hijack {
       addRow(infoT, "delta Y"       , insp.dy+"px");
       addRow(infoT, "minW"          , insp.minW()+"px");
       addRow(infoT, "maxW"          , insp.maxW()+"px");
+      addRow(infoT, "minH("+inspW+")",insp.minH(inspW)+"px");
+      addRow(infoT, "maxH("+inspW+")",insp.maxH(inspW)+"px");
       addRow(infoT, "children count", insp.ch.sz+"");
       if (selected instanceof InlineNode) {
         InlineNode c = (InlineNode) selected;
