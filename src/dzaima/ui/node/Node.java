@@ -262,7 +262,7 @@ public abstract class Node implements Click.RequestImpl {
   
   
   ///////// redraw stuff \\\\\\\\\
-  // any resize(w,h) calls must be between (minW(); minH(w)) and (maxW(); maxH(w)), and any such call must be accepted by the node; TODO max might be made non-obligatory
+  // any resize(w,h) calls must be between (minW(); minH(w)) and (maxW(); maxH(w)), and any such call must be accepted by the node; TODO max might be made or might already be non-obligatory
   public final void resize(int w, int h, int dx, int dy) {
     boolean sameSz = w==this.w && h==this.h;
     boolean samePos = this.dx==dx && this.dy==dy;
@@ -275,10 +275,12 @@ public abstract class Node implements Click.RequestImpl {
     this.dy = dy; this.h = h;
     resized();
     flags&= ~(RS_ME|RS_CH);
-    assert minW( )<=w : "Wanted width " +w+" less than the minimum "+minW( )+" for "+Devtools.debugMe(this);
-    assert minH(w)<=h : "Wanted height "+h+" less than the minimum "+minH(w)+" for "+Devtools.debugMe(this);
+    assert minW( )<=w : "Asked width " +w+" less than the minimum "+minW( )+" for "+Devtools.debugMe(this);
+    assert minH(w)<=h : "Asked height "+h+" less than the minimum "+minH(w)+" for "+Devtools.debugMe(this)+" (for w="+w+")";
   }
   protected /*open*/ void resized() { assert ch.sz==0 : "No resized() for "+Devtools.debugMe(this)+" (doesn't expect children)"; } // called when w/h have been updated; should resize children if applicable
+  
+  // minH and maxH should each give the same result for all w >= maxW()
   public /*open*/ int minW() { return 0; }
   public /*open*/ int minH(int w) { return 0; }
   public /*open*/ int maxW() { return Tools.BIG; }
