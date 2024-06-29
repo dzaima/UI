@@ -64,7 +64,7 @@ public class EditNode extends Node {
     
     bgSel  = gc.col(this, "bgSel" , "textarea.bgSel");
     bgSelU = gc.col(this, "bgSelU", "textarea.bgSelU");
-    textCol = gc. col(this, "color", "str.color");
+    textCol = gc.col(this, "color", "str.color");
     
     defTStyle.setFontSize(f.sz);
     defTStyle.setTypeface(f.tf.tf);
