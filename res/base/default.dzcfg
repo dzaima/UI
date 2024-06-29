@@ -224,15 +224,17 @@ devtools {
       }
     }
     
-    scroll { tempOverlap=true bg=bg.back
-      h {
+    h {
+      scroll { tempOverlap=true bg=bg.back
         pad { all=.5em
           v {
             v { id=infoC family="DejaVu Sans Mono" }
             dtgraph { id=graph }
           }
         }
-        hsep{ x=0px y=0px }
+      }
+      hsep{ x=0px y=0px }
+      scroll { tempOverlap=true bg=bg.back
         table { id=infoT clip=true }
       }
     }

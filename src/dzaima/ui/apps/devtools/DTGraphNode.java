@@ -17,6 +17,10 @@ public class DTGraphNode extends Node {
     return gc.em*5;
   }
   
+  public int maxH(int w) {
+    return gc.em*20;
+  }
+  
   private static final RotBuf tmpBuf = new RotBuf();
   static class Item {
     String name;
