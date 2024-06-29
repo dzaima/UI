@@ -1,0 +1,4 @@
+ui = v {
+  v { w=min h=min hl { text { "hello world" } } }
+  sepv{}
+}

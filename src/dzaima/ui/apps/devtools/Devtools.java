@@ -311,38 +311,42 @@ public class Devtools extends NodeWindow implements Hijack {
       // ks.add(new StringNode(base.ctx, "self:open"     )); vs.add(new StringNode(base.ctx, ((DTTNNode) focusNode).open+""));
       // ks.add(new StringNode(base.ctx, "self:openable" )); vs.add(new StringNode(base.ctx, ((DTTNNode) focusNode).openable+""));
       // ks.add(new StringNode(base.ctx, "self:ch.sz"    )); vs.add(new StringNode(base.ctx, focusNode.ch.sz+""));
-      addRow(infoT, "flag:mtick"    , Boolean.toString((insp.flags&Node.MTICK)!=0));
-      addRow(infoT, "flag:atick"    , Boolean.toString((insp.flags&Node.ATICK)!=0));
-      addRow(infoT, "flag:anyct"    , Boolean.toString((insp.flags&Node.ANYCT)!=0));
-      addRow(infoT, "flag:props"    , Boolean.toString((insp.flags&Node.PROPS)!=0));
-      addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
-      addRow(infoT, "field:ctx"     , insp.ctx+"");
-      if (!insp.visible) addRow(infoT, "visible", "false");
-      int inspW = insp.w;
-      addRow(infoT, "actual width"  , inspW+"px");
-      addRow(infoT, "actual height" , insp.h+"px");
-      addRow(infoT, "screen X"      , pos.x+"px");
-      addRow(infoT, "screen Y"      , pos.y+"px");
-      addRow(infoT, "delta X"       , insp.dx+"px");
-      addRow(infoT, "delta Y"       , insp.dy+"px");
-      addRow(infoT, "minW"          , insp.minW()+"px");
-      addRow(infoT, "maxW"          , insp.maxW()+"px");
-      addRow(infoT, "minH("+inspW+")",insp.minH(inspW)+"px");
-      addRow(infoT, "maxH("+inspW+")",insp.maxH(inspW)+"px");
-      addRow(infoT, "children count", insp.ch.sz+"");
-      if (selected instanceof InlineNode) {
-        InlineNode c = (InlineNode) selected;
-        addRow(infoT, "first line X/Y", "x="+c.sX+" y0="+c.sY1+" y1="+c.sY2);
-        addRow(infoT, "last line X/Y", "x="+c.eX+" y0="+c.eY1+" y1="+c.eY2);
-        if (c instanceof StringNode && ((StringNode) c).words!=null) {
-          for (StringNode.Word w : ((StringNode) c).words) {
-            addRow(infoT, "\""+w.s+"\"", "x="+w.x+" y="+w.y+" w="+w.w+" fl="+w.flags+" spl="+(w.split==null? "ø" : w.split.length));
+      try {
+        addRow(infoT, "flag:mtick"    , Boolean.toString((insp.flags&Node.MTICK)!=0));
+        addRow(infoT, "flag:atick"    , Boolean.toString((insp.flags&Node.ATICK)!=0));
+        addRow(infoT, "flag:anyct"    , Boolean.toString((insp.flags&Node.ANYCT)!=0));
+        addRow(infoT, "flag:props"    , Boolean.toString((insp.flags&Node.PROPS)!=0));
+        addRow(infoT, "flag:visible"  , Boolean.toString(insp.visible));
+        addRow(infoT, "field:ctx"     , insp.ctx+"");
+        if (!insp.visible) addRow(infoT, "visible", "false");
+        int inspW = insp.w;
+        addRow(infoT, "actual width"  , inspW+"px");
+        addRow(infoT, "actual height" , insp.h+"px");
+        addRow(infoT, "screen X"      , pos.x+"px");
+        addRow(infoT, "screen Y"      , pos.y+"px");
+        addRow(infoT, "delta X"       , insp.dx+"px");
+        addRow(infoT, "delta Y"       , insp.dy+"px");
+        addRow(infoT, "minW"          , insp.minW()+"px");
+        addRow(infoT, "maxW"          , insp.maxW()+"px");
+        addRow(infoT, "minH("+inspW+")",insp.minH(inspW)+"px");
+        addRow(infoT, "maxH("+inspW+")",insp.maxH(inspW)+"px");
+        addRow(infoT, "children count", insp.ch.sz+"");
+        if (selected instanceof InlineNode) {
+          InlineNode c = (InlineNode) selected;
+          addRow(infoT, "first line X/Y", "x="+c.sX+" y0="+c.sY1+" y1="+c.sY2);
+          addRow(infoT, "last line X/Y", "x="+c.eX+" y0="+c.eY1+" y1="+c.eY2);
+          if (c instanceof StringNode && ((StringNode) c).words!=null) {
+            for (StringNode.Word w : ((StringNode) c).words) {
+              addRow(infoT, "\""+w.s+"\"", "x="+w.x+" y="+w.y+" w="+w.w+" fl="+w.flags+" spl="+(w.split==null? "ø" : w.split.length));
+            }
           }
         }
-      }
-      
-      for (Pair<String, Prop> c : insp.props.entries()) {
-        addRow(infoT, c.a, c.b.toString());
+        
+        for (Pair<String, Prop> c : insp.props.entries()) {
+          addRow(infoT, c.a, c.b.toString());
+        }
+      } catch (Throwable t) {
+        addRow(infoT, "error", t.getMessage());
       }
     }
   }
