@@ -10,7 +10,7 @@ public class SingeliLang extends Lang {
   );
   public static LangState.Keywords kw = new LangState.Keywords(
     "_","include","fn","oper",
-    "config","def","extend","local","if_inline",
+    "config","def","extend","local","if_inline","match",
     "do","while","if","else","and","or","not",
     "return","makelabel","setlabel","goto",
     "over","from","to","in",
