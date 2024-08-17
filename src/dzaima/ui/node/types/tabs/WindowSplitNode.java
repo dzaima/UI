@@ -70,7 +70,7 @@ public class WindowSplitNode extends WeighedNode {
       if (t.w.visible && wp!=null) {
         w.removeTab(w.tabIndex(t));
         WindowSplitNode sp = new WindowSplitNode(wp.ctx, v? dir_v : dir_h);
-        TabbedNode t1 = new TabbedNode(wp.ctx, Props.none());
+        TabbedNode t1 = new TabbedNode(wp.ctx);
         
         wp.replace(wp.ch.indexOf(w), t0 -> {
           sp.add(r? t1 : t0);

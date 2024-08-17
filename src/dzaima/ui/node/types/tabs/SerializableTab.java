@@ -18,7 +18,7 @@ public interface SerializableTab {
   }
   static String serializeTree(Node n, Function<Object, String> more) {
     StringBuilder b = new StringBuilder();
-    serializeAdd_rec(b, n, 0, more);
+    _serializeAdd_rec(b, n, 0, more);
     return b.toString();
   }
   
@@ -29,11 +29,11 @@ public interface SerializableTab {
   }
   static Node deserializeTree(Ctx ctx, String s, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
     PNodeGroup g = Prs.parseNode(s);
-    return deserialize_rec(ctx, g, ctors);
+    return _deserialize_rec(ctx, g, ctors);
   }
   
   
-  static Node deserialize_rec(Ctx ctx, PNodeGroup g, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
+  static Node _deserialize_rec(Ctx ctx, PNodeGroup g, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
     HashMap<String, Prop> p = props(g);
     switch (g.name) {
       case "split": {
@@ -42,12 +42,12 @@ public interface SerializableTab {
         r.setWeight(p.get("w").f());
         for (PNode c : g.ch) {
           if (!(c instanceof PNodeGroup)) throw new IllegalStateException("Expected all children to be groups");
-          r.add(deserialize_rec(ctx, (PNodeGroup) c, ctors));
+          r.add(_deserialize_rec(ctx, (PNodeGroup) c, ctors));
         }
         return r;
       }
       case "tabbed": {
-        TabbedNode tn = new TabbedNode(ctx, Props.none());
+        TabbedNode tn = new TabbedNode(ctx);
         String m = p.get("m").val();
         tn.setMode(m.equals("a")? TabbedNode.Mode.ALWAYS : m.equals("m")? TabbedNode.Mode.WHEN_MULTIPLE : TabbedNode.Mode.NEVER);
         int sel = p.get("s").i();
@@ -56,8 +56,18 @@ public interface SerializableTab {
           if (!(c instanceof PNodeGroup)) throw new IllegalStateException("Expected all children to be groups");
           PNodeGroup g2 = (PNodeGroup) c;
           Function<HashMap<String, Prop>, Tab> ctor = ctors.get(g2.name);
-          if (ctor==null) throw new IllegalStateException("Deserialization constructor for '"+g2.name+"' not found");
-          TabWrapper w = tn.addTab(ctor.apply(props(g2)));
+          Tab t;
+          if (ctor==null) {
+            if ("group".equals(g2.name)) {
+              assert g2.ch.sz==1;
+              t = new TabbedNode.GroupTab(props(g2).get("n").str(), _deserialize_rec(ctx, (PNodeGroup) g2.ch.get(0), ctors));
+            } else {
+              throw new IllegalStateException("Deserialization constructor for '"+g2.name+"' not found");
+            }
+          } else {
+            t = ctor.apply(props(g2));
+          }
+          TabWrapper w = tn.addTab(t);
           if (i==sel) tn.toTab(w);
           i++;
         }
@@ -69,7 +79,7 @@ public interface SerializableTab {
   }
   
   
-  static void serializeAdd_rec(StringBuilder b, Node nd, int depth, Function<Object, String> more) {
+  static void _serializeAdd_rec(StringBuilder b, Node nd, int depth, Function<Object, String> more) {
     final int INDENT = 2;
     String is = Tools.repeat(' ', depth);
     
@@ -77,7 +87,7 @@ public interface SerializableTab {
     if (nd instanceof WindowSplitNode) {
       WindowSplitNode s = (WindowSplitNode) nd;
       b.append("split { ").append("e=").append(s.isModifiable()).append(" w=").append(s.getWeight()).append(" d=").append(s.isVertical()? "v" : "h").append('\n');
-      for (int i = 0; i < 2; i++) serializeAdd_rec(b, s.ch.get(i), depth+INDENT, more);
+      for (int i = 0; i < 2; i++) _serializeAdd_rec(b, s.ch.get(i), depth+INDENT, more);
       b.append(is).append("}");
     } else if (nd instanceof TabbedNode) {
       TabbedNode tn = (TabbedNode) nd;
@@ -98,6 +108,10 @@ public interface SerializableTab {
             b.append("\n    ").append(is).append(ct.replace("\n", "\n    "+is));
             b.append("\n  ").append(is).append('}');
           }
+        } else if (t instanceof TabbedNode.GroupTab) {
+          b.append("group { n=").append(JSON.quote(((TabbedNode.GroupTab) t).name)).append("\n");
+          _serializeAdd_rec(b, ((TabbedNode.GroupTab) t).getContent(), depth+INDENT+INDENT, more);
+          b.append(is).append(Tools.repeat(' ', INDENT)).append("}");
         } else {
           b.append(more.apply(t));
         }

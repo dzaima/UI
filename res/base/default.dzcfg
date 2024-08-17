@@ -60,16 +60,21 @@ tabbed.splitMenu = {
   mi { id=base_splitU "Split up" key=tabbed.keys.splitU }
   mi { id=base_splitD "Split down" key=tabbed.keys.splitD }
 }
+tabbed.barMenu.addGroup = {
+  mi { id=addGroup "Add group" key=tabbed.keys.addGroup }
+}
+tabbed.groupDefaultName = "group"
 tabbed.hideBar   = { mi { id=base_hideBar "Hide bar" } }
 tabbed.unhideBar = { mi { id=base_unhideBar "Unhide bar" } }
 tabbed.mergeMenu = { mi { id=base_merge "Merge" key=tabbed.keys.merge } }
 tabbed.unhideAdj = { mi { id=base_unhideAdj "Unhide adjacent bars" } }
 tabbed.keys {
   splitR = { "right" }
-  splitD = { "down" } 
+  splitD = { "down" }
   splitL = { "left" }
-  splitU = { "up" } 
+  splitU = { "up" }
   merge = { "m" }
+  addGroup = { "g" }
 }
 
 menu {

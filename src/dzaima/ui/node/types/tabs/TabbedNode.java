@@ -1,12 +1,12 @@
 package dzaima.ui.node.types.tabs;
 
 import dzaima.ui.eval.PNodeGroup;
-import dzaima.ui.gui.Graphics;
+import dzaima.ui.gui.*;
 import dzaima.ui.gui.io.Click;
 import dzaima.ui.node.*;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.prop.*;
-import dzaima.ui.node.types.ReorderableNode;
+import dzaima.ui.node.types.*;
 import dzaima.ui.node.utils.*;
 import dzaima.utils.*;
 
@@ -14,30 +14,48 @@ public class TabbedNode extends Node {
   public TabbedNode(Ctx ctx, Props props) {
     this(ctx, props, findTL(ctx, props));
   }
+  public TabbedNode(Ctx ctx) {
+    this(ctx, Props.none(), findTL(ctx, Props.none()));
+  }
   
   public TabbedNode(Ctx ctx, Props props, PNodeGroup tl) {
     super(ctx, props);
     Box<TabReorderNode> l = new Box<>();
     tabListW = ctx.makeKV(tl, "list", (Ctx.NodeGen) (ctx2, props2) -> {
-      TabReorderNode r = new TabReorderNode(ctx2, props2);
+      TabReorderNode r = new TabReorderNode(ctx2, props2, this);
       assert !l.has();
       l.set(r);
       return r;
     });
     tabList = l.get();
     assert tabList!=null;
+    updated();
+    mRedraw();
   }
   
-  public TabbedNode findNewHolder(Node c, int x, int y) {
+  public TabbedNode findNewHolder(Tab forWhat, Node c, int x, int y) {
     while (!Rect.inXYWH(x, y, 0, 0, c.w, c.h)) {
       x+= c.dx;
       y+= c.dy;
       c = c.p;
-      if (!(c instanceof WindowSplitNode)) return null; // incl. c==null
+      if (!(c instanceof WindowSplitNode || (c instanceof TabbedNode && ((TabbedNode) c).cTab() instanceof GroupTab))) return null; // incl. c==null
     }
     
     mid: while (true) {
-      if (c instanceof TabbedNode) return (TabbedNode) c;
+      if (c instanceof TabbedNode) {
+        Tab ct = ((TabbedNode) c).cTab();
+        if (ct instanceof GroupTab && ct.open) {
+          Node n = c.ch.get(1);
+          if (Rect.inXYWH(x, y, n.dx, n.dy, n.w, n.h)) {
+            if (ct==forWhat) return null;
+            x-= n.dx;
+            y-= n.dy;
+            c = n;
+            continue mid;
+          }
+        }
+        return (TabbedNode) c;
+      }
       
       for (Node n : c.ch) {
         if (Rect.inXYWH(x, y, n.dx, n.dy, n.w, n.h)) {
@@ -50,10 +68,13 @@ public class TabbedNode extends Node {
       return null;
     }
   }
-  private static class TabReorderNode extends ReorderableNode {
+  
+  public static class TabReorderNode extends ReorderableNode {
+    public final TabbedNode t;
     boolean wasSel, firstMove, canceledReorder;
-    public TabReorderNode(Ctx ctx, Props props) {
+    public TabReorderNode(Ctx ctx, Props props, TabbedNode t) {
       super(ctx, props);
+      this.t = t;
     }
     
     public boolean shouldReorder(int idx, Node n) {
@@ -70,6 +91,18 @@ public class TabbedNode extends Node {
     public void mouseStart(int x, int y, Click c) {
       depth = 0;
       super.mouseStart(x, y, c);
+      if (c.bR()) c.register(this, x, y);
+    }
+    
+    public void mouseDown(int x, int y, Click c) {
+      super.mouseDown(x, y, c);
+      if (c.bR()) {
+        PartialMenu m = new PartialMenu(gc);
+        m.add(gc.getProp("tabbed.barMenu.addGroup").gr(), "addGroup", () -> {
+          t.addTab(t.makeGroupTab());
+        });
+        m.open(ctx, c);
+      }
     }
     
     public void mouseTick(int x0, int y0, Click c) {
@@ -83,8 +116,8 @@ public class TabbedNode extends Node {
         int y = y0+rel.y;
         int d = Rect.xywh(0, 0, oh.w, Math.min(oh.h, h)).manhattanDistance(x, y);
         int md = firstMove? gc.getProp("tabbed.dragOutMinDist").len() : 0;
-        if (d > md && !Rect.xywh(0, 0, oh.w, oh.h).contains(x, y)) {
-          TabbedNode nh = oh.findNewHolder(oh, x, y);
+        if (d > md && (!Rect.xywh(0, 0, oh.w, oh.h).contains(x, y) || t.cTab() instanceof GroupTab)) {
+          TabbedNode nh = oh.findNewHolder(w.tab, oh, x, y);
           if (depth>10) {
             Log.warn("tabs", "recursive window moving!!");
           } else if (nh!=null) {
@@ -111,6 +144,10 @@ public class TabbedNode extends Node {
         w.tab.switchTo();
       }
     }
+  }
+  
+  private Tab makeGroupTab() {
+    return new GroupTab(this);
   }
   
   public void propsUpd() {
@@ -242,5 +279,48 @@ public class TabbedNode extends Node {
     
     Tab ct = cTab();
     if (ct!=null) ch.peek().resize(w, h-th, 0, th);
+  }
+  
+  public static class GroupTab extends Tab {
+    public String name;
+    private Node storedNode;
+    public GroupTab(TabbedNode t) {
+      this(t.gc.getProp("tabbed.groupDefaultName").str(), new TabbedNode(t.ctx));
+    }
+    
+    public GroupTab(String name, Node content) {
+      super(content.ctx);
+      this.name = name;
+      storedNode = content;
+    }
+    
+    public Node show() {
+      Node n = storedNode;
+      storedNode = null;
+      return n;
+    }
+    private Node getLive() {
+      assert w.o!=null;
+      return w.o.ch.get(1);
+    }
+    public void onHidden() {
+      storedNode = getLive();
+    }
+    public Node getContent() {
+      return open? getLive() : storedNode;
+    }
+    
+    public String name() { return name; }
+    
+    public void onRightClick(Click cl) {
+      PartialMenu m = new PartialMenu(ctx.gc);
+      m.addField(name, s -> {
+        name = s;
+        nameUpdated();
+      });
+      addMenuBarOptions(m);
+      WindowSplitNode.onTabRightClick(m, this);
+      m.open(ctx, cl);
+    }
   }
 }
