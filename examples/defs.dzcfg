@@ -6,7 +6,7 @@ example {
   
   ui = v { bg=#222
     example.$list{}
-    example.$def { id=a ct=1em }
+    example.$def { id=a ct={ "hello " color=#88A } }
     example.$def { id=b ct="bar" }
     example.$def { id=c ct="baz" }
     hl { pad=.2em
