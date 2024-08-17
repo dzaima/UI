@@ -147,6 +147,11 @@ def build_ui_lib(uiloc):
   return ["lib/ui"+x for x in cp]+["lib/UI.jar"]
 
 def make_run(path, classpath, main, flags = ""):
+  for arg in sys.argv:
+    if arg.startswith('jvm-args:'):
+      flags += ' '+arg[9:]
+    elif arg.startswith('jvm-arg:'):
+      flags += ' '+shstr(arg[8:])
   run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
 APPDIR=`dirname "$APPDIR"`
