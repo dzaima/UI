@@ -70,8 +70,7 @@ public class ReorderableNode extends PackedListNode {
     if (reVW==null && (mode==2 || !gc.isClick(c))) {
       if (shouldReorder(ch.indexOf(takenNode), takenNode)) {
         takenNode = reorderSelect(takenNode);
-        origIdx = currIdx = ch.indexOf(takenNode);
-        replace(currIdx, p1 -> new PlaceholderNode(ctx, p1, this));
+        origIdx = currIdx = takenNode.replaceSelfInParent(() -> new PlaceholderNode(ctx, takenNode, this));
         ctx.win().addVW(reVW = new ReVW(takenNode, ctx.win().focusedVW));
         reorderStarted(takenNode);
       } else canceled = true;

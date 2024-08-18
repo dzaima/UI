@@ -13,13 +13,13 @@ public class WindowSplitNode extends WeighedNode {
   }
   
   public boolean wantClick(Click c) {
-    return super.wantClick(c)  ||  c.bR() && (canMerge() || canUnhide());
+    return super.wantClick(c)  ||  c.bR();
   }
   
   public void mouseDown(int x, int y, Click c) {
     if (c.bR()) {
       PartialMenu m = new PartialMenu(gc);
-      if (canMerge()) m.add(gc.getProp("tabbed.mergeMenu").gr(), "base_merge", () -> {
+      if (canMerge()) m.add(gc.getProp("tabbed.splitMenu.merge").gr(), "base_merge", () -> {
         if (canMerge() && p!=null) {
           TabbedNode t0 = (TabbedNode) ch.get(0);
           TabbedNode t1 = (TabbedNode) ch.get(1);
@@ -29,14 +29,21 @@ public class WindowSplitNode extends WeighedNode {
             t1.removeTab(i);
             t0.addTab(t);
           }
-          p.replace(p.ch.indexOf(this), n -> n.ch.get(0));
+          replaceSelfInParent(() -> this.ch.get(0));
           if (toSelect!=null) toSelect.switchTo();
         }
       });
-      if (canUnhide()) m.add(gc.getProp("tabbed.unhideAdj").gr(), "base_unhideAdj", () -> {
+      if (canUnhide()) m.add(gc.getProp("tabbed.splitMenu.unhideAdj").gr(), "base_unhideAdj", () -> {
         for (Node n : ch) {
           if (n instanceof TabbedNode && ((TabbedNode) n).mode!=TabbedNode.Mode.ALWAYS) ((TabbedNode) n).setMode(TabbedNode.Mode.ALWAYS);
         }
+      });
+      m.add(gc.getProp("tabbed.splitMenu.wrapInGroup").gr(), "base_wrapInGroup", () -> {
+        replaceSelfInParent(() -> {
+          TabbedNode t = new TabbedNode(ctx);
+          t.addSelectedTab(new TabbedNode.GroupTab(this));
+          return t;
+        });
       });
       m.open(ctx, c);
     } else {
@@ -72,9 +79,9 @@ public class WindowSplitNode extends WeighedNode {
         WindowSplitNode sp = new WindowSplitNode(wp.ctx, v? dir_v : dir_h);
         TabbedNode t1 = new TabbedNode(wp.ctx);
         
-        wp.replace(wp.ch.indexOf(w), t0 -> {
-          sp.add(r? t1 : t0);
-          sp.add(r? t0 : t1);
+        w.replaceSelfInParent(() -> {
+          sp.add(r? t1 : w);
+          sp.add(r? w : t1);
           return sp;
         });
         

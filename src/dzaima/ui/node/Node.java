@@ -9,7 +9,7 @@ import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 
-import java.util.function.Function;
+import java.util.function.*;
 
 public abstract class Node implements Click.RequestImpl {
   public final Ctx ctx;
@@ -101,6 +101,11 @@ public abstract class Node implements Click.RequestImpl {
     ch.set(i, n);
     n.p = this;
     if (visible) { n.shown(); mMod(); }
+  }
+  public int replaceSelfInParent(Supplier<Node> f) { // returns affected index in parent
+    int i = p.ch.indexOf(this);
+    p.replace(i, n -> f.get());
+    return i;
   }
   public void swap(int i, int j) {
     if (i==j) return;

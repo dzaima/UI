@@ -24,14 +24,7 @@ public abstract class Tab {
   }
   
   public void addMenuBarOptions(PartialMenu m) {
-    boolean wm = w.o.mode == TabbedNode.Mode.WHEN_MULTIPLE;
-    if (wm || w.o.tabCount()==1) m.add(ctx.gc.getProp(wm? "tabbed.unhideBar" : "tabbed.hideBar").gr(), s -> {
-      switch (s) {
-        case "base_hideBar": w.o.setMode(TabbedNode.Mode.WHEN_MULTIPLE); return true;
-        case "base_unhideBar": w.o.setMode(TabbedNode.Mode.ALWAYS); return true;
-        default: return false;
-      }
-    });
+    w.o.addModeMenu(m);
   }
   
   public /*open*/ void switchTo() { // explicit selection; override to run an action on any selection of this tab

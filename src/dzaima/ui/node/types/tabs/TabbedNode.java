@@ -101,6 +101,7 @@ public class TabbedNode extends Node {
         m.add(gc.getProp("tabbed.barMenu.addGroup").gr(), "addGroup", () -> {
           t.addTab(t.makeGroupTab());
         });
+        t.addModeMenu(m);
         m.open(ctx, c);
       }
     }
@@ -144,6 +145,17 @@ public class TabbedNode extends Node {
         w.tab.switchTo();
       }
     }
+  }
+  
+  public void addModeMenu(PartialMenu m) {
+    boolean wm = mode == TabbedNode.Mode.WHEN_MULTIPLE;
+    if (wm || tabCount()==1) m.add(ctx.gc.getProp(wm? "tabbed.unhideBar" : "tabbed.hideBar").gr(), s -> {
+      switch (s) {
+        case "base_hideBar": setMode(TabbedNode.Mode.WHEN_MULTIPLE); return true;
+        case "base_unhideBar": setMode(TabbedNode.Mode.ALWAYS); return true;
+        default: return false;
+      }
+    });
   }
   
   private Tab makeGroupTab() {
@@ -285,12 +297,14 @@ public class TabbedNode extends Node {
     public String name;
     private Node storedNode;
     public GroupTab(TabbedNode t) {
-      this(t.gc.getProp("tabbed.groupDefaultName").str(), new TabbedNode(t.ctx));
+      this(null, new TabbedNode(t.ctx));
     }
-    
+    public GroupTab(Node content) {
+      this(null, content);
+    }
     public GroupTab(String name, Node content) {
       super(content.ctx);
-      this.name = name;
+      this.name = name==null? content.gc.getProp("tabbed.group.defaultName").str() : null;
       storedNode = content;
     }
     
@@ -312,12 +326,23 @@ public class TabbedNode extends Node {
     
     public String name() { return name; }
     
+    private boolean emptyContent() {
+      Node c = getContent();
+      return c instanceof TabbedNode && ((TabbedNode) c).tabCount()==0;
+    }
     public void onRightClick(Click cl) {
       PartialMenu m = new PartialMenu(ctx.gc);
       m.addField(name, s -> {
         name = s;
         nameUpdated();
       });
+      if (w.o.tabCount()==1) m.add(ctx.gc.getProp("tabbed.barMenu.unwrap").gr(), "unwrap", () -> {
+        if (w.o.tabCount()==1) w.o.replaceSelfInParent(this::getContent);
+      });
+      if (emptyContent()) m.add(w.gc.getProp("tabbed.group.delete").gr(), "remove", () -> {
+        if (emptyContent()) w.o.removeTab(w.o.tabIndex(this));
+      });
+      m.addSep();
       addMenuBarOptions(m);
       WindowSplitNode.onTabRightClick(m, this);
       m.open(ctx, cl);
