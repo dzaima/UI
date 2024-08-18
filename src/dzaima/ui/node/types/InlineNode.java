@@ -26,6 +26,7 @@ public abstract class InlineNode extends Node {
   
   protected abstract void addInline(InlineSolver sv);
   protected abstract void baseline(int asc, int dsc, int h);
+  protected boolean inlineChildren() { return true; }
   
   public static class InlineSolver {
     public final InlineNode resized; // node being resized, and thus whose parent should be ignored
@@ -105,11 +106,13 @@ public abstract class InlineNode extends Node {
   }
   
   public Node nearestProperCh(int x, int y) {
+    if (!inlineChildren()) return super.findCh(x, y);
     Node found = findCh(x, y);
     if (found!=null || ch.sz==0) return found;
     return y>h || y>0 && x>0? ch.peek() : ch.get(0);
   }
   public Node findCh(int x, int y) {
+    if (!inlineChildren()) return super.findCh(x, y);
     for (Node c : ch) {
       if (c instanceof InlineNode) {
         if (((InlineNode) c).in(x, y)) return c;
@@ -155,6 +158,8 @@ public abstract class InlineNode extends Node {
     protected void baseline(int asc, int dsc, int h) { }
     public int minW(     ) { return ch.get(0).minW( ); }
     public int minH(int w) { return ch.get(0).minH(w); }
+    
+    protected boolean inlineChildren() { return false; }
   }
   public static class TANode extends InlineNode {
     public TANode(Ctx ctx, Props props) {
