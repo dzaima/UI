@@ -187,11 +187,13 @@ public abstract class InlineNode extends Node {
       int x0 = Tools.ceil(sv.x);
       if (sv.resize) n.resize(cw, ch, x0, sv.y);
       sv.x = x0+cw;
-      String mode = mode();
-      if (mode.equals("above")) sv.a = Math.max(sv.a, ch);
-      else if (mode.equals("below")) sv.b = Math.max(sv.b, ch);
-      else if (mode.equals("top") || mode.equals("bottom")) sv.h = Math.max(sv.h, ch);
-      else Log.warn("node 'ta'", "invalid mode \""+mode+"\"");
+      switch (mode()) {
+        case "top":
+        case "bottom": sv.h = Math.max(sv.h, ch); break;
+        case "above":  sv.a = Math.max(sv.a, ch); break;
+        case "below":  sv.b = Math.max(sv.b, ch); break;
+        default: Log.warn("node 'ta'", "invalid mode \""+mode()+"\""); break;
+      }
     }
     public int minW() { return ch.get(0).minW(); }
     public int maxW() { return ch.get(0).maxW(); }
