@@ -145,12 +145,14 @@ public abstract class InlineNode extends Node {
     public FullBlock(Node ch) { super(ch.ctx, Props.none()); add(ch); }
     protected void addInline(InlineSolver sv) {
       if (sv.x!=0) sv.nl();
-      Node c = ch.get(0);
       sX = 0; eX = (short) w;
       sY1 = eY1 = (short) sv.y;
-      // if (sv.resize) // TODO this should really be here
-        c.resize(sv.w, c.minH(sv.w), 0, sv.y);
-      sv.y+= c.h;
+      
+      Node c = ch.get(0);
+      int ch = c.minH(sv.w);
+      if (sv.resize) c.resize(sv.w, ch, 0, sv.y);
+      
+      sv.y+= ch;
       sv.h = sv.a = sv.b = 0;
       sv.x = sv.w;
       sY2 = eY2 = (short) sv.y;
