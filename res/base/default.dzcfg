@@ -253,8 +253,8 @@ devtools {
     pad { x=1em bg=bg.middle
       h {
         h=1em
-        h { id=infoL }
-        h { id=infoR alX=right }
+        scroll { x=hidden y=off h { id=infoL } }
+        scroll { x=hidden y=off h { id=infoR alX=right } }
       }
     }
   }
