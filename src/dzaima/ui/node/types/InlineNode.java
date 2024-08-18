@@ -105,9 +105,9 @@ public abstract class InlineNode extends Node {
     }
   }
   
-  public Node nearestProperCh(int x, int y) {
-    if (!inlineChildren()) return super.findCh(x, y);
-    Node found = findCh(x, y);
+  public Node nearestCh(int x, int y) {
+    if (!inlineChildren()) return super.nearestCh(x, y);
+    Node found = findCh(x, y); // working off the assumption that this node is fully covered by the children
     if (found!=null || ch.sz==0) return found;
     return y>h || y>0 && x>0? ch.peek() : ch.get(0);
   }

@@ -27,7 +27,7 @@ public class Position {
     Vec<PosPart> textTodo = new Vec<>();
     
     while (true) {
-      Node n = c.nearestProperCh(fx, fy);
+      Node n = c.nearestCh(fx, fy);
       if (n==null) break;
       fx-= n.dx;
       fy-= n.dy;

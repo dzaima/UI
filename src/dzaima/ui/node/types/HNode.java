@@ -28,6 +28,10 @@ public class HNode extends FrameNode {
     return h;
   }
   
+  public Node nearestCh(int x, int y) {
+    return ListUtils.hFindNearest(ch, x, y);
+  }
+  
   public void drawCh(Graphics g, boolean full) {
     ListUtils.hDrawCh(g, full, this);
   }

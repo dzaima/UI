@@ -320,14 +320,15 @@ public abstract class Node implements Click.RequestImpl {
     for (Node c : ch) if (XY.inWH(x, y, c.dx, c.dy, c.w, c.h)) return c;
     return null;
   }
-  public /*open*/ Node nearestProperCh(int x, int y) { // return child that should handle incoming mouse events at x/y
-    return findCh(x, y);
-  }
   public /*open*/ Node nearestCh(int x, int y) {
     if (ch.sz<2) return ch.sz==0 || ch.get(0).w==-1? null : ch.get(0);
     int min = Integer.MAX_VALUE, curr;
     Node best = null;
-    for (Node c : ch) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) { min=curr; best = c; }
+    for (Node c : ch) if (c.w!=-1 && (curr=XY.dist(x, y, c.dx, c.dy, c.w, c.h))<min) {
+      if (curr == 0) return c;
+      min = curr;
+      best = c;
+    }
     return best;
   }
   public /*open*/ void mouseStart(int x, int y, Click c) {
