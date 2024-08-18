@@ -4,10 +4,12 @@ import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.gui.Graphics;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
-import dzaima.ui.node.prop.Props;
+import dzaima.ui.node.prop.*;
 import dzaima.utils.*;
 
-public class PadNode extends Node {
+import java.util.Collections;
+
+public class PadNode extends Node implements InlineNode.Scannable {
   
   private int pL, pU, pX, pY, bgCol;
   public PadNode(Ctx ctx, Props props) {
@@ -44,5 +46,10 @@ public class PadNode extends Node {
   public void resized() {
     assert ch.sz==1 : Devtools.debugMe(this)+" should have exactly 1 child";
     ch().resize(w-pX, h-pY, pL, pU);
+  }
+  
+  public Iterable<Node> scannableCh() {
+    Prop sc = getPropN("scannable");
+    return sc==null || sc.b()? ch : Collections.emptyList();
   }
 }
