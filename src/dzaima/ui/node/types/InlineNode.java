@@ -145,8 +145,6 @@ public abstract class InlineNode extends Node {
     public FullBlock(Node ch) { super(ch.ctx, Props.none()); add(ch); }
     protected void addInline(InlineSolver sv) {
       if (sv.x!=0) sv.nl();
-      sX = 0; eX = (short) w;
-      sY1 = eY1 = (short) sv.y;
       
       Node c = ch.get(0);
       int ch = c.minH(sv.w);
@@ -155,7 +153,6 @@ public abstract class InlineNode extends Node {
       sv.y+= ch;
       sv.h = sv.a = sv.b = 0;
       sv.x = sv.w;
-      sY2 = eY2 = (short) sv.y;
     }
     protected void baseline(int asc, int dsc, int h) { }
     public int minW(     ) { return ch.get(0).minW( ); }
