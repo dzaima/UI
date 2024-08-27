@@ -1,23 +1,57 @@
 #!/usr/bin/env python3
 import sys, os, platform, urllib.request, subprocess, shutil, hashlib
 
-if platform.system() == "Linux":
-  lib_os = "linux"
-elif platform.system() == "Darwin":
-  lib_os = "macos"
-elif "Win" in platform.system():
-  lib_os = "windows"
-else:
-  print(f'Unknown OS "{platform.system()}"; assuming Linux')
-  lib_os = "linux"
-
-if platform.machine().lower() in ["x86_64", "amd64"]:
-  lib_arch = "x64"
-elif platform.machine().lower() in ["aarch64", "arm64"]:
-  lib_arch = "arm64"
-else:
-  print(f'Unknown architecture "{platform.machine()}"')
+def fail(msg):
+  print(msg)
   sys.exit(1)
+
+def shstr(s):
+  return "'"+s.replace("'", "'\\''")+"'"
+
+skip_ui = False
+incremental = False
+extra_jvm_flags = ''
+lib_os = None
+lib_arch = None
+for arg in sys.argv[1:]:
+  if arg == 'skipui':
+    skip_ui = True
+  elif arg == 'i':
+    incremental = True
+  elif arg.startswith('jvm-args='):
+    extra_jvm_flags += ' '+arg[9:]
+  elif arg.startswith('jvm-arg='):
+    extra_jvm_flags += ' '+shstr(arg[8:])
+  elif arg.startswith('os='):
+    lib_os = arg[3:]
+    if not lib_os in ['linux', 'macos', 'windows']:
+      fail(f'Unknown OS: {lib_os}')
+      sys.exit(1)
+  elif arg.startswith('arch='):
+    lib_arch = arg[5:]
+    if not lib_arch in ['x64', 'arm64']:
+      fail(f'Unknown architecture: {lib_arch}')
+  else:
+    fail(f'Bad argument: "{arg}"')
+
+if lib_os is None:
+  if platform.system() == "Linux":
+    lib_os = "linux"
+  elif platform.system() == "Darwin":
+    lib_os = "macos"
+  elif "Win" in platform.system():
+    lib_os = "windows"
+  else:
+    print(f'Unsupported OS "{platform.system()}"; assuming Linux')
+    lib_os = "linux"
+
+if lib_arch is None:
+  if platform.machine().lower() in ["x86_64", "amd64"]:
+    lib_arch = "x64"
+  elif platform.machine().lower() in ["aarch64", "arm64"]:
+    lib_arch = "arm64"
+  else:
+    fail(f'Unsupported architecture "{platform.machine()}"')
 
 # lib_os="linux";lib_arch="x86_64"
 # lib_os="macos";lib_arch="x86_64"
@@ -72,11 +106,8 @@ def git_lib(path, git):
   subprocess.check_call(["git","submodule","update","--init",path2])
   return path2
 
-def shstr(s):
-  return "'"+s.replace("'", "'\\''")+"'"
-
 def jar(res, classpath, release = ""):
-  if not 'i' in sys.argv and os.path.exists("classes/"):
+  if not incremental and os.path.exists("classes/"):
     shutil.rmtree("classes/")
   mkdirs("classes/")
   res = os.path.abspath(res)
@@ -147,11 +178,7 @@ def build_ui_lib(uiloc):
   return ["lib/ui"+x for x in cp]+["lib/UI.jar"]
 
 def make_run(path, classpath, main, flags = ""):
-  for arg in sys.argv:
-    if arg.startswith('jvm-args:'):
-      flags += ' '+arg[9:]
-    elif arg.startswith('jvm-arg:'):
-      flags += ' '+shstr(arg[8:])
+  flags+= extra_jvm_flags
   run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
 APPDIR=`dirname "$APPDIR"`
@@ -189,7 +216,7 @@ def build_ui(res = "UI.jar"):
     lwjgl_lib("lwjgl-opengl", lwjgl_native, ["linux-x64-5972d4be0b1b68d86bc979a18e458e5e1e95a63c18fc9efe9c7cec794d5070df","macos-arm64-83e536559ff292da63381829c9fbf5c64199ac84e55122ed1fa61ec239bd8d6c","macos-x64-a021a0a472bb8a710db4793d674e5f163d2115d00de5002289a206a89796eba8","windows-x64-a364cc3322c0f1a1358988da8f160ad4efec5f6f22bbac9064e8f5836a16d2fe"]),
   ]
   
-  if not 'skipui' in sys.argv:
+  if not skip_ui:
     jar(res, classpath, "8")
   return classpath
 
