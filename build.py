@@ -14,6 +14,10 @@ extra_jvm_flags = ''
 keep_lib = False
 lib_os = None
 lib_arch = None
+components = {
+  'jwm': True, # disabling JWM doesn't work, whatever
+  'lwjgl': True,
+}
 for arg in sys.argv[1:]:
   if arg == 'skipui':
     skip_ui = True
@@ -34,6 +38,10 @@ for arg in sys.argv[1:]:
     lib_arch = arg[5:]
     if not lib_arch in ['x64', 'arm64']:
       fail(f'Unknown architecture: {lib_arch}')
+  elif arg.startswith('incl='):
+    components[arg[5:]] = True
+  elif arg.startswith('excl='):
+    components[arg[5:]] = False
   else:
     fail(f'Bad argument: "{arg}"')
 
@@ -124,16 +132,19 @@ def jar(res, classpath, release=''):
       cls_path = 'classes'+path
       mkdirs(cls_path)
       prev_classes.append(cls_path)
-      
+
       files = os.listdir(src_path)
+      if not components['lwjgl'] and src_path == 'src/dzaima/ui/gui/lwjgl':
+        files = []
+      
       new_left = [x for x in os.listdir(cls_path) if x.endswith('.class')]
       for f in files:
         new_left = rec_file(path+'/', f, new_left)
-      
+
       for c in new_left:
         # print('removing', f'classes{path}/{c}')
         os.remove(f'classes{path}/{c}') # remove files that aren't intended to be preserved
-      
+
       return left
     
     if not me.endswith('.java'): fail(f'Unexpected extension for src{path}')
@@ -201,10 +212,14 @@ def build_ui(res = 'UI.jar'):
   
   classpath = [
     maven_lib('io/github/humbleui', 'types', '0.2.0', 'lib', '38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8'),
-    maven_lib('io/github/humbleui', 'jwm', '0.4.13', 'lib', 'acc22fbb6b2259f26f74a94e5fff17196348a893187d3a4bea9a425f58690596'),
     maven_lib('io/github/humbleui', 'skija-shared', '0.116.1', 'lib', '27d1575798ab1c8c27f9e9ea8f2b179c2b606dae0ebf136c83b0fbb584ab6da0'),
     maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.116.1', 'lib', ['linux-x64-7c3ab50102ca2b4816954eaeb148fe62458646b2ac6c6611150658f6f8ff5f4b','macos-arm64-307f15824638f5a0d40e0271a7ca5f84d2f155de8caf57d136382b5983ad583e','macos-x64-f675cb22f949ababa2fa4b1999245ff2cba1b6d1b2268a453f1602aeb81716d4','windows-x64-ae333594d148571494aeec9e29c0a9138d9b184120f6932363e2d52730ee17a9']),
-    
+  ]
+  if components['jwm']: classpath+= [
+    maven_lib('io/github/humbleui', 'jwm', '0.4.13', 'lib', 'acc22fbb6b2259f26f74a94e5fff17196348a893187d3a4bea9a425f58690596'),
+  ]
+  
+  if components['lwjgl']: classpath+= [
     lwjgl_lib('lwjgl', '', 'd04bb83798305ffb8322a60ae99c9f93493c7476abf780a1fde61c27e951dd07'),
     lwjgl_lib('lwjgl-glfw', '', 'a4a464130eb8943b41036d9c18f3d94da7aafedec7f407848bbc3c674c93e648'),
     lwjgl_lib('lwjgl-nfd', '', '64b66ab4e63ca40612c23cab4b4c73be8676396ab1bc7617b364f93703ba3f61'),

@@ -286,7 +286,7 @@ public class Devtools extends NodeWindow implements Hijack {
   public void refresh() {
     Node iR = base.ctx.id("infoR");
     iR.clearCh();
-    iR.add(new StringNode(iR.ctx, String.format("%s %.2f FPS", Windows.getManager(), 1e9/getTime("frame"))));
+    iR.add(new StringNode(iR.ctx, String.format("%s %.2f FPS", Windows.getManagerType(), 1e9/getTime("frame"))));
     
     Node iC = base.ctx.id("infoC");
     iC.clearCh();
