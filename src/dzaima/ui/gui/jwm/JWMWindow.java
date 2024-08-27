@@ -2,7 +2,7 @@ package dzaima.ui.gui.jwm;
 
 import dzaima.ui.gui.Window.DrawReq;
 import dzaima.ui.gui.*;
-import dzaima.ui.gui.lwjgl.LwjglWindow;
+import dzaima.ui.gui.lwjgl.*;
 import dzaima.utils.Log;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Window;
@@ -60,9 +60,9 @@ public class JWMWindow extends WindowImpl {
     }
   }
   // TODO don't use LWJGL for this
-  public void openFolder(Path initial, Consumer<Path> onResult) { LwjglWindow.openFolderStatic(initial, onResult); }
-  public void openFile(String filter, Path initial, Consumer<Path> onResult) { LwjglWindow.openFileStatic(filter, initial, onResult); }
-  public void saveFile(String filter, Path initial, Consumer<Path> onResult) { LwjglWindow.saveFileStatic(filter, initial, onResult); }
+  public void openFolder(Path initial, Consumer<Path> onResult) { NFD.openFolderStatic(initial, onResult); }
+  public void openFile(String filter, Path initial, Consumer<Path> onResult) { NFD.openFileStatic(filter, initial, onResult); }
+  public void saveFile(String filter, Path initial, Consumer<Path> onResult) { NFD.saveFileStatic(filter, initial, onResult); }
   
   public void copyString(String s) {
     Clipboard.set(ClipboardEntry.makePlainText(s));

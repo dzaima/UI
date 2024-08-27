@@ -8,7 +8,6 @@ import io.github.humbleui.skija.impl.Library;
 import java.util.function.Consumer;
 
 public class JWMManager extends Windows {
-  
   public JWMManager() {
     if ("false".equals(System.getProperty("skija.staticLoad"))) Library.load();
   }

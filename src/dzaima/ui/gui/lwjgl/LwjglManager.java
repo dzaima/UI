@@ -6,8 +6,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Consumer;
 
-public class LWJGLManager extends Windows {
-  public LWJGLManager() {
+public class LwjglManager extends Windows {
+  public LwjglManager() {
   }
   
   protected Rect selfPrimaryDisplay() {
