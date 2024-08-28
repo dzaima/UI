@@ -184,7 +184,7 @@ public class JSON {
     public static final Obj E = new Obj(new String[0], new Val[0]);
     private String[] ks;
     private Val[] vs;
-    private HashMap<String, Val> map;
+    private volatile HashMap<String, Val> map;
     
     public Obj(String[] ks, Val[] vs) {
       this.ks = ks;
@@ -206,8 +206,9 @@ public class JSON {
     
     public void toMap() {
       if (map!=null) return;
-      map = new HashMap<>();
+      HashMap<String, Val> map = new HashMap<>();
       for (int i = 0; i < ks.length; i++) if (map.put(ks[i], vs[i]) != null) throw new RuntimeException("Duplicate entry for "+quote(ks[i]));
+      this.map = map;
     }
     
     public String[] orderedKeys() { return ks; }
