@@ -27,7 +27,7 @@ public class APLLang extends Lang {
   
   private static class APLState extends LangState<APLState> {
     public Chars fns = new Chars("^⌹⍳⍴!%*+,-<=>?|~⊢⊣⌷≤≥≠∨∧÷×∊↑↓○⌈⌊⊂⊃∩∪⊥⊤⍱⍲⍒⍋⍉⌽⊖⍟⍕⍎⍪≡≢⍷⍸⊆⊇⍧⍮√ϼ…");
-    public Chars mops = new Chars("¨⍨⌸⍁⍩ᑈᐵ⌶/\\&");
+    public Chars mops = new Chars("¨⍨⌸⍁⍩ᑈᐵ⌶/\\&⌿⍀");
     public Chars dops = new Chars(".@∘⌺⍫⍣⍢⍤⍛⍡⍥⍠");
     public APLState after(int sz, char[] p, byte[] b) { // TODO depthDelta
       int i = 0;
