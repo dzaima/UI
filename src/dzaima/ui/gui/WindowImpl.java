@@ -32,9 +32,9 @@ public abstract class WindowImpl {
   public abstract void setType(Window.WindowType t);
   public abstract void focus();
   
-  public abstract void openFolder(Path initial, Consumer<Path> onResult);
-  public abstract void openFile(String filter, Path initial, Consumer<Path> onResult);
-  public abstract void saveFile(String filter, Path initial, Consumer<Path> onResult);
+  public abstract void openFolder(Path initialDir, Consumer<Path> onResult);
+  public abstract void openFile(String filter, Path initialDir, Consumer<Path> onResult);
+  public abstract void saveFile(String filter, Path initialDir, String initialName, Consumer<Path> onResult);
   
   public abstract void copyString(String s);
   public abstract void pasteString(Consumer<String> f);
