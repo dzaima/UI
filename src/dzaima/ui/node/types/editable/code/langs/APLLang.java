@@ -43,7 +43,7 @@ public class APLLang extends Lang {
           }
         }
         else if (c=='{' | c=='}') { b[li] = 7; depthDelta+= (c=='{'?1:-1); }
-        else if (c=='⍺' | c=='⍵' | c=='⍶' | c=='⍶')  b[li] = 7;
+        else if (c=='⍺' | c=='⍵' | c=='⍶' | c=='⍹')  b[li] = 7;
         else if (c=='⋄' | c=='←' | c=='→')  b[li] = 8;
         else if (c=='#' | c=='⍬')  b[li] = 9;
         else if (c=='\'') {
