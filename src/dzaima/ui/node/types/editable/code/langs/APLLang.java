@@ -43,14 +43,15 @@ public class APLLang extends Lang {
           }
         }
         else if (c=='{' | c=='}') { b[li] = 7; depthDelta+= (c=='{'?1:-1); }
-        else if (c=='⍺' | c=='⍵' | c=='⍶' | c=='⍹')  b[li] = 7;
-        else if (c=='⋄' | c=='←' | c=='→')  b[li] = 8;
-        else if (c=='#' | c=='⍬')  b[li] = 9;
+        else if (c=='⍺' | c=='⍵' | c=='⍶' | c=='⍹') b[li] = 7;
+        else if (c=='⋄' | c=='←' | c=='→') b[li] = 8;
+        else if (c=='#' | c=='⍬') b[li] = 9;
         else if (c=='\'') {
           while (i<sz && p[i]!='\'') i++;
           Arrays.fill(b, li, i>=sz? i : i+1, (byte) 2);
           i++;
-        } else if (fns.contains(c))  b[li] = 4;
+        }
+        else if (fns.contains(c))  b[li] = 4;
         else if (mops.contains(c)) b[li] = 5;
         else if (dops.contains(c)) b[li] = 6;
         else b[li] = 0;
@@ -62,6 +63,6 @@ public class APLLang extends Lang {
     public int hashCode() { return 0; }
   }
   private static boolean isDig(int c) {
-    return c>='0'&c<='9' | c=='∞' | c=='¯' | c=='∞';
+    return c>='0'&c<='9' | c=='∞' | c=='¯';
   }
 }

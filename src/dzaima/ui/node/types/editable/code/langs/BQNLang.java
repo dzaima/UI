@@ -80,6 +80,6 @@ public class BQNLang extends Lang {
   }
   
   private static boolean isDig(int c) {
-    return c>='0'&c<='9' | c=='∞' | c=='¯' | c=='∞' | c=='π';
+    return c>='0'&c<='9' | c=='∞' | c=='¯' | c=='π';
   }
 }
