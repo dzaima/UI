@@ -304,7 +304,7 @@ public class TabbedNode extends Node {
     }
     public GroupTab(String name, Node content) {
       super(content.ctx);
-      this.name = name==null? content.gc.getProp("tabbed.group.defaultName").str() : null;
+      this.name = name==null? content.gc.getProp("tabbed.group.defaultName").str() : name;
       storedNode = content;
     }
     
