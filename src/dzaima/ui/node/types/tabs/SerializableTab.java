@@ -22,9 +22,11 @@ public interface SerializableTab {
     return b.toString();
   }
   
-  static HashMap<String, Prop> props(PNodeGroup g) {
+  static HashMap<String, Prop> props(Ctx ctx, PNodeGroup g) {
     HashMap<String, Prop> r = new HashMap<>();
-    for (int j = 0; j < g.ks.length; j++) r.put(g.ks[j], g.vs[j]);
+    for (Pair<String, Prop> c : ctx.finishProps(g, null).entries()) {
+      r.put(c.a, c.b);
+    }
     return r;
   }
   static Node deserializeTree(Ctx ctx, String s, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
@@ -34,7 +36,7 @@ public interface SerializableTab {
   
   
   static Node _deserialize_rec(Ctx ctx, PNodeGroup g, HashMap<String, Function<HashMap<String, Prop>, Tab>> ctors) {
-    HashMap<String, Prop> p = props(g);
+    HashMap<String, Prop> p = props(ctx, g);
     switch (g.name) {
       case "split": {
         WindowSplitNode r = new WindowSplitNode(ctx, Props.of("dir", new EnumProp(p.get("d").val())));
@@ -60,15 +62,19 @@ public interface SerializableTab {
           if (ctor==null) {
             if ("group".equals(g2.name)) {
               assert g2.ch.sz==1;
-              t = new TabbedNode.GroupTab(props(g2).get("n").str(), _deserialize_rec(ctx, (PNodeGroup) g2.ch.get(0), ctors));
+              t = new TabbedNode.GroupTab(props(ctx, g2).get("n").str(), _deserialize_rec(ctx, (PNodeGroup) g2.ch.get(0), ctors));
             } else {
               throw new IllegalStateException("Deserialization constructor for '"+g2.name+"' not found");
             }
           } else {
-            t = ctor.apply(props(g2));
+            t = ctor.apply(props(ctx, g2));
           }
-          TabWrapper w = tn.addTab(t);
-          if (i==sel) tn.toTab(w);
+          if (t!=null) {
+            TabWrapper w = tn.addTab(t);
+            if (i==sel) tn.toTab(w);
+          } else {
+            Log.warn("tab deserialize", "Couldn't deserialize "+g2.name);
+          }
           i++;
         }
         return tn;
