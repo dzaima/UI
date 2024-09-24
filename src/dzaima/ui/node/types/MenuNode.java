@@ -102,14 +102,14 @@ public class MenuNode extends Node {
       padX = (short) (padL+padR);
       
       Vec<PNode> keys = keys();
-      if (keys!=null) {
+      if (keys!=null && keys.sz>0) {
         f = gc.defFont.size(gc.getProp("menu.keybindSize").len());
         StringBuilder b = new StringBuilder();
         for (PNode n : keys) {
           if (b.length()>0) b.append(", ");
           b.append(Objects.requireNonNull(Key.byName(((PNode.PNodeStr) n).s)).repr());
         }
-        binds = b.length()==0? "(unassigned)" : b.toString();
+        binds = b.toString();
         bindW = f.widthf(binds);
         padX+= (short) bindW;
       } else {
