@@ -16,10 +16,11 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 public class JWMWindow extends WindowImpl {
   public static final boolean DEBUG_UPDATES = false;
+  public static Function<JWMWindow, Layer> preferredLayer = (w) -> new LayerGLSkija();
   
   public final int id; // roughly unique identifier of the current window (as long as your program hasn't made 4 billion windows)
   public Window jwmw;
@@ -118,7 +119,7 @@ public class JWMWindow extends WindowImpl {
     jwmw = App.makeWindow();
     eh = new JWMEventHandler(this);
     jwmw.setEventListener(eh);
-    layer = new LayerGLSkija();
+    layer = preferredLayer.apply(this);
     layer.attach(jwmw);
     
     

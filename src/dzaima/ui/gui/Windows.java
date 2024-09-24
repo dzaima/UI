@@ -1,9 +1,10 @@
 package dzaima.ui.gui;
 
 import dzaima.utils.*;
+import io.github.humbleui.jwm.Layer;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.function.Consumer;
+import java.util.function.*;
 
 public abstract class Windows {
   public static int MAX_WINDOWS = 10;
