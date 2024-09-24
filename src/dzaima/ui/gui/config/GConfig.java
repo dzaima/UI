@@ -35,7 +35,10 @@ public class GConfig {
     addCfg(() -> Tools.readRes("base/default.dzcfg"));
   }
   
+  private boolean initialEM = true;
   public void setEM(int em) {
+    if (initialEM) initialEM = false;
+    else Log.info("ui", "EM set to "+em);
     this.em = em;
     imgScale = em>10 && em<16? 1 : em/13f; // don't scale images if they'd be scaled by too little (to keep pixels real pixels)
     cfgUpdated();
