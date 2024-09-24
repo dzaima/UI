@@ -9,6 +9,10 @@ public class Key {
   public Key(KeyVal val, int mod) {
     assert val!=null;
     this.val = val;
+    if (val==KeyVal.shift) mod&=~M_SHIFT;
+    if (val==KeyVal.ctrl) mod&=~M_CTRL;
+    if (val==KeyVal.alt) mod&=~M_ALT;
+    if (val==KeyVal.meta) mod&=~M_SUP;
     this.mod = mod;
   }
   
