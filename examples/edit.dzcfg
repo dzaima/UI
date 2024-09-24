@@ -34,14 +34,14 @@ v {
           x=hidden
           reorderable { dir=h mode=drag
             v{bg=#444 pad { x=1em y=.2em u=.1em "EditNode.java"         }h{h=.1em bg=#48f}}
-            v{        pad { x=1em y=.2em u=.1em "ScrollNode.java"       }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "this is a placeholder" }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "Node.java"             }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "PadNode.java"          }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "CodeAreaNode.java"     }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "TextNode.java"         }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "JSON.java"             }h{h=.1em        }}
-            v{        pad { x=1em y=.2em u=.1em "InlineNode.java"       }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "ScrollNode.java"       }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "this is a placeholder" }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "Node.java"             }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "PadNode.java"          }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "CodeAreaNode.java"     }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "TextNode.java"         }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "JSON.java"             }h{h=.1em        }}
+            v{bg=#333 pad { x=1em y=.2em u=.1em "InlineNode.java"       }h{h=.1em        }}
           }
         }
       }
