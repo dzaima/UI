@@ -21,7 +21,7 @@ ex.$text = text { $s }
 ex.$hl = h { pad=0.1em bg=#420 alY=center $ch }
 
 
-ui = v { bg=#151515 scroll { x=off v {
+example.ui = v { bg=#151515 scroll { x=off v {
   weighed { dir=v pad=2em handleWidth=1em padCol=#126
     
     

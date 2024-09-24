@@ -1,4 +1,4 @@
-h { bg=#222
+example.ui = h { bg=#222
   h {
     bg=#111111
     h=250px

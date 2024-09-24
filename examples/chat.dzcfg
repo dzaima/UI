@@ -1,4 +1,4 @@
-h {
+example.ui = h {
   scroll { x=off tempOverlap=true
     weight=.3
     w=10em:20em

@@ -1,4 +1,4 @@
-v { alX=center bg=#111
+example.ui = v { alX=center bg=#111
   "top"
   h { alY=center alX=center
     h { h=min "left" alX=right }

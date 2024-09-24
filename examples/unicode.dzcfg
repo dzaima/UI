@@ -1,4 +1,4 @@
-v { bg=#333
+example.ui = v { bg=#333
   vl {
     h { "hello" hsep{x=0em y=0em color=#F0F} stext{"hello"} hsep{x=0em y=0em color=#F0F} }
     h { "⍶⍹⍺+⍵" hsep{x=0em y=0em color=#F0F} stext{"⍶⍹⍺+⍵"} hsep{x=0em y=0em color=#F0F} }

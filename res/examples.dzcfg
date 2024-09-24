@@ -1,0 +1,7 @@
+example.custom.keys {
+  fontPlus = { "ctrl+shift+=" "ctrl+plus" }
+  fontMinus = { "ctrl+minus" }
+  reloadCfg = { "f5" }
+  openDevtools = { "f12" }
+  toggleLegacyStringRendering = { "f2" }
+}

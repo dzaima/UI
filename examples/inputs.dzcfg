@@ -1,4 +1,4 @@
-pad { bg=#333 all=0.2em
+example.ui = pad { bg=#333 all=0.2em
   h {
     vl { select=v pad=.1em
       label { for=lcb1 h { pad=.2em checkbox {id=lcb1} "labeled checkbox 1" } }

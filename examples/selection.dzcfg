@@ -1,4 +1,4 @@
-h { bg=#333
+example.ui = h { bg=#333
   v { select=v pad=.1em
     h { bg=#222 alX=center alY=center "item 1" }
     h { bg=#222 alX=center alY=center "item 2" }

@@ -1,4 +1,4 @@
-v { bg=#333
+example.ui = v { bg=#333
   weighed { dir=h weight=.58
     pad=.1em padCol=#111
     weighed { dir=v weight=.75

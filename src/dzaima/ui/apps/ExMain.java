@@ -2,7 +2,6 @@ package dzaima.ui.apps;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.ui.apps.fmgr.FMgr;
-import dzaima.ui.apps.examples.TabExampleMain;
 import dzaima.ui.eval.*;
 import dzaima.ui.gui.*;
 import dzaima.ui.gui.config.GConfig;
@@ -15,9 +14,7 @@ import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
 
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Consumer;
+import java.nio.file.*;
 
 public class ExMain extends NodeWindow {
   public static int dtc = 0;
@@ -26,31 +23,37 @@ public class ExMain extends NodeWindow {
     super(gc, pctx, g, new WindowInit(title));
   }
   
-  public static void run(Windows mgr) {
-    GConfig gc = GConfig.newConfig();
+  public static void run(Windows mgr, String mode) {
+    GConfig gc = GConfig.newConfig(gc0 -> {
+      gc0.addCfg(() -> Tools.readRes("examples.dzcfg"));
+      gc0.addCfg(() -> {
+        Path LOCAL_CFG = Paths.get("local.dzcfg");
+        if (Files.exists(LOCAL_CFG)) return Tools.readFile(LOCAL_CFG);
+        return "";
+      });
+    });
     BaseCtx ctx = Ctx.newCtx();
     
-    // NodeWindow w = FMgr.create(gc, Paths.get("."));
     
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/layouts.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/tree.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/text.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/unicode.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/selection.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/weighed.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/chat.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/scrollTest.dzcfg")));
-    // PNodeGroup g = Prs.parseNode(Tools.readFile(Paths.get("examples/inputs.dzcfg")));
-    // gc.addCfg(() -> Tools.readFile(Paths.get("examples/defs.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("example.ui").gr();
-    // gc.addCfg(() -> Tools.readFile(Paths.get("examples/solverTests.dzcfg"))); gc.reloadCfg(); PNodeGroup g = gc.getProp("ui").gr(); ctx.put("format", FormatNode::new);
-    // ExMain w = new ExMain(gc, ctx, g, "example window");
     
-    ExMain w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
-    CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
-    ed.setLang(w.gc.langs().fromName("java"));
-    int s = ed.um.pushIgnore();
-    ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
-    ed.um.popIgnore(s);
+    NodeWindow w;
+    if (mode.equals("file-manager")) {
+      w = FMgr.create(gc, Paths.get("."));
+      
+    } else if (mode.startsWith("examples/")) {
+      gc.addCfg(() -> Tools.readFile(Paths.get(mode))); gc.reloadCfg();
+      if (mode.equals("examples/solverTests.dzcfg")) ctx.put("format", FormatNode::new);
+      w = new ExMain(gc, ctx, gc.getProp("example.ui").gr(), "example window");
+      
+    } else {
+      w = new ExMain(gc, ctx, Prs.parseNode(Tools.readFile(Paths.get("examples/edit.dzcfg"))), "example window");
+      CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
+      ed.setLang(w.gc.langs().fromName("java"));
+      int s = ed.um.pushIgnore();
+      ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
+      ed.um.popIgnore(s);
+    }
+    
     
     
     if (dtc == 0) {
@@ -80,41 +83,30 @@ public class ExMain extends NodeWindow {
     }
   }
   
+  static boolean printKeys;
   public static void main(String[] args) {
-    Windows.setManager(Windows.Manager.JWM);
-    Windows.start(ExMain::run);
-    // Windows.start(TabExampleMain::run);
+    String mode = args.length==0? "" : args[0];
+    if (mode.equals("keys")) printKeys = true;
+    Windows.start(w -> ExMain.run(w, mode));
   }
   
   public boolean key(Key key, int scancode, KeyAction a) {
-    if (a.press) {
-      if (key.k_f12()) {
-        createTools();
-        return true;
-      }
-      if (key.k_f5()) {
-        gc.reloadCfg();
-        base.mRedraw();
-        base.mResize();
-        return true;
-      }
-      if (key.k_f2()) {
-        StringNode.PARAGRAPH_TEXT^= true;
-        base.mRedraw();
-        return true;
-      }
-      if (key.onlyCtrl()) {
-        if (key.k_add())   { gc.setEM(gc.em+1); return true; }
-        if (key.k_minus()) { gc.setEM(gc.em-1); return true; }
-      }
+    if (printKeys) System.out.println(key.repr());
+    switch (gc.keymap(key, a, "example.custom")) {
+      case "reloadCfg": gc.reloadCfg(); return true;
+      case "openDevtools": createTools(); return true;
+      case "toggleLegacyStringRendering": StringNode.PARAGRAPH_TEXT^= true; gc.cfgUpdated(); return true;
+      case "fontPlus":  gc.setEM(gc.em+1); return true;
+      case "fontMinus": gc.setEM(gc.em-1); return true;
     }
+    
     return super.key(key, scancode, a);
   }
   
   
-  // code for selection example
   public void tick() {
     super.tick();
+    // code for examples/selection.dzcfg
     Node info = base.ctx.idNullable("selectInfo");
     if (info!=null) {
       Node t = base.ctx.id("insertText");

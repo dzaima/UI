@@ -1,4 +1,4 @@
-v { select=text
+example.ui = v { select=text
   h { bg=#222
     h { w=200px bg=#232 }
     vl {

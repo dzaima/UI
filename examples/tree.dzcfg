@@ -1,4 +1,4 @@
-h { bg=#111
+example.ui = scroll { bg=#111
   pad { all=.5em
     v { w=min h=min bg=#333
       tree {
