@@ -32,7 +32,7 @@ public abstract class Windows {
       String className;
       switch (mgrType) { default: throw new IllegalStateException();
         case JWM:   className = "dzaima.ui.gui.jwm.JWMManager"; break;
-        case LWJGL: className = "dzaima.ui.gui.lwjgl.LWGJLManager"; break;
+        case LWJGL: className = "dzaima.ui.gui.lwjgl.LwjglManager"; break;
       }
       Class<? extends Windows> cl = Class.forName(className).asSubclass(Windows.class);
       mgrSelected = cl.getConstructor().newInstance();
