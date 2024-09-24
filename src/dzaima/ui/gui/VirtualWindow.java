@@ -8,10 +8,8 @@ import io.github.humbleui.skija.*;
 public abstract class VirtualWindow {
   public static boolean DEBUG_REDRAW = false;
   
-  private Surface lastSurface;
-  public Graphics g;
   public final NodeWindow w;
-  private boolean newCanvas;
+  public Graphics g;
   public Rect rect;
   
   protected VirtualWindow(NodeWindow w) { this.w = w; }
@@ -23,43 +21,44 @@ public abstract class VirtualWindow {
   protected abstract boolean implRequiresRedraw();
   
   public final boolean requiresRedraw() {
-    return implRequiresRedraw() || newCanvas;
+    return implRequiresRedraw();
   }
   
-  public final void newSurface(Surface s, int pw, int ph) {
-    lastSurface = s;
-    newRect(getLocation(pw, ph), true);
-  }
-  public final void newRect(Rect nr, boolean newCanvas) {
-    Rect pr = rect;
-    if (newCanvas || !nr.equals(pr)) {
-      rect = nr;
-      if (pr==null || pr.w()!=nr.w() || pr.h()!=nr.h() || newCanvas) {
-        if (g!=null) g.close();
-        ImageInfo ii = lastSurface.getImageInfo().withWidthHeight(Math.max(1, nr.w()), Math.max(1, nr.h()));
-        if (fullyOpaque()) ii = ii.withColorAlphaType(ColorAlphaType.OPAQUE);
-        g = new OffscreenGraphics(lastSurface, ii);
-        this.newCanvas = true;
-        newSize();
-      }
-    }
+  public final void newParentSize(int pw, int ph) {
+    newRect(getLocation(pw, ph));
   }
   public final void newRect() {
-    newRect(getLocation(w.w, w.h), false);
+    newRect(getLocation(w.w, w.h));
+  }
+  public final void newRect(Rect nr) {
+    Rect pr = rect;
+    if (!nr.equals(pr)) {
+      rect = nr;
+      newSize();
+    }
   }
   
-  public final boolean draw() {
-    boolean req = requiresRedraw();
-    if (req) {
-      implDraw(g, newCanvas);
-      newCanvas = false;
+  private Surface lastParentSurface;
+  public final boolean renderSelf(Graphics parent) {
+    Surface ps = parent.currSurface();
+    boolean refresh = ps!=lastParentSurface;
+    if (refresh) {
+      lastParentSurface = ps;
+      if (g!=null) g.close();
+      ImageInfo ii = ps.getImageInfo().withWidthHeight(Math.max(1, rect.w()), Math.max(1, rect.h()));
+      if (fullyOpaque()) ii = ii.withColorAlphaType(ColorAlphaType.OPAQUE);
+      g = new OffscreenGraphics(ps, ii);
     }
+    
+    boolean req = requiresRedraw();
+    if (req) implDraw(g, refresh);
     if (DEBUG_REDRAW) g.rect(0, 0, g.w, g.h, 0x10000000);
     return req;
   }
   
   public void drawTo(Graphics pg) {
-    if (g instanceof OffscreenGraphics) ((OffscreenGraphics) g).drawTo(pg, rect.sx, rect.sy);
+    assert g instanceof OffscreenGraphics;
+    ((OffscreenGraphics) g).drawTo(pg, rect.sx, rect.sy);
   }
   
   public abstract boolean ownsXY(int x, int y);

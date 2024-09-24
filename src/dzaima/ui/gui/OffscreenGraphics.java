@@ -18,6 +18,10 @@ public class OffscreenGraphics extends Graphics {
     init(surface);
   }
   
+  public Surface currSurface() {
+    return surface;
+  }
+  
   public void close() {
     surface.close();
   }

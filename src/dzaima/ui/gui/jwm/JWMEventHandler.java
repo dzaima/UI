@@ -6,6 +6,8 @@ import dzaima.utils.Log;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Key;
 import io.github.humbleui.jwm.*;
+import io.github.humbleui.jwm.skija.EventFrameSkija;
+import io.github.humbleui.skija.Surface;
 import io.github.humbleui.types.IRect;
 
 import java.util.function.*;
@@ -18,6 +20,7 @@ public class JWMEventHandler implements Consumer<Event> {
   public final Window jwmw;
   public int wx, wy;
   public boolean running;
+  public Consumer<Surface> skijaFrameDraw;
   
   public JWMEventHandler(JWMWindow w) {
     this.w = w;
@@ -41,12 +44,16 @@ public class JWMEventHandler implements Consumer<Event> {
         if (JWMWindow.DEBUG_UPDATES) Log.info("JWM", w.id+" EventFrame");
         paint();
       }
+    } else if (ev instanceof EventFrameSkija) {
+      if (skijaFrameDraw!=null) skijaFrameDraw.accept(((EventFrameSkija) ev).getSurface());
+      else Log.warn("JWM", "No skijaFrameDraw at EventFrameSkija");
+      skijaFrameDraw = null;
     } else if (ev instanceof EventWindowScreenChange) {
       if (w.visible) {
         w.layer.reconfigure();
         IRect r = jwmw.getContentRect();
         w.layer.resize(r.getWidth(), r.getHeight());
-        paint();
+        w.w.updateSize.set(true);
       }
     } else if (ev instanceof EventWindowResize) {
       EventWindowResize e = (EventWindowResize) ev;

@@ -59,12 +59,12 @@ public abstract class WindowImpl {
   
   
   public MainGraphics winG = new MainGraphics();
-  public abstract void startDraw(boolean needed);
-  public abstract void endDraw(boolean needed);
-  public abstract Surface runResize();
+  public abstract void draw(Runnable draw);
+  public abstract void runResize();
   
   public final AtomicBoolean shouldStop = new AtomicBoolean(false);
   public abstract void closeOnNext();
+  public abstract boolean requiresDraw();
   
   
   

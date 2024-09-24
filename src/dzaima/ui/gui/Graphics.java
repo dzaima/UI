@@ -24,6 +24,7 @@ public abstract class Graphics {
     w = s.getWidth();
     h = s.getHeight();
   }
+  public abstract Surface currSurface();
   public abstract void close();
   
   

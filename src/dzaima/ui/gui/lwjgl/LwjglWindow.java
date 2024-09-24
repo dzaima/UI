@@ -235,13 +235,17 @@ public class LwjglWindow extends WindowImpl {
     queue.add(r);
   }
   
-  public boolean needsDraw() { return false; }
-  public void startDraw(boolean needed) { }
-  public void endDraw(boolean needed) { }
+  public boolean requiresDraw() { return false; }
   
-  public Surface runResize() {
+  public void draw(Runnable draw) {
+    draw.run();
+  }
+  public void skipDraw() {
+    draw(() -> {});
+  }
+  
+  public void runResize() {
     newCanvas();
-    return surface;
   }
   
   public void closeOnNext() {
@@ -284,8 +288,7 @@ public class LwjglWindow extends WindowImpl {
     if (draw) {
       w.nextDraw(winG, r==Window.DrawReq.FULL);
     } else {
-      startDraw(false);
-      endDraw(false);
+      skipDraw();
     }
     
     context.flush();

@@ -7,6 +7,7 @@ import dzaima.utils.Log;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Window;
 import io.github.humbleui.jwm.*;
+import io.github.humbleui.jwm.skija.LayerGLSkija;
 import io.github.humbleui.skija.Surface;
 import io.github.humbleui.types.IRect;
 
@@ -108,7 +109,7 @@ public class JWMWindow extends WindowImpl {
   
   ///////// setup \\\\\\\\\
   private JWMEventHandler eh;
-  public SkijaLayerGL layer;
+  public Layer layer;
   void make() {
     assert state.get()==0;
     state.set(1);
@@ -117,7 +118,7 @@ public class JWMWindow extends WindowImpl {
     jwmw = App.makeWindow();
     eh = new JWMEventHandler(this);
     jwmw.setEventListener(eh);
-    layer = new SkijaLayerGL(this);
+    layer = new LayerGLSkija();
     layer.attach(jwmw);
     
     
@@ -142,12 +143,6 @@ public class JWMWindow extends WindowImpl {
   }
   
   
-  public void newCanvas(Surface s) {
-    winG.setSurface(s);
-    w.w = winG.w;
-    w.h = winG.h;
-  }
-  
   ///////// runtime \\\\\\\\\
   private final LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
   public void enqueue(Runnable r) {
@@ -158,20 +153,22 @@ public class JWMWindow extends WindowImpl {
     App.runOnUIThread(r);
   }
   
-  public boolean needsDraw() {
-    return layer.uninitialized;
-  }
-  public void startDraw(boolean needed) {
-    if (needed) layer.beforePaint();
-  }
-  public void endDraw(boolean needed) {
-    if (needed) layer.afterPaint();
-    else layer.skipPaint();
+  public boolean requiresDraw() {
+    return false;
   }
   
-  public Surface runResize() {
-    return layer.initParts();
+  private Surface lastSurface;
+  public void draw(Runnable draw) {
+    eh.skijaFrameDraw = (s) -> {
+      if (lastSurface != s) {
+        winG.setSurface(s);
+        lastSurface = s;
+      }
+      draw.run();
+    };
+    layer.frame();
   }
+  public void runResize() { }
   
   public void closeOnNext() {
     shouldStop.set(true);
@@ -187,7 +184,7 @@ public class JWMWindow extends WindowImpl {
   private long prevFrameStartNs = -1;
   private long prevFrameStartMs = -1;
   
-  public void nextFrame(boolean onlyTick) { // if !onlyTick, return 
+  public void nextFrame(boolean onlyTick) {
     assert state.get()==1;
     if (drawRequest==null) {
       prevFrameStartNs = System.nanoTime();
@@ -202,6 +199,7 @@ public class JWMWindow extends WindowImpl {
         drawRequest = w.nextTick();
       } catch (Throwable e) {
         dzaima.ui.gui.Window.onFrameError(w, e);
+        drawRequest = DrawReq.NONE;
         // TODO should request tick?
         return;
       }
@@ -283,9 +281,7 @@ public class JWMWindow extends WindowImpl {
     stopped = true;
     if (w.hijack!=null) w.hijack.hStopped();
     setVisible(false);
-    startDraw(true);
-    w.stopped();
-    endDraw(true);
+    draw(w::stopped);
     
     layer.close();
     jwmw.close();

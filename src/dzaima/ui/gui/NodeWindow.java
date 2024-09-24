@@ -9,7 +9,6 @@ import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
 import dzaima.ui.node.types.StringNode;
 import dzaima.utils.*;
-import io.github.humbleui.skija.Surface;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
@@ -51,11 +50,9 @@ public class NodeWindow extends Window {
   
   public void addVW(VirtualWindow vw) {
     vws.add(vw);
-    if (setupDone) { // TODO don't
-      vw.started();
-      vw.newSurface(lastSurface, w, h);
-      requestDraw = true;
-    }
+    vw.started();
+    vw.newParentSize(w, h);
+    requestDraw = true;
   }
   
   public void stopped() {
@@ -219,7 +216,7 @@ public class NodeWindow extends Window {
     boolean any = requestDraw;
     for (VirtualWindow c : vws) {
       if (c.shouldRemove()) continue;
-      if (c.draw()) any = true;
+      if (c.renderSelf(g)) any = true;
       c.drawTo(g);
       if (c.drawShadow()) g.canvas.drawRectShadow(c.rect.skiaf().inflate(1), 0, 0, shBlur, shSpread, shColor);
     }
@@ -234,10 +231,8 @@ public class NodeWindow extends Window {
   public void maybeResize() {
     for (VirtualWindow vw : vws) vw.maybeResize();
   }
-  private Surface lastSurface; // TODO decide if there's a better way
-  public void resized(Surface s) {
-    lastSurface = s;
-    for (VirtualWindow vw : vws) vw.newSurface(s, w, h);
+  public void resized() {
+    for (VirtualWindow vw : vws) vw.newParentSize(w, h);
   }
   
   public void openDevtoolsTo(Node n) { // for debugging

@@ -29,7 +29,7 @@ public abstract class Window {
   ///////// interface \\\\\\\\\
   
   public abstract void setup();
-  public abstract void resized(Surface s); // called on startup
+  public abstract void resized(); // called on startup
   public abstract boolean draw(Graphics g, boolean full); // return if drew anything different from previous frame
   public abstract void eventTick();
   public abstract void maybeResize();
@@ -118,7 +118,8 @@ public abstract class Window {
     } else if (framesSinceSetup<10) framesSinceSetup++;
     boolean resize = updateSize.getAndSet(false);
     if (resize) {
-      resized(impl.runResize());
+      impl.runResize();
+      resized();
     }
     
     // regular events
@@ -132,37 +133,14 @@ public abstract class Window {
     if (t!=null) t.time("tick");
     maybeResize();
     
-    // redraw
-    // nodrawFrames++;
-    // int toolsRedraw = t!=null? t.redrawInsp() : 0;
-    // boolean drawNeeded = ALWAYS_REDRAW || shouldRedraw() || resize || toolsRedraw==2;
-    // boolean copyNeeded = USE_OFFSCREEN && (drawNeeded || DEBUG_REDRAW || nodrawFrames<20);
-    //
-    // impl.startDraw(drawNeeded || copyNeeded);
-    // Graphics prim = impl.winG;
-    // if (drawNeeded) {
-    //   int prevCount = prim.canvas.getSaveCount();
-    //   draw(prim, ALWAYS_REDRAW || toolsRedraw!=0 || resize);
-    //   if (prim.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
-    //   nodrawFrames = Math.min(nodrawFrames, 0);
-    // }
-    // if (DEBUG_REDRAW) prim.rect(0, 0, w, h, 0x10000000);
-    // if (copyNeeded) offscreen.drawTo(impl.winG.canvas, 0, 0);
-    // if (t!=null) t.time("draw");
-    //
-    // impl.endDraw(drawNeeded);
-    // if (t!=null) t.time("flush");
-    
     int toolsRedraw = hijack!=null? hijack.hRedraw() : 0;
     boolean draw = resize || toolsRedraw==2 || requiresDraw();
-    boolean full = resize || toolsRedraw!=0;
-    
+    boolean full = resize || toolsRedraw!=0 || impl.requiresDraw();
     return full? DrawReq.FULL : draw? DrawReq.PARTIAL : (impl.misuseBuffers && nodrawFrames<20? DrawReq.TEMP : DrawReq.NONE);
   }
   public void nextDraw(Graphics g, boolean full) {
     Devtools t = tools;
-    impl.startDraw(true);
-    try {
+    impl.draw(() -> {
       int prevCount = g.canvas.getSaveCount();
       boolean drew = draw(g, full);
       if (g.canvas.getSaveCount() != prevCount) throw new RuntimeException("Unmatched saves and restores");
@@ -170,9 +148,7 @@ public abstract class Window {
       if (drew) nodrawFrames = Math.min(nodrawFrames, 0);
       else nodrawFrames++;
       if (t!=null) t.time("draw");
-    } finally {
-      impl.endDraw(true);
-    }
+    });
   }
   public void postDraw(boolean didDraw, long sns) {
     frameCount++;
@@ -204,5 +180,5 @@ public abstract class Window {
   }
   
   // deprecated methods for erroring on usage
-  @Deprecated public final void resized() { throw new AssertionError(); }
+  @Deprecated public final void resized(Surface s) { throw new AssertionError(); }
 }
