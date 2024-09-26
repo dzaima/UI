@@ -83,6 +83,6 @@ public abstract class VirtualWindow {
   
   public abstract boolean shouldRemove();
   public /*open*/ void stopped() {
-    g.close();
+    if (g!=null) g.close();
   }
 }
