@@ -80,4 +80,11 @@ public abstract class WindowImpl {
       return null;
     }
   }
+  
+  
+  
+  protected String initAppClass() {
+    if (init.appClass!=null) return init.appClass;
+    return w.getClass().getCanonicalName();
+  }
 }

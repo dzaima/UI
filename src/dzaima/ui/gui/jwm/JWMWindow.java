@@ -130,7 +130,7 @@ public class JWMWindow extends WindowImpl {
     
     setTitle(init.title);
     setType(init.type);
-    if (init.appClass!=null) setClassHint(init.appClass);
+    setClassHint(initAppClass());
     Rect r = init.rect;
     if (r==null) {
       Rect d = WindowInit.defaultExtraRect();
