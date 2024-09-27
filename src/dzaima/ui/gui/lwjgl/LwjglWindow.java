@@ -82,6 +82,10 @@ public class LwjglWindow extends WindowImpl {
       glfwInitHint(GLFW_COCOA_MENUBAR, GLFW_FALSE);
       title = "Menu";
     }
+    if (init.appClass!=null) {
+      glfwWindowHintString(GLFW_X11_CLASS_NAME, init.appClass);
+      glfwWindowHintString(GLFW_X11_INSTANCE_NAME, init.appClass);
+    }
     w.hints();
     
     Rect r = init.rect;

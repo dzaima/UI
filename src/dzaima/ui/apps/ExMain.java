@@ -15,6 +15,7 @@ import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
 
 import java.nio.file.*;
+import java.util.Arrays;
 
 public class ExMain extends NodeWindow {
   public static int dtc = 0;
@@ -85,6 +86,10 @@ public class ExMain extends NodeWindow {
   
   static boolean printKeys;
   public static void main(String[] args) {
+    if (args.length!=0 && args[0].equals("lwjgl")) {
+      Windows.setManager(Windows.Manager.LWJGL);
+      args = Arrays.copyOfRange(args, 1, args.length);
+    }
     String mode = args.length==0? "" : args[0];
     if (mode.equals("keys")) printKeys = true;
     Windows.start(w -> ExMain.run(w, mode));

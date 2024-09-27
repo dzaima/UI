@@ -7,6 +7,7 @@ public class WindowInit {
   public boolean visible = true;
   public Window.WindowType type = Window.WindowType.NORMAL;
   public Rect rect; // if null, maximized
+  public String appClass;
   
   public WindowInit(String title, Rect windowed) {
     this.title = title;
@@ -33,6 +34,10 @@ public class WindowInit {
   }
   public WindowInit setMaximized() {
     this.rect = null;
+    return this;
+  }
+  public WindowInit setAppClass(String appClass) {
+    this.appClass = appClass;
     return this;
   }
   

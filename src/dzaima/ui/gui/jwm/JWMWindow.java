@@ -85,6 +85,11 @@ public class JWMWindow extends WindowImpl {
     //   ((WindowX11) jwmw)._nDecorations(t==dzaima.ui.gui.Window.WindowType.POPUP? false : true);
     // }
   }
+  public void setClassHint(String appClass) {
+    // if (jwmw instanceof WindowX11) {
+    //   ((WindowX11) jwmw).setClassHint(appClass);
+    // }
+  }
   
   public void focus() {
     // jwmw.focus();
@@ -125,6 +130,7 @@ public class JWMWindow extends WindowImpl {
     
     setTitle(init.title);
     setType(init.type);
+    if (init.appClass!=null) setClassHint(init.appClass);
     Rect r = init.rect;
     if (r==null) {
       Rect d = WindowInit.defaultExtraRect();

@@ -68,7 +68,7 @@ public class NodeWindow extends Window {
     Node prev = _focusNode;
     if (prev == n) return;
     _focusNode = n;
-    boolean vis0 = n==null? false : n.visible;
+    boolean vis0 = n!=null && n.visible;
     if (prev != null) prev.focusE();
     if (n == null) return;
     
