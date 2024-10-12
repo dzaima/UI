@@ -39,6 +39,15 @@ public abstract class Graphics {
     Paint._nSetColor(tempPaintPtr, col);
     return tempPaint;
   }
+  private final Paint tempStroke = new Paint();
+  private final long tempStrokePtr = Native.getPtr(tempStroke);
+  public Paint strokePaintO(int col, float w) {
+    Paint._nReset(tempStrokePtr);
+    tempStroke.setMode(PaintMode.STROKE);
+    Paint._nSetColor(tempStrokePtr, col);
+    Paint._nSetStrokeWidth(tempStrokePtr, w);
+    return tempStroke;
+  }
   
   public void push() {
     clips.add(clip);
@@ -112,6 +121,9 @@ public abstract class Graphics {
   
   public void line(int x0, int y0, int x1, int y1, int col) {
     canvas.drawLine(x0+.5f, y0+.5f, x1+.5f, y1+.5f, paintO(col));
+  }
+  public void line(float x0, float y0, float x1, float y1, Paint p) {
+    canvas.drawLine(x0, y0, x1, y1, p);
   }
   public void dashH(int x, int y, int l, Paint p) {
     canvas.drawLine(x, y+.5f, x+l, y+.5f, p);
