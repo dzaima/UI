@@ -191,10 +191,12 @@ public class NodeWindow extends Window {
     hoveredVW.scroll(dx*speed, dy*speed);
   }
   public boolean key(Key key, int scancode, KeyAction a) {
-    keyMod = key.mod;
     if (focusedVW!=null) return focusedVW.key(key, scancode, a);
     Node n = focusNode();
     return n!=null && n.keyF(key, scancode, a);
+  }
+  public void modifiers(int mods) {
+    keyMod = mods;
   }
   
   public void typed(int p) {

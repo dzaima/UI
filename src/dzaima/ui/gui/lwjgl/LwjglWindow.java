@@ -188,6 +188,7 @@ public class LwjglWindow extends WindowImpl {
             Log.warn("LWJGL", "Unhandled key "+key);
             kv=KeyVal.unknown;
       }
+      w.modifiers(kmod);
       if (!w.key(new Key(kv, kmod), scancode, action==GLFW_PRESS? KeyAction.PRESS : action==GLFW_RELEASE? KeyAction.RELEASE : KeyAction.REPEAT)) {
         if (key==GLFW_KEY_ESCAPE && action==GLFW_PRESS && ESC_EXIT) glfwSetWindowShouldClose(cw, true);
       }

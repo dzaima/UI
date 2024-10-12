@@ -50,6 +50,7 @@ public abstract class Window {
   public abstract void mouseUp(int x, int y, Click c);
   public abstract void scroll(float dx, float dy, boolean shift);
   public abstract boolean key(Key key, int scancode, KeyAction action);
+  public abstract void modifiers(int mods);
   public abstract void typed(int p);
   
   ///////// interaction \\\\\\\\\

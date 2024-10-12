@@ -104,6 +104,7 @@ public class JWMEventHandler implements Consumer<Event> {
       boolean p = e.isPressed();
       KeyLocation l = e.getLocation();
       lastModifiers = mod(e::isModifierDown) | (l==KeyLocation.KEYPAD? P_KP : l==KeyLocation.RIGHT? P_RIGHT : 0);
+      ww.modifiers(lastModifiers);
       boolean handled = ww.key(new dzaima.ui.gui.io.Key(KeyVal.of(k), lastModifiers), 0, e.isPressed()? KeyAction.PRESS : KeyAction.RELEASE);
       if (k==Key.ESCAPE && WindowImpl.ESC_EXIT) {
         if (p) escPressHandled = handled;
