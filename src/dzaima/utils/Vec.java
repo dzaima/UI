@@ -5,7 +5,7 @@ import java.util.function.*;
 
 @SuppressWarnings("unchecked")
 public final class Vec<T> implements Iterable<T> {
-  T[] arr;
+  T[] arr; // null for alwaysEmpty()
   public int sz;
   static Object[] EMPTY = new Object[0];
   public Vec() {
@@ -26,8 +26,13 @@ public final class Vec<T> implements Iterable<T> {
     this.arr = (T[]) arr.toArray(new Object[0]);
     sz = arr.size();
   }
+  private Vec(Void aVoid) {
+    this.arr = null;
+    sz = 0;
+  }
   
   public T get(int i) {
+    assert i < sz;
     return arr[i];
   }
   
@@ -51,12 +56,14 @@ public final class Vec<T> implements Iterable<T> {
     return t;
   }
   public <Q extends T> Q insert(int i, Q t) {
+    assert i<=sz;
     if (++sz >= arr.length) dcap();
     System.arraycopy(arr, i, arr, i+1, sz-i);
     arr[i] = t;
     return t;
   }
   public void insert(int i, Vec<T> t) {
+    assert i<=sz;
     int osz = sz;
     sz+= t.sz;
     while (sz >= arr.length) dcap();
@@ -64,6 +71,7 @@ public final class Vec<T> implements Iterable<T> {
     System.arraycopy(t.arr, 0, arr, i, t.sz);
   }
   public void set(int i, T t) {
+    assert i<sz;
     arr[i] = t;
   }
   public int remove(T c) { // returns index of item deleted
@@ -74,20 +82,26 @@ public final class Vec<T> implements Iterable<T> {
     return i;
   }
   public T[] get(int s, int e, Class<T[]> c) {
+    assert e<=sz;
     return Arrays.copyOfRange(arr, s, e, c);
   }
   public void remove(int s, int e) {
+    assert e<=sz;
     System.arraycopy(arr, e, arr, s, sz-e);
     int nsz = sz - (e-s);
     Arrays.fill(arr, nsz, sz, null);
     sz = nsz;
   }
   public void removeAt(int i) {
+    assert i < sz;
     System.arraycopy(arr, i+1, arr, i, sz-i-1);
     arr[--sz] = null;
   }
   public <Q extends T> void addAll(int i, Q[] t) {
     addAll(i, t, 0, t.length);
+  }
+  public <Q extends T> void addAll(Q[] t) {
+    addAll(sz, t, 0, t.length);
   }
   public <Q extends T> void addAll(int i, Vec<Q> arr) {
     addAll(i, arr.arr, 0, arr.sz);
@@ -99,6 +113,7 @@ public final class Vec<T> implements Iterable<T> {
     addAll(i, arr.arr, s, e);
   }
   public <Q extends T> void addAll(int i, Q[] t, int s, int e) {
+    assert i <= sz;
     int l = e-s;
     while (arr.length < sz+l) dcap();
     System.arraycopy(arr, i, arr, i+l, sz-i);
@@ -127,6 +142,9 @@ public final class Vec<T> implements Iterable<T> {
   
   public int size() {
     return sz;
+  }
+  public boolean isEmpty() {
+    return sz==0;
   }
   
   public T[] toArray(Object[] arr) { // guarantees returning a new instance
@@ -189,6 +207,14 @@ public final class Vec<T> implements Iterable<T> {
     };
   }
   
+  public static <T> boolean allEquals(Vec<T> a, Vec<T> b) {
+    if (a.sz != b.sz) return false;
+    for (int i = 0; i < a.sz; i++) {
+      if (!Objects.equals(a.arr[i], b.arr[i])) return false;
+    }
+    return true;
+  }
+  
   public String toString() {
     StringBuilder b = new StringBuilder("[");
     for (int i = 0; i < sz; i++) {
@@ -215,10 +241,21 @@ public final class Vec<T> implements Iterable<T> {
   public static <R, T extends R> Vec<R> ofExCollection(Collection<T> vs) {
     return ofReuse((R[]) vs.toArray(new Object[0]));
   }
+  
+  private static final Vec<?> EMPTY_VEC = new Vec<>((Void) null);
+  public static <T> Vec<T> frozenEmpty() {
+    return (Vec<T>) EMPTY_VEC;
+  }
+  
   public static <T> Vec<T> ofIterable(Iterable<T> vs) {
     Vec<T> r = new Vec<>();
     for (T v : vs) r.add(v);
     return r;
+  }
+  public static <T> Vec<T> init(int size, IntFunction<T> nth) {
+    T[] elts = (T[]) new Object[size];
+    for (int i = 0; i < size; i++) elts[i] = nth.apply(i);
+    return Vec.ofReuse(elts);
   }
   
   public void clear() {
