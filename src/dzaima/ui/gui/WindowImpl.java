@@ -2,7 +2,6 @@ package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
 import dzaima.utils.*;
-import io.github.humbleui.skija.Surface;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicBoolean;

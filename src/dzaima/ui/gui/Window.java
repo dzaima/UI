@@ -98,7 +98,7 @@ public abstract class Window {
   public final AtomicBoolean updateSize = new AtomicBoolean(true);
   public int nodrawFrames=-60, framesSinceSetup;
   public enum DrawReq { NONE, TEMP, PARTIAL, FULL };
-  public DrawReq nextTick() { // 0-don't draw; 1-needs partial draw; 2-needs full draw
+  public DrawReq nextTick() {
     long sns = System.nanoTime();
     Devtools t = tools;
     if (t!=null) t.timeStart(sns);
