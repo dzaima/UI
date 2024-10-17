@@ -107,11 +107,9 @@ public abstract class Popup {
   
   public boolean defaultKeys(Key key, KeyAction a) {
     switch (node.gc.keymap(key, a, "menu")) {
-      case "exit":
-        close();
-        return true;
+      case "exit": close(); return true;
+      default: return false;
     }
-    return false;
   }
   
   public static class RightClickMenu extends Popup implements Click.RequestImpl {

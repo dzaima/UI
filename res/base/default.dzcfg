@@ -210,6 +210,29 @@ textfield.padX = .2em
 textfield.padY = .2em
 textfield.radius = .2em
 
+colorpicker {
+  borderCol = #666
+  borderW = 0.07em
+  sz = 1.4em
+  full = pad { bg=bg.back all=.3em }
+  
+  fullUI = v { w=15em h=24em
+    vl { pad=.2em
+      v { id=boardPlace pad=.2em }
+      h { pad=1em alX=center btn{"RGB"} btn{"HSV"} }
+      v { id=sliders }
+    }
+  }
+  rgbSliders = {
+    h { alY=center "R " slider{} }
+    h { alY=center "G " slider{} }
+    h { alY=center "B " slider{} }
+  }
+  keys {
+    exit = menu.genericExit
+  }
+}
+
 devtools {
   ui = v {
     h { h=min bg=bg.header pad=0.2em // TODO move some of these buttons to a more debuggy place
