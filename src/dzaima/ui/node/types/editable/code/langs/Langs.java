@@ -15,7 +15,7 @@ public class Langs {
     addLang("APL",     new APLLang(), "apl");
     addLang("Java",    new JavaLang(), "java");
     addLang("Rust",    new RustLang(), "rs");
-    addLang("C",       new CLang(), "c", "h", "cc", "cpp", "hh", "hpp", "cxx", "hxx"); // temporarily includes c++ extensions too
+    addLang("C",       new CLang(), "c", "h", "cc", "cpp", "hh", "hpp", "cxx", "hxx", "tcc"); // temporarily includes c++ extensions too
     addLang("BQN",     new BQNLang(), "bqn");
     addLang("Singeli", new SingeliLang(), "singeli");
     addLang("assembly", AsmLang.GENERIC);
