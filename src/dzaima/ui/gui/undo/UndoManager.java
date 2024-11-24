@@ -66,29 +66,34 @@ public class UndoManager {
   public void pushU(String id) { push(id, 0); } // unimportant frame - doesn't clear redos
   
   public int groupDepth;
+  private boolean cancelFrame;
   public void push(String id, int mode) {
     if (mode!=0) solidifyTemp();
     if (groupDepth==0) curr = new UndoFrame(id, mode, gc.lastMs);
     groupDepth++;
+    cancelFrame = false;
   }
   
   private boolean forceImportantNext;
   @SuppressWarnings("StringEquality") // no reason to do full string comparison, jvm guarantees constant interning
-  public void pop() {
+  public UndoFrame pop() { // returns final frame, or null if still has push stack entries
     assert groupDepth>0;
     groupDepth--;
-    if (groupDepth!=0) return;
-    Vec<UndoFrame> myList = curr.mode==0? usT : us;
+    if (groupDepth!=0) return null;
+    UndoFrame f = curr;
+    if (cancelFrame) return f; // if clear() happened between push & pop
+    Vec<UndoFrame> myList = f.mode==0? usT : us;
     UndoFrame last = myList.peek();
     
-    long ms = curr.time;
-    curr.important = forceImportantNext  ||  last==null  ||  curr.mode==2  ||  curr.mode==1 && (last.id!=curr.id || ms > last.time+mergeTimeout);
+    long ms = f.time;
+    f.important = forceImportantNext  ||  last==null  ||  f.mode==2  ||  f.mode==1 && (last.id!=f.id || ms > last.time+mergeTimeout);
     
-    myList.add(curr);
-    if (curr.mode!=0) rs.clear();
+    myList.add(f);
+    if (f.mode!=0) rs.clear();
     
     curr = null;
     forceImportantNext = false;
+    return f;
   }
   
   public int pushIgnore() { // makes edits done just completely disappear. be very careful about this! meant for initializing things on just created objects
@@ -105,6 +110,7 @@ public class UndoManager {
     us.clear();
     usT.clear();
     rs.clear();
+    if (groupDepth > 0) cancelFrame = true;
   }
   
   public void forceBoundary() { // ensure that it's possible to undo/redo to this point
