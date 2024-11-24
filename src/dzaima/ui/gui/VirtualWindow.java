@@ -41,7 +41,7 @@ public abstract class VirtualWindow {
   private Surface lastParentSurface;
   public final boolean renderSelf(Graphics parent) {
     Surface ps = parent.currSurface();
-    boolean refresh = ps!=lastParentSurface;
+    boolean refresh = ps!=lastParentSurface || g==null || g.w!=rect.w() || g.h!=rect.h();
     if (refresh) {
       lastParentSurface = ps;
       if (g!=null) g.close();
