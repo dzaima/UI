@@ -11,6 +11,7 @@ def shstr(s):
 skip_ui = False
 incremental = False
 extra_jvm_flags = ''
+cmd_prefix = ''
 keep_lib = False
 lib_os = None
 lib_arch = None
@@ -29,6 +30,8 @@ for arg in sys.argv[1:]:
     extra_jvm_flags += ' '+arg[9:]
   elif arg.startswith('jvm-arg='):
     extra_jvm_flags += ' '+shstr(arg[8:])
+  elif arg.startswith('cmd-prefix='):
+    cmd_prefix += arg[11:]+' '
   elif arg.startswith('os='):
     lib_os = arg[3:]
     if not lib_os in ['linux', 'macos', 'windows']:
@@ -197,7 +200,7 @@ def make_run(path, classpath, main, flags = ''):
   run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
 APPDIR=`dirname "$APPDIR"`
-java -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
+{cmd_prefix}java -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
 """
 
   with open(path, 'w') as f:
