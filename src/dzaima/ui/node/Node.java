@@ -132,6 +132,11 @@ public abstract class Node implements Click.RequestImpl {
   
   public void shown() {
     assert !visible : getClass()+" shown twice!";
+    if (p!=null && p.ctx.vw()!=ctx.vw()) {
+      Log.error("show", getClass()+" shown within a parent with different vw");
+      Log.stacktraceHere("show");
+      Devtools.debugMe(this);
+    }
     visible = true;
     hProps(); // this was previously under a (flags&PROPS)!=0 but that doesn't work when a node is removed from the tree, global em changed, and readded
     for (Node c : ch) c.shown();
