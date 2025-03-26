@@ -139,6 +139,8 @@ public class Key {
   
   public String repr() {
     StringBuilder r = new StringBuilder();
+    if (onRight()) r.append("right+");
+    if (onKeypad()) r.append("keypad+");
     if (hasCtrl()) r.append("ctrl+");
     if (hasAlt()) r.append("alt+");
     if (hasShift()) r.append("shift+");
