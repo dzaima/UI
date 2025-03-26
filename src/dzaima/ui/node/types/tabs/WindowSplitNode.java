@@ -45,6 +45,8 @@ public class WindowSplitNode extends WeighedNode {
           return t;
         });
       });
+      m.add(gc.getProp("tabbed.splitMenu.swap").gr(), "base_swap", () -> swap(0, 1));
+      m.add(gc.getProp("tabbed.splitMenu.rotate").gr(), "base_rotate", () -> setProp("dir", new EnumProp(v? "h" : "v")));
       m.open(ctx, c);
     } else {
       super.mouseDown(x, y, c);

@@ -71,6 +71,8 @@ tabbed.unhideBar = { mi { id=base_unhideBar "Unhide bar" } }
 tabbed.splitMenu.merge = { mi { id=base_merge "Merge" key=tabbed.keys.merge } }
 tabbed.splitMenu.unhideAdj = { mi { id=base_unhideAdj "Unhide adjacent bars" } }
 tabbed.splitMenu.wrapInGroup = { mi { id=base_wrapInGroup "Wrap in group" key=tabbed.keys.group } }
+tabbed.splitMenu.swap = { mi { id=base_swap "Swap" key=tabbed.keys.swap } }
+tabbed.splitMenu.rotate = { mi { id=base_rotate "Rotate" key=tabbed.keys.rotate } }
 tabbed.keys {
   splitR = { "right" }
   splitD = { "down" }
@@ -81,6 +83,8 @@ tabbed.keys {
   hideBar = { "h" }
   unwrap = { "x" }
   remove = { "x" }
+  swap = { "s" }
+  rotate = { "r" }
 }
 
 menu {
