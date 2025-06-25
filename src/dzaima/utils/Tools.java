@@ -151,6 +151,13 @@ public class Tools {
       throw new RuntimeException(e);
     }
   }
+  public static byte[] readBin(Path p) {
+    try {
+      return Files.readAllBytes(p);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
   public static void writeFile(Path p, String s) {
     try {
       Files.write(p, s.getBytes(StandardCharsets.UTF_8));
@@ -161,6 +168,9 @@ public class Tools {
   
   public static String readRes(String s) {
     return Tools.readFile(RES_DIR.resolve(s));
+  }
+  public static byte[] readResBin(String s) {
+    return Tools.readBin(RES_DIR.resolve(s));
   }
   
   public static void sleep(int ms) {
