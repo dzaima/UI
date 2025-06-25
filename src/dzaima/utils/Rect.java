@@ -27,7 +27,7 @@ public class Rect {
   public int h() { return ey-sy; }
   
   public boolean intersects(Rect that) {
-    return ex <= that.sx || that.ex <= sx || ey <= that.ex || that.ey <= ex;
+    return ey > that.sy && sy < that.ey && ex > that.sx && sx < that.ex;
   }
   public static boolean inXYWH(int x, int y, int sx, int sy, int w, int h) {
     return x>=sx & y>=sy & x<sx+w & y<sy+h;
