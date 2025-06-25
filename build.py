@@ -15,6 +15,7 @@ cmd_prefix = ''
 keep_lib = False
 lib_os = None
 lib_arch = None
+override_main = None
 components = {
   'jwm': True, # disabling JWM doesn't work, whatever
   'lwjgl': False,
@@ -32,6 +33,8 @@ for arg in sys.argv[1:]:
     extra_jvm_flags += ' '+shstr(arg[8:])
   elif arg.startswith('cmd-prefix='):
     cmd_prefix += arg[11:]+' '
+  elif arg.startswith('override-main='):
+    override_main = arg[14:]+' '
   elif arg.startswith('os='):
     lib_os = arg[3:]
     if not lib_os in ['linux', 'macos', 'windows']:
@@ -196,6 +199,8 @@ def build_ui_lib(uiloc):
   return ['lib/ui'+x for x in cp]+['lib/UI.jar']
 
 def make_run(path, classpath, main, flags = ''):
+  if override_main is not None:
+    main = override_main
   flags+= extra_jvm_flags
   run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
