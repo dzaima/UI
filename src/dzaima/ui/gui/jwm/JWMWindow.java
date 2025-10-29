@@ -86,9 +86,9 @@ public class JWMWindow extends WindowImpl {
     // }
   }
   public void setClassHint(String appClass) {
-    // if (jwmw instanceof WindowX11) {
-    //   ((WindowX11) jwmw).setClassHint(appClass);
-    // }
+    if (jwmw instanceof WindowX11) {
+      ((WindowX11) jwmw).setClassHint(appClass);
+    }
   }
   
   public void focus() {
