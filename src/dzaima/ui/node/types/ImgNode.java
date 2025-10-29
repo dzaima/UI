@@ -23,16 +23,20 @@ public class ImgNode extends Node { // TODO remove
     updSize();
   }
   
+  public void setImg(Image i) {
+    img = i;
+    iw = img.getWidth();
+    ih = img.getHeight();
+    updSize();
+  }
   public void setImg(byte[] data) {
     try {
-      img = Image.makeDeferredFromEncodedBytes(data); // TODO async
-      iw = img.getWidth();
-      ih = img.getHeight();
+      setImg(Image.makeDeferredFromEncodedBytes(data)); // TODO async
     } catch (Throwable e) {
       img = null;
       iw = ih = 10;
+      updSize();
     }
-    updSize();
   }
   private void updSize() {
     sc = gc.imgScale;
