@@ -81,7 +81,7 @@ public class Tools {
     return e;
   }
   
-  public static <E, K> Vec<Pair<K, Vec<E>>> group(Vec<E> values, Function<E, K> by) {
+  public static <E, K> Vec<Pair<K, Vec<E>>> group(Iterable<E> values, Function<E, K> by) {
     LinkedHashMap<K, Vec<E>> t = new LinkedHashMap<>();
     for (E v : values) {
       K k = by.apply(v);
