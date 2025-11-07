@@ -320,16 +320,11 @@ public class Devtools extends NodeWindow implements Hijack {
         addRow(infoT, "field:ctx"     , insp.ctx+"");
         if (!insp.visible) addRow(infoT, "visible", "false");
         int inspW = insp.w;
-        addRow(infoT, "actual width"  , inspW+"px");
-        addRow(infoT, "actual height" , insp.h+"px");
-        addRow(infoT, "screen X"      , pos.x+"px");
-        addRow(infoT, "screen Y"      , pos.y+"px");
-        addRow(infoT, "delta X"       , insp.dx+"px");
-        addRow(infoT, "delta Y"       , insp.dy+"px");
-        addRow(infoT, "minW"          , insp.minW()+"px");
-        addRow(infoT, "maxW"          , insp.maxW()+"px");
-        addRow(infoT, "minH("+inspW+")",insp.minH(inspW)+"px");
-        addRow(infoT, "maxH("+inspW+")",insp.maxH(inspW)+"px");
+        addRow(infoT, "actual size"   , "w="+inspW+"px h="+insp.h+"px");
+        addRow(infoT, "screen XY"     , pos.x+"px;"+pos.y+"px");
+        addRow(infoT, "delta XY"      , insp.dx+"px;"+insp.dy+"px");
+        addRow(infoT, "minW…maxW"     , insp.minW()+"px…"+insp.maxW()+"px");
+        addRow(infoT, "minH("+inspW+")…maxH("+inspW+")",insp.minH(inspW)+"px…"+insp.maxH(inspW)+"px");
         addRow(infoT, "children count", insp.ch.sz+"");
         if (selected instanceof InlineNode) {
           InlineNode c = (InlineNode) selected;
