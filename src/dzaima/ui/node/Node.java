@@ -243,6 +243,10 @@ public abstract class Node implements Click.RequestImpl {
       g.pop();
     }
   }
+  public final void bgBasicFill(Graphics g, boolean full, int col) { // basic single-color bg(g, full) implementation
+    if (Tools.st(col)) pbg(g, full);
+    if (Tools.vs(col)) g.rect(0, 0, w, h, col);
+  }
   public final void tick() {
     int f0 = flags;
     if ((f0&(ATICK|MTICK|PROPS|ANYCT)) == 0) return;

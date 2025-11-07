@@ -21,8 +21,7 @@ public class TRNode extends TRTNode {
   public void bg(Graphics g, boolean full) {
     int c = hasBg? bg : (pos&1)==0? t.bg1 : t.bg2;
     if (ctx.focusedNode()==this) c = t.bgSel;
-    if (Tools.st(c)) pbg(g, full);
-    if (Tools.vs(c)) g.rect(0, 0, w, h, c);
+    bgBasicFill(g, full, c);
   }
   
   public void mouseStart(int x, int y, Click c) {

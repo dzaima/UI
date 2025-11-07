@@ -30,8 +30,7 @@ public class PadNode extends Node implements InlineNode.Scannable {
   }
   
   public void bg(Graphics g, boolean full) {
-    if (Tools.st(bgCol)) pbg(g, full);
-    if (Tools.vs(bgCol)) g.rect(0, 0, w, h, bgCol);
+    bgBasicFill(g, full, bgCol);
   }
   
   public Node ch() {

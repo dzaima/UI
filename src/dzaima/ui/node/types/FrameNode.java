@@ -18,8 +18,7 @@ public abstract class FrameNode extends Node {
   public void bg(Graphics g, boolean full) {
     Prop p = getPropN("bg");
     int col = p==null? 0 : p.col();
-    if (Tools.st(col)) pbg(g, full);
-    if (Tools.vs(col)) g.rect(0, 0, w, h, col);
+    bgBasicFill(g, full, col);
   }
   
   public abstract int fillW();

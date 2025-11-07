@@ -132,8 +132,7 @@ public class MenuNode extends Node {
     public int maxH(int w) { return ch.get(0).maxH(w-padX) + 2*padU; }
     
     public void bg(Graphics g, boolean full) {
-      if (hovered || focused) g.rect(0, 0, w, h, gc.getProp("menu.hover").col());
-      else super.bg(g, full);
+      bgBasicFill(g, full, hovered || focused ? gc.getProp("menu.hover").col() : 0);
     }
     public void drawC(Graphics g) {
       if (binds!=null) StringNode.text(g, binds, f, 0xff888888, w-padR-bindW, padU+f.ascI);
