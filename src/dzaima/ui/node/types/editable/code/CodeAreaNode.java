@@ -95,10 +95,11 @@ public class CodeAreaNode extends EditNode {
       if (!multiline) return;
       CodeLine l = ln(y);
       int lw = l.leadingWs();
-      calcEnd(y);
       if (l.end!=null) lw+= Math.max(0,l.end.depthDelta)*langInst.indentLen;
-      char[] a = new char[lw]; Arrays.fill(a, langInst.indentChar);
-      insert(0, y+1, a);
+      if (lw > 0) {
+        char[] a = new char[lw]; Arrays.fill(a, langInst.indentChar);
+        insert(0, y+1, a);
+      }
     }
   }
   
@@ -127,23 +128,42 @@ public class CodeAreaNode extends EditNode {
   }
   public void calcEnd(int ey) {
     if (calcNs>MAX_NS) { mRedraw(); return; }
-    int sy = ey;
-    while (sy>=0 && ln(sy).startDirty) sy--;
-    LangState<?> c = langInst.l.init; // should only be used if sy==-1
-    for (int i = Math.max(0, sy); i <= ey; i++) {
-      CodeLine l = ln(i);
-      if (l.startDirty && !c.equals(l.start)) {
-        l.start = c;
-        l.end = null;
+    
+    Lang ll = langInst.l;
+    if (ll instanceof Lang.GloballyHighlightedLang) {
+      CodeLine last = ln(lns.sz-1);
+      if (last.startDirty || last.end==null) {
+        byte[] styles = ((Lang.GloballyHighlightedLang) ll).globalHighlight(getAll());
+        int off = 0;
+        for (int i = 0; i < lns.sz; i++) {
+          CodeLine l = ln(i);
+          l.sliceStyles(styles, off);
+          l.startDirty = false;
+          l.end = Lang.GloballyHighlightedLang.END_STATE;
+          off+= l.sz() + 1;
+        }
+        assert styles.length+1 == off : styles.length+" "+off;
       }
-      l.startDirty = false;
-      if (l.end == null) {
-        long sns = System.nanoTime();
-        l.getEnd();
-        calcNs+= System.nanoTime()-sns;
-        if (calcNs>MAX_NS) { mRedraw(); return; }
+    } else {
+      int sy = ey;
+      while (sy>=0 && ln(sy).startDirty) sy--;
+      
+      LangState<?> c = ll.init; // should only be used if sy==-1
+      for (int i = Math.max(0, sy); i <= ey; i++) {
+        CodeLine l = ln(i);
+        if (l.startDirty && !c.equals(l.start)) {
+          l.start = c;
+          l.end = null;
+        }
+        l.startDirty = false;
+        if (l.end == null) {
+          long sns = System.nanoTime();
+          l.getEnd();
+          calcNs+= System.nanoTime()-sns;
+          if (calcNs>MAX_NS) { mRedraw(); return; }
+        }
+        c = l.end;
       }
-      c = l.end;
     }
   }
   
@@ -163,6 +183,10 @@ public class CodeAreaNode extends EditNode {
     private void getEnd() {
       clearPara();
       end = start.after(sz(), a.arr, st.arr);
+    }
+    private void sliceStyles(byte[] source, int offset) {
+      clearPara();
+      System.arraycopy(source, offset, st.arr, 0, sz());
     }
     
     public void draw(Graphics g, int gy, CIt cit) {

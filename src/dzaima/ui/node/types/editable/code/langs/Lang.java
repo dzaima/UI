@@ -11,6 +11,18 @@ public abstract class Lang {
     this.init = init;
   }
   
+  public abstract static class GloballyHighlightedLang extends Lang {
+    private static class EndState extends LangState<EndState> {
+      public EndState after(int sz, char[] p, byte[] b) { return this; }
+      public boolean equals(Object obj) { return this==obj; }
+      public int hashCode() { return 0; }
+    }
+    public static final LangState<?> END_STATE = new EndState();
+    protected GloballyHighlightedLang() {
+      super(null);
+    }
+    public abstract byte[] globalHighlight(String s);
+  }
   public static class LangInst {
     public final Lang l;
     public final Font font;
