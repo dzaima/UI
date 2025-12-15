@@ -77,7 +77,7 @@ public abstract class Popup {
   
   
   public VirtualMenu openVW(GConfig gc, Ctx ctx, PNodeGroup g, boolean focus) {
-    VirtualMenu vw = new VirtualMenu(gc, ctx, g, this);
+    VirtualMenu vw = new VirtualMenu(gc, ctx, g, this, focus);
     isVW = true;
     preSetup();
     pw.addVW(vw);
@@ -186,8 +186,9 @@ public abstract class Popup {
   static class VirtualMenu extends NodeVW {
     private final Popup m;
     
-    public VirtualMenu(GConfig gc, Ctx pctx, PNodeGroup g, Popup m) {
+    public VirtualMenu(GConfig gc, Ctx pctx, PNodeGroup g, Popup m, boolean lastFocused) {
       super(m.pw, gc, pctx, g);
+      this.lastFocused = lastFocused;
       this.m = m;
       m.node = base;
     }
