@@ -27,6 +27,7 @@ public abstract class Popup {
   protected abstract void unfocused();
   protected abstract void setup();
   protected void preSetup() { } // maybe can just move setup to the place of preSetup?
+  protected void tick() { }
   
   public void close() { closeRequested = true; } // request to be closed
   public void stopped() { } // invoked once when closing for any reason
@@ -166,6 +167,7 @@ public abstract class Popup {
     
     public void tick() {
       super.tick();
+      m.tick();
       if (frameCount<60 && frameCount%20==5 && focused) impl.focus();
       if (m.closeRequested) closeOnNext();
     }
@@ -206,6 +208,7 @@ public abstract class Popup {
     boolean lastFocused = true;
     public void tick() {
       super.tick();
+      m.tick();
       boolean focused = m.pw.focusedVW == this;
       if (!focused && lastFocused) m.unfocused();
     }
