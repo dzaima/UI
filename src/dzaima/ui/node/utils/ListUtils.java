@@ -100,12 +100,12 @@ public class ListUtils {
     }
     return s;
   }
-  public static int hBinSearch(Vec<Node> nds, int y) {
+  public static int hBinSearch(Vec<Node> nds, int x) {
     int s = 0;
     int e = nds.sz;
     while (s+1<e) {
       int m = (s+e) / 2;
-      if (nds.get(m).dx<=y) s = m;
+      if (nds.get(m).dx<=x) s = m;
       else e = m;
     }
     return s;
