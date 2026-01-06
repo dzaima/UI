@@ -58,7 +58,7 @@ public abstract class FrameNode extends Node {
     if (t==':') return p.range().lenS();
     throw new RuntimeException("Bad min value of "+p);
   }
-  int defMax(boolean w) { return Tools.BIG; }
+  protected int defMax(boolean w) { return Tools.BIG; }
   int max(Prop p, boolean w) { // maximum size, will be ignored if content is larger than this
     if (p == null) return defMax(w);
     char t = p.type();

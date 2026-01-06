@@ -8,5 +8,5 @@ public class VlNode extends VNode {
   public VlNode(Ctx ctx, Props props) {
     super(ctx, props);
   }
-  int defMax(boolean w) { return !w? 0 : Tools.BIG; }
+  protected int defMax(boolean w) { return !w? 0 : Tools.BIG; }
 }
