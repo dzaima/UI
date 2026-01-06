@@ -97,6 +97,7 @@ menu {
   padY = .2em
   wholePadY = .3em // padding of whole menu
   keybindSize = 0.8em
+  fieldBg = #333
   
   rightClickImplicitClick {
     enabled = true // whether to enable implicitly selecting a right-click menu item on release of a right-click drag, if all the following conditions are satisfied: 
@@ -114,7 +115,7 @@ menu {
   }
   
   menuField = pad { y=menu.padY x=menu.padR
-    scroll { y=off x=hidden menufield { id=name family=str.defaultFont bg=#333 } }
+    scroll { y=off x=hidden menufield { id=name family=str.defaultFont bg=menu.fieldBg } }
   }
 }
 
