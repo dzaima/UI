@@ -6,6 +6,7 @@ import dzaima.utils.*;
 import io.github.humbleui.skija.*;
 import io.github.humbleui.skija.impl.Native;
 import io.github.humbleui.skija.paragraph.*;
+import io.github.humbleui.types.Point;
 
 public abstract class Graphics {
   public final boolean redraw = false; // might be un-final-ed at some point
@@ -91,7 +92,9 @@ public abstract class Graphics {
   }
   
   public void poly(float[] coords, int fill) {
-    Path p = new Path(); p.addPoly(coords, true);
+    Point[] pts = new Point[coords.length/2];
+    for (int i = 0; i < pts.length; i++) pts[i] = new Point(coords[i*2], coords[i*2+1]);
+    Path p = Path.makePolygon(pts, true);
     canvas.drawPath(p, paintO(fill));
     p.close();
   }

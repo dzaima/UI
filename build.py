@@ -278,12 +278,12 @@ def build_ui(full_res_path): # cwd must be of the UI repo
   libdir = 'lib/uilib'
   classpath = [
     maven_lib('io/github/humbleui', 'types', '0.2.0', libdir, '38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8'),
-    maven_lib('io/github/humbleui', 'skija-shared', '0.123.0', libdir, '0741b7eced77e5c7dc2d344605ec7adbc90b97259febe233e7782ce177fdf822'),
-    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.123.0', libdir, ['linux-x64-151813afd72809b61b42cf4f7adbbe2fa0bcedf5561d65abf7d7a122f27e5ba7','macos-arm64-a40e3fcb7e1b1bfa896d37c07919645d84a9777fdbb987a85c1f7ae2963b8bc8','macos-x64-7ef46e61b1de45e626578c9e4be3143f6aafcc582e470901d3e865cc66e48827','windows-x64-fc750edcc477fd3c38143d90d3a69a90d8f9ad26b36584fa8808a62f1c3207ab']),
+    maven_lib('io/github/humbleui', 'skija-shared', '0.143.5', libdir, '44214d56c560ac543d175c24777d909c6366d3f548b611f0346f96e17753d447'),
+    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.143.5', libdir, ['linux-x64-2abe075d40b6cf54879169f1cea7d4fa15fbd956ff24cea1f2e2b26b57a6f4b6','linux-arm64-975740d22a53be7d2dc607649bec01f7d36bba381ad82b1b7d695c52f54885eb','macos-arm64-4f3f6d59161b4fd6c1f76af6557acd6f433260989d4cd29132b3fdb7bd7e35fc','macos-x64-701d8a628d67f6b51a5e2f46d85023d4639594ce52fcaec40c2eecd61bdefd45','windows-x64-00243d40db34a4df114ef297b3f6d39f905d6feabb43f9340a672a953e3ef28e']),
   ]
   
   if components['jwm']: classpath+= [
-    maven_lib('io/github/humbleui', 'jwm', '0.4.20', libdir, '74b9786986ee43fc38f4d519bb1c490bd471474eb18decd9b88a43d7dbe87dd7'),
+    maven_lib('io/github/humbleui', 'jwm', '0.4.22', libdir, '7acc4904437ef16db7731f6f825134773f83b3f6bbadc995bc91ae16542abcf6'),
   ]
   
   lwjgl_native = '-natives-'+lwjgl_os
@@ -293,16 +293,16 @@ def build_ui(full_res_path): # cwd must be of the UI repo
   # nfd needed by both JWM and LWJGL
   classpath+= [
     lwjgl_lib('lwjgl', '', 'b00e2781b74cc829db9d39fb68746b25bb7b94ce61d46293457dbccddabd999c'),
-    lwjgl_lib('lwjgl', lwjgl_native, ['linux-x64-2f0e65d6985d602c0e5e5aab6576db113a9a378a36f8144ec93b77a4fde5876c','macos-arm64-e68652629a28f0262ca99a2132d370e3fbc70d9f10e11717afa3f2dbe85b64fc','macos-x64-a818cba530f8a541ef30e2cc2b731c8de2d081d25e9901959ff2bcdbf2344e0f','windows-x64-a8d8edda34718bf70f68d14de1295b5bfc0f477a9607a3a9705d9e2d88538a8c']),
+    lwjgl_lib('lwjgl', lwjgl_native, ['linux-x64-2f0e65d6985d602c0e5e5aab6576db113a9a378a36f8144ec93b77a4fde5876c','linux-arm64-07643ee5e95635b710715b41900c2a05c3f08c74be9309ba0763e31431bfad3b','macos-arm64-e68652629a28f0262ca99a2132d370e3fbc70d9f10e11717afa3f2dbe85b64fc','macos-x64-a818cba530f8a541ef30e2cc2b731c8de2d081d25e9901959ff2bcdbf2344e0f','windows-x64-a8d8edda34718bf70f68d14de1295b5bfc0f477a9607a3a9705d9e2d88538a8c']),
     lwjgl_lib('lwjgl-nfd', '', 'd43a10930f7980913d21e77d40318ecab84248dce63f5a4994a2a72a258c2af0'),
-    lwjgl_lib('lwjgl-nfd', lwjgl_native, ['linux-x64-a17367975158de57aa711bfedc5383fbb089252104e67831548e242d336b320b','macos-arm64-5ccc94ad816deb9e8e23e9e786d6a384a339b6be8191c39ecb9ff93e2d54e04c','macos-x64-a93f5646d191ecd217c4d498877959476723360eae6e00b4bbc9236aca6d5bfc','windows-x64-f3cb61462ca8972a74c98f462effcd4e8f5d3d87bbbcee8b13cd0ba7921e988d']),
+    lwjgl_lib('lwjgl-nfd', lwjgl_native, ['linux-x64-a17367975158de57aa711bfedc5383fbb089252104e67831548e242d336b320b','linux-arm64-5c0eca9bfd13465b00178fdebae3b4172fca36c76e1ba6d172ec982e43f8b616','macos-arm64-5ccc94ad816deb9e8e23e9e786d6a384a339b6be8191c39ecb9ff93e2d54e04c','macos-x64-a93f5646d191ecd217c4d498877959476723360eae6e00b4bbc9236aca6d5bfc','windows-x64-f3cb61462ca8972a74c98f462effcd4e8f5d3d87bbbcee8b13cd0ba7921e988d']),
   ]
   
   if components['lwjgl']: classpath+= [
     lwjgl_lib('lwjgl-glfw', '', 'b29c938ecc4997ce256a831aeca2033dab9829b5c21e72ebeb64aecd9e08450c'),
     lwjgl_lib('lwjgl-opengl', '', 'bb0430e0a5fd7b7b5770ae517960b2ea9887bb08d04f3a0cb1aae145332e1310'),
-    lwjgl_lib('lwjgl-glfw',   lwjgl_native, ['linux-x64-a1b60014597bc0e45bf39089f4d838c3aa87fd668f6fe4e7326aa314d2ec87c0','macos-arm64-b46d40f15c2534e3800c5c44f73a4c7ded8a73b2272512c47847c1004ef7ffa9','macos-x64-826f9da50850d3e7e3b2002897b672cbd999d6d8a174ceea1d6e874d148c4bc1','windows-x64-7492d3f62a868f857173d85360bb58716cd3fe8563da18419dde858aed2deb41']),
-    lwjgl_lib('lwjgl-opengl', lwjgl_native, ['linux-x64-8c0b5c081a7872a3cdb02b6448921da5ae5c23ab49656f299edc7a09b7e99b74','macos-arm64-2c0f67e7d36d71beed503043c06141af9fd83f5126a726eefceb7b5ba2aaf99c','macos-x64-660fdc9f4f06083938b9e60ab7a3ce9bc9eb6d1c7e60cb54228796101b18b633','windows-x64-b54a9d98686284947270e11e94c02aa15c30522119e7b80fcf0c98da6fa3c83c']),
+    lwjgl_lib('lwjgl-glfw',   lwjgl_native, ['linux-x64-a1b60014597bc0e45bf39089f4d838c3aa87fd668f6fe4e7326aa314d2ec87c0','linux-arm64-6a108ac764f88e0fc5b3c7de21227e7db123b1b27be531a93afb5954db4efa3f','macos-arm64-b46d40f15c2534e3800c5c44f73a4c7ded8a73b2272512c47847c1004ef7ffa9','macos-x64-826f9da50850d3e7e3b2002897b672cbd999d6d8a174ceea1d6e874d148c4bc1','windows-x64-7492d3f62a868f857173d85360bb58716cd3fe8563da18419dde858aed2deb41']),
+    lwjgl_lib('lwjgl-opengl', lwjgl_native, ['linux-x64-8c0b5c081a7872a3cdb02b6448921da5ae5c23ab49656f299edc7a09b7e99b74','linux-arm64-5bb6b9052f40df5d62fb43f06561b82307e4d50c48ab596ef73b9b2a59c446c1','macos-arm64-2c0f67e7d36d71beed503043c06141af9fd83f5126a726eefceb7b5ba2aaf99c','macos-x64-660fdc9f4f06083938b9e60ab7a3ce9bc9eb6d1c7e60cb54228796101b18b633','windows-x64-b54a9d98686284947270e11e94c02aa15c30522119e7b80fcf0c98da6fa3c83c']),
   ]
   # lwjgl_lib('lwjgl', '-sources'),
   # lwjgl_lib('lwjgl-glfw', '-sources'),
