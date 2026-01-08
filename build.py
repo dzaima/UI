@@ -20,6 +20,7 @@ keep_lib = False
 pre_17 = False
 lib_os = None
 lib_arch = None
+update_download_hashes = False
 override_main = None
 components = {
   'jwm': True, # disabling JWM doesn't work, whatever
@@ -32,6 +33,8 @@ for arg in sys.argv[1:]:
     incremental = True
   elif arg == 'keeplib':
     keep_lib = True
+  elif arg == 'update-download-hashes':
+    update_download_hashes = True
   elif arg.startswith('output='):
     output_dir = os.path.abspath(arg[7:])
     separate_output = True
@@ -124,13 +127,22 @@ def maven_lib(base, name, version, dir, expected, post = '', repo = 'https://rep
     sha256got = hashlib.sha256(f.read()).hexdigest()
     
     if isinstance(expected, str):
-      sha256exp = expected
+      sha256exp = [expected]
     else:
-      sha256exp = [x[2] for x in [x.split('-') for x in expected] if x[0]==lib_os and x[1]==lib_arch][0]
+      sha256exp = [x for x in [x.split('-') for x in expected] if x[0]==lib_os and x[1]==lib_arch][0]
     
-    if sha256got != sha256exp:
-      print(f'unexpected sha256: got "{sha256got}", expected "{sha256exp}"')
-      sys.exit(1)
+    if sha256got != sha256exp[-1]:
+      print(f'unexpected sha256: got "{sha256got}", expected "{sha256exp[-1]}"')
+      if update_download_hashes:
+        print(f'updating build.py with new expected hash')
+        with open('build.py', 'r') as f:
+          pre = "'" + ''.join([x+'-' for x in sha256exp[:-1]])
+          post = "'"
+          text = f.read().replace(pre+sha256exp[-1]+post, pre+sha256got+post) # global replace, but that's actually, like, perfectly fine
+          with open('build.py', 'w') as f:
+            f.write(text)
+      else:
+        sys.exit(1)
     shutil.move(fname_tmp, fname)
   
   if at_out(fname) != os.path.abspath(fname):
