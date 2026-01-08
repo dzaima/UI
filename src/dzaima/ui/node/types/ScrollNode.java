@@ -198,9 +198,9 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   public void tickC() {
     Scroller.tick(this);
     if ((flags&RS_CH)==0) evalScrollTo();
-    ignoreYS = false;
-    ignoreYE = false;
-    ignoreFocus = false;
+    ignoreYS&= 2;
+    ignoreYE&= 2;
+    ignoreFocus&= 2;
   }
   private void evalScrollTo() {
     for (NodeScroll e : FLD_NODE_SCROLL.getAndClearOrDefault(this, Vec::of)) {
@@ -285,14 +285,29 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
   
   
   
-  private boolean ignoreYE, ignoreYS, ignoreFocus; // TODO permanent variants in props
-  // don't attempt to pin the specified location on the next resize
-  public void ignoreYS() { ignoreYS = true; }
-  public void ignoreYE() { ignoreYE = true; }
-  public void ignoreFocus() { ignoreFocus = true; }
+  private byte ignoreYE, ignoreYS, ignoreFocus; // bit 1: temp ignore; bit 2: always ignore
+  public enum IgnoreMode {
+    NOT_NEXT, NEXT, ALWAYS, NOT_ALWAYS;
+    byte f(byte x) {
+      switch (this) {
+        case NOT_NEXT:   return (byte) (x&~1);
+        case NEXT:       return (byte) (x| 1);
+        case NOT_ALWAYS: return (byte) (x&~2);
+        case ALWAYS:     return (byte) (x| 2);
+        default: throw new IllegalStateException();
+      }
+    }
+  };
+  // configure whether to ignore the specified thing as a potential pinning point for resizing
+  public void ignoreYS   (IgnoreMode m) { ignoreYS    = m.f(ignoreYS   ); }
+  public void ignoreYE   (IgnoreMode m) { ignoreYE    = m.f(ignoreYE   ); }
+  public void ignoreFocus(IgnoreMode m) { ignoreFocus = m.f(ignoreFocus); }
+  public void ignoreYS   () { ignoreYS   (IgnoreMode.NEXT); }
+  public void ignoreYE   () { ignoreYE   (IgnoreMode.NEXT); }
+  public void ignoreFocus() { ignoreFocus(IgnoreMode.NEXT); }
   
-  public boolean ignoresYS() { return ignoreYS; }
-  public boolean ignoresYE() { return ignoreYE; }
+  public boolean ignoresYS() { return ignoreYS!=0; }
+  public boolean ignoresYE() { return ignoreYE!=0; }
   
   public void resized() {
     Node focusEl;
@@ -309,8 +324,8 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
     if (focusEl==this) focusEl = null;
     XY fS = focusEl==null? XY.ZERO : focusEl.relPos(this);
     
-    boolean atYS = atYS(2) && !ignoreYS; ignoreYS = false;
-    boolean atYE = atYE(2) && !ignoreYE; ignoreYE = false;
+    boolean atYS = atYS(2) && ignoreYS==0; ignoreYS&= 2;
+    boolean atYE = atYE(2) && ignoreYE==0; ignoreYE&= 2;
     int de = distYE();
     
     Node c = ch();
@@ -332,11 +347,11 @@ public class ScrollNode extends FrameNode implements Scroller.Scrollable {
       // do nothing
     } else if (atYE) {
       Scroller.deltaTranslate(this, 0, distYE()-de);
-    } else if (!ignoreFocus) {
+    } else if (ignoreFocus==0) {
       Scroller.deltaTranslate(this, fE.x-fS.x, fE.y-fS.y);
     }
     evalScrollTo();
     Scroller.resized(this);
-    ignoreFocus = false;
+    ignoreFocus&= 2;
   }
 }
