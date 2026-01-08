@@ -150,6 +150,17 @@ public final class Vec<T> implements Iterable<T> {
   public T[] toArray(Object[] arr) { // guarantees returning a new instance
     return (T[]) Arrays.copyOf(this.arr, sz, arr.getClass());
   }
+  public Collection<T> collectionView() {
+    return new AbstractCollection<T>() {
+      public Iterator<T> iterator() { return Vec.this.iterator(); }
+      public int size() { return sz; }
+    };
+  }
+  public ArrayList<T> asArrayList() {
+    ArrayList<T> l = new ArrayList<>();
+    l.addAll(collectionView());
+    return l;
+  }
   
   
   public <R> Vec<R> map(Function<T, R> f) {
