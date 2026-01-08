@@ -78,7 +78,7 @@ if lib_arch is None:
 skija_os = lib_os + '-' + lib_arch
 lwjgl_os = lib_os + ('' if lib_arch=='x64' else '-'+lib_arch)
 
-lwjgl_version = '3.3.0'
+lwjgl_version = '3.3.6'
 
 def mkdirs(path):
   os.makedirs(path, exist_ok=True)
@@ -230,17 +230,17 @@ def build_ui(res = 'UI.jar'):
   
   # nfd needed by both JWM and LWJGL
   classpath+= [
-    lwjgl_lib('lwjgl', '', 'd04bb83798305ffb8322a60ae99c9f93493c7476abf780a1fde61c27e951dd07'),
-    lwjgl_lib('lwjgl', lwjgl_native, ['linux-x64-ddab8a8ad1e982ef061fe49845bc9010a5b0af3cd563819b8698927e08405f91','macos-arm64-f42c1a1ab2bbc3e6429817d48990c5f6cd04b284de6a3fe201db0da9901446b0','macos-x64-b2b829074883c1a008b99300092a9b0fb7023c88fe4d041fb32ed7c54ba525f7','windows-x64-cfb0a089cecce866b1c21d5ffb708711d82f059095d81bef842b2c0bd597eb9a']),
-    lwjgl_lib('lwjgl-nfd', '', '64b66ab4e63ca40612c23cab4b4c73be8676396ab1bc7617b364f93703ba3f61'),
-    lwjgl_lib('lwjgl-nfd', lwjgl_native, ['linux-x64-c40cb912c805f35c8a61170d49d22d255b986689f256a8e1e0757b5c484ec8a0','macos-arm64-ecbab3e2e815a0fdd53a216022abad1f826b92e69e6caeec89cb8cfc1e6c09c1','macos-x64-831ac60d853a6cfbf2932f7462fc21be75b2f086df1eb4c3922f155f1968d77d','windows-x64-88cace1d9baa162fe84f03609ce9a5e065d5834bab944e777462461a5b7b07ad']),
+    lwjgl_lib('lwjgl', '', 'b00e2781b74cc829db9d39fb68746b25bb7b94ce61d46293457dbccddabd999c'),
+    lwjgl_lib('lwjgl', lwjgl_native, ['linux-x64-2f0e65d6985d602c0e5e5aab6576db113a9a378a36f8144ec93b77a4fde5876c','macos-arm64-e68652629a28f0262ca99a2132d370e3fbc70d9f10e11717afa3f2dbe85b64fc','macos-x64-a818cba530f8a541ef30e2cc2b731c8de2d081d25e9901959ff2bcdbf2344e0f','windows-x64-a8d8edda34718bf70f68d14de1295b5bfc0f477a9607a3a9705d9e2d88538a8c']),
+    lwjgl_lib('lwjgl-nfd', '', 'd43a10930f7980913d21e77d40318ecab84248dce63f5a4994a2a72a258c2af0'),
+    lwjgl_lib('lwjgl-nfd', lwjgl_native, ['linux-x64-a17367975158de57aa711bfedc5383fbb089252104e67831548e242d336b320b','macos-arm64-5ccc94ad816deb9e8e23e9e786d6a384a339b6be8191c39ecb9ff93e2d54e04c','macos-x64-a93f5646d191ecd217c4d498877959476723360eae6e00b4bbc9236aca6d5bfc','windows-x64-f3cb61462ca8972a74c98f462effcd4e8f5d3d87bbbcee8b13cd0ba7921e988d']),
   ]
   
   if components['lwjgl']: classpath+= [
-    lwjgl_lib('lwjgl-glfw', '', 'a4a464130eb8943b41036d9c18f3d94da7aafedec7f407848bbc3c674c93e648'),
-    lwjgl_lib('lwjgl-opengl', '', '0d2b245a1ee269d41a8fb1a194cb848495252ce0cc8222b398e4a9950fbd116c'),
-    lwjgl_lib('lwjgl-glfw',   lwjgl_native, ['linux-x64-9448bcc88acb164183c7b64b2dcb745e38f6cc79a8334c35eb69b245e65869e7','macos-arm64-037fb26882b61749cfa54d1e608d9768a5ec616230911d4d3e02560d2033fca5','macos-x64-928101bde61d2d745b664e3b9e8e2ab9e682553bc8a0be1a42c8874c8c007e61','windows-x64-23954dfa3333a91657cedfca251e147500aa24d14613101d64a326fb0a1fb0f6']),
-    lwjgl_lib('lwjgl-opengl', lwjgl_native, ['linux-x64-5972d4be0b1b68d86bc979a18e458e5e1e95a63c18fc9efe9c7cec794d5070df','macos-arm64-83e536559ff292da63381829c9fbf5c64199ac84e55122ed1fa61ec239bd8d6c','macos-x64-a021a0a472bb8a710db4793d674e5f163d2115d00de5002289a206a89796eba8','windows-x64-a364cc3322c0f1a1358988da8f160ad4efec5f6f22bbac9064e8f5836a16d2fe']),
+    lwjgl_lib('lwjgl-glfw', '', 'b29c938ecc4997ce256a831aeca2033dab9829b5c21e72ebeb64aecd9e08450c'),
+    lwjgl_lib('lwjgl-opengl', '', 'bb0430e0a5fd7b7b5770ae517960b2ea9887bb08d04f3a0cb1aae145332e1310'),
+    lwjgl_lib('lwjgl-glfw',   lwjgl_native, ['linux-x64-a1b60014597bc0e45bf39089f4d838c3aa87fd668f6fe4e7326aa314d2ec87c0','macos-arm64-b46d40f15c2534e3800c5c44f73a4c7ded8a73b2272512c47847c1004ef7ffa9','macos-x64-826f9da50850d3e7e3b2002897b672cbd999d6d8a174ceea1d6e874d148c4bc1','windows-x64-7492d3f62a868f857173d85360bb58716cd3fe8563da18419dde858aed2deb41']),
+    lwjgl_lib('lwjgl-opengl', lwjgl_native, ['linux-x64-8c0b5c081a7872a3cdb02b6448921da5ae5c23ab49656f299edc7a09b7e99b74','macos-arm64-2c0f67e7d36d71beed503043c06141af9fd83f5126a726eefceb7b5ba2aaf99c','macos-x64-660fdc9f4f06083938b9e60ab7a3ce9bc9eb6d1c7e60cb54228796101b18b633','windows-x64-b54a9d98686284947270e11e94c02aa15c30522119e7b80fcf0c98da6fa3c83c']),
   ]
   # lwjgl_lib('lwjgl', '-sources'),
   # lwjgl_lib('lwjgl-glfw', '-sources'),

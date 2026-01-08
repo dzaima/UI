@@ -2,6 +2,7 @@ package dzaima.ui.gui.jwm;
 
 import dzaima.ui.gui.Window.DrawReq;
 import dzaima.ui.gui.*;
+import dzaima.ui.gui.io.FileFilter;
 import dzaima.ui.gui.lwjgl.*;
 import dzaima.utils.Log;
 import dzaima.utils.*;
@@ -63,8 +64,8 @@ public class JWMWindow extends WindowImpl {
   }
   // TODO don't use LWJGL for this
   public void openFolder(Path initial, Consumer<Path> onResult) { NFD.openFolderStatic(initial, onResult); }
-  public void openFile(String filter, Path initial, Consumer<Path> onResult) { NFD.openFileStatic(filter, initial, onResult); }
-  public void saveFile(String filter, Path initialDir, String initialName, Consumer<Path> onResult) { NFD.saveFileStatic(filter, initialDir, onResult); }
+  public void openFile(FileFilter filter, Path initial, Consumer<Path> onResult) { NFD.openFileStatic(filter, initial, onResult); }
+  public void saveFile(FileFilter filter, Path initialDir, String initialName, Consumer<Path> onResult) { NFD.saveFileStatic(filter, initialDir, initialName, onResult); }
   
   public void copyString(String s) {
     Clipboard.set(ClipboardEntry.makePlainText(s));

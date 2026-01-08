@@ -1,6 +1,7 @@
 package dzaima.ui.gui;
 
 import dzaima.ui.apps.devtools.Devtools;
+import dzaima.ui.gui.io.FileFilter;
 import dzaima.utils.*;
 
 import java.nio.file.Path;
@@ -32,8 +33,8 @@ public abstract class WindowImpl {
   public abstract void focus();
   
   public abstract void openFolder(Path initialDir, Consumer<Path> onResult);
-  public abstract void openFile(String filter, Path initialDir, Consumer<Path> onResult);
-  public abstract void saveFile(String filter, Path initialDir, String initialName, Consumer<Path> onResult);
+  public abstract void openFile(FileFilter filter, Path initialDir, Consumer<Path> onResult);
+  public abstract void saveFile(FileFilter filter, Path initialDir, String initialName, Consumer<Path> onResult);
   
   public abstract void copyString(String s);
   public abstract void pasteString(Consumer<String> f);

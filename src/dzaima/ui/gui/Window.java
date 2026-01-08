@@ -74,8 +74,8 @@ public abstract class Window {
   public void setCursor(CursorType c) { impl.setCursor(c); }
   
   public void openFolder(Path initialDir, Consumer<Path> onResult) { impl.openFolder(initialDir, onResult); }
-  public void openFile(String filter, Path initialDir, Consumer<Path> onResult) { impl.openFile(filter, initialDir, onResult); }
-  public void saveFile(String filter, Path initialDir, String initialName, Consumer<Path> onResult) { impl.saveFile(filter, initialDir, initialName, onResult); }
+  public void openFile(FileFilter filter, Path initialDir, Consumer<Path> onResult) { impl.openFile(filter, initialDir, onResult); }
+  public void saveFile(FileFilter filter, Path initialDir, String initialName, Consumer<Path> onResult) { impl.saveFile(filter, initialDir, initialName, onResult); }
   
   public void copyString(String s) { impl.copyString(s); }
   public void pasteString(Consumer<String> f) { impl.pasteString(f); }

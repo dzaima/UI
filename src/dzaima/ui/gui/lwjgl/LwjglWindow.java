@@ -351,8 +351,8 @@ public class LwjglWindow extends WindowImpl {
   }
   
   public void openFolder(Path initialDir, Consumer<Path> onResult) { NFD.openFolderStatic(initialDir, onResult); }
-  public void openFile(String filter, Path initialDir, Consumer<Path> onResult) { NFD.openFileStatic(filter, initialDir, onResult); }
-  public void saveFile(String filter, Path initialDir, String initialName, Consumer<Path> onResult) { NFD.saveFileStatic(filter, initialDir, onResult); }
+  public void openFile(FileFilter filter, Path initialDir, Consumer<Path> onResult) { NFD.openFileStatic(filter, initialDir, onResult); }
+  public void saveFile(FileFilter filter, Path initialDir, String initialName, Consumer<Path> onResult) { NFD.saveFileStatic(filter, initialDir, initialName, onResult); }
   
   
   public void copyString(String s) {
