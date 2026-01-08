@@ -9,6 +9,7 @@ import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.ScrollNode;
 import dzaima.utils.*;
 
+import java.util.Iterator;
 import java.util.function.*;
 
 public abstract class Node implements Click.RequestImpl {
@@ -380,5 +381,14 @@ public abstract class Node implements Click.RequestImpl {
   public final Vec<Prop> addProps(Vec<Prop> prev, String... names) {
     for (String n : names) if (n!=null) prev.add(gc.getCfgProp(n));
     return prev;
+  }
+  
+  public final <T extends Node> Iterable<T> chIterAs(Class<T> cl) {
+    return () -> new Iterator<T>() {
+      int i;
+      int n = ch.sz;
+      public boolean hasNext() { return i < n; }
+      public T next() { return cl.cast(ch.get(i++)); }
+    };
   }
 }
