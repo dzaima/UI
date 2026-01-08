@@ -32,8 +32,11 @@ public class CheckboxNode extends Node implements LabelNode.Labeled {
   }
   public void set(boolean value) {
     if (enabled==value) return;
-    enabled = value;
+    quietSet(value);
     if (fn!=null) fn.accept(enabled);
+  }
+  public void quietSet(boolean value) {
+    enabled = value;
     mRedraw();
   }
   
