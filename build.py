@@ -210,7 +210,7 @@ def jar(res, classpath, release=''): # cwd should be a folder with src/, and wil
     call([
       'javac',
       *(['--release', release] if release else []),
-      '-classpath', ':'.join(classpath + prev_classes),
+      '-classpath', ':'.join([at_out(x) for x in classpath] + prev_classes),
       *extra_javac_args,
       '-Xmaxerrs', '1000',
       '-d', 'classes',
@@ -225,7 +225,7 @@ def build_ui_lib(uiloc):
   cp = build_ui(at_out(ui_jar))
   os.chdir(prev)
   
-  copy_res(['base'])
+  copy_res(['base'], from_root = uiloc)
   
   return cp+[ui_jar]
 
@@ -261,18 +261,28 @@ APPDIR=`dirname "$APPDIR"`
     f.write(run)
   os.chmod(path, 0o777)
 
-def copy_res(what = None): # reads $CWD/res
+def copy_res(what = None, from_root = None): # copies <from_root || $CWD>/res/<what || (everything except base)/> to <output>/res
   if not separate_output:
     return
+  
+  def from_file(path):
+    if from_root is None:
+      return path
+    else:
+      return pj(from_root, path)
+  
   if what is None:
-    what = os.listdir('res')
+    what = os.listdir(from_file('res'))
     what = filter(lambda c: c!='base', what)
+  
   for w in what:
     file = pj('res', w)
-    if os.path.isdir(file):
-      shutil.copytree(file, at_out(file))
+    src = from_file(file)
+    dst = at_out(file)
+    if os.path.isdir(src):
+      shutil.copytree(src, dst, dirs_exist_ok=True)
     else:
-      copy_new(file, at_out(file))
+      copy_new(src, dst)
 
 def build_ui(full_res_path): # cwd must be of the UI repo
   libdir = 'lib/uilib'
