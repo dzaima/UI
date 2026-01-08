@@ -30,7 +30,12 @@ public class UndoManager {
     }
   }
   
+  public boolean hasRedo() {
+    return rs.sz > 0;
+  }
+  
   public void redo() {
+    if (!hasRedo()) return;
     while (usT.sz>0) usT.pop().undo();
     while (rs.sz>0) {
       UndoFrame r = rs.pop();
