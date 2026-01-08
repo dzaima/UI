@@ -5,7 +5,7 @@ lib/
 local/
 classes/
 hs_err_*.log
-run
+run*
 __pycache__
 
 UI.jar

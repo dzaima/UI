@@ -213,11 +213,26 @@ def build_ui_lib(uiloc):
   return cp+[ui_jar]
 
 def make_run(path, classpath, main, flags = ''):
+  win = lib_os == 'windows'
+  if win:
+    path += '.bat'
   path = at_out(path)
   if override_main is not None:
     main = override_main
   flags+= extra_jvm_flags
-  run = f"""#!/usr/bin/env bash
+  
+  if win:
+    run = f"""@echo off
+setlocal
+set "APPDIR=%~dp0"
+if "%APPDIR:~-1%"=="\\" set "APPDIR=%APPDIR:~0,-1%"
+set "RES_DIR=%APPDIR%\\res"
+set "RES_DIR=%RES_DIR: =^ %"
+{java_cmd} -DRES_DIR=%RES_DIR% {flags} -cp "{';'.join(['%APPDIR%\\'+x.replace("/", "\\") for x in classpath])}" {main} %*
+endlocal
+"""
+  else:
+    run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
 APPDIR=`dirname "$APPDIR"`
 {cmd_prefix}{java_cmd} -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
