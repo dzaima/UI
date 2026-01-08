@@ -81,8 +81,8 @@ public class GConfig {
     lastMs = lastNs/1000000;
   }
   
-  public boolean isClick(Click cl) { // TODO theme?
-    return cl.distFromStart()<em && cl.msTimeFromStart()<200;
+  public boolean isClick(Click cl) {
+    return cl.distFromStart() < getProp("mouse.clickMaxDist").len() && cl.msTimeFromStart() < getProp("mouse.clickMaxTime").d()*1e3;
   }
   public boolean isDoubleclick(Click cl) { // TODO theme; or move into users, or something that can track that the thing double-clicked is the same thing
     return isClick(cl) && System.currentTimeMillis()-cl.prevMs<400;
