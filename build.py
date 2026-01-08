@@ -14,6 +14,7 @@ java_cmd = 'java'
 skip_ui = False
 incremental = False
 extra_jvm_flags = ''
+extra_javac_args = []
 cmd_prefix = ''
 keep_lib = False
 lib_os = None
@@ -38,6 +39,8 @@ for arg in sys.argv[1:]:
     java_cmd = arg[9:]
   elif arg.startswith('jvm-args='):
     extra_jvm_flags += ' '+arg[9:]
+  elif arg.startswith('javac-arg='):
+    extra_javac_args += [arg[10:]]
   elif arg.startswith('jvm-arg='):
     extra_jvm_flags += ' '+shstr(arg[8:])
   elif arg.startswith('cmd-prefix='):
@@ -195,6 +198,7 @@ def jar(res, classpath, release=''): # cwd should be a folder with src/, and wil
       'javac',
       *(['--release', release] if release else []),
       '-classpath', ':'.join(classpath + prev_classes),
+      *extra_javac_args,
       '-Xmaxerrs', '1000',
       '-d', 'classes',
       *srcs
