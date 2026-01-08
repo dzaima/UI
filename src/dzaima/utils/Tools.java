@@ -51,7 +51,7 @@ public class Tools {
   }
   public static byte[] get(String path, boolean useCaches) {
     try {
-      URL u = new URL(path);
+      URL u = new URI(path).toURL();
       HttpURLConnection c = (HttpURLConnection) u.openConnection();
       c.setRequestMethod("GET");
       c.setUseCaches(useCaches);
@@ -65,7 +65,7 @@ public class Tools {
         }
       }
       return Arrays.copyOf(b, i);
-    } catch (IOException e) {
+    } catch (IOException | URISyntaxException e) {
       throw new RuntimeException(e);
     }
   }
