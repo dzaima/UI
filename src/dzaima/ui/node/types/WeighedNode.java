@@ -14,17 +14,21 @@ public class WeighedNode extends Node {
     super(ctx, props);
     weight = gc.fD(this, "weight", 0.5f);
     enabled = gc.boolD(this, "enabled", true);
+    minProps();
   }
   
   protected float weight;
   protected boolean v;
   protected int handleWidth, pad, padColor;
-  public void propsUpd() {
-    super.propsUpd();
+  private void minProps() {
     switch (getProp("dir").val()) { default: throw new RuntimeException("Bad uw \"dir\" value "+getProp("dir"));
       case "v": v=true; break;
       case "h": v=false; break;
     }
+  }
+  public void propsUpd() {
+    super.propsUpd();
+    minProps();
     handleWidth = gc.len(this, "handleWidth", "uw.handleWidth");
     pad = gc.len(this, "pad", "uw.pad");
     padColor = gc.col(this, "padCol", "uw.padCol");
