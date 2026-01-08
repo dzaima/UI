@@ -51,7 +51,13 @@ public class ExMain extends NodeWindow {
       CodeAreaNode ed = (CodeAreaNode) w.base.ctx.id("code");
       ed.setLang(w.gc.langs().fromName("java"));
       int s = ed.um.pushIgnore();
-      ed.append(Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java")));
+      String source;
+      try {
+        source = Tools.readRes("EditNode.java");
+      } catch (RuntimeException e) {
+        source = Tools.readFile(Paths.get("src/dzaima/ui/node/types/editable/EditNode.java"));
+      }
+      ed.append(source);
       ed.um.popIgnore(s);
     }
     

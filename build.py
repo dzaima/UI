@@ -283,4 +283,8 @@ def build_ui(full_res_path): # cwd must be of the UI repo
 
 if __name__ == '__main__':
   cp = build_ui(at_out('UI.jar'))
+  copy_res()
+  copy_res(['base','../examples'])
+  if separate_output:
+    copy_new('src/dzaima/ui/node/types/editable/EditNode.java', at_out('res/EditNode.java'))
   make_run('run', cp+['UI.jar'], 'dzaima.ui.apps.ExMain', '-ea')
