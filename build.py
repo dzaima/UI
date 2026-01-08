@@ -17,6 +17,7 @@ extra_jvm_flags = ''
 extra_javac_args = []
 cmd_prefix = ''
 keep_lib = False
+pre_17 = False
 lib_os = None
 lib_arch = None
 override_main = None
@@ -224,6 +225,8 @@ def make_run(path, classpath, main, flags = ''):
   if override_main is not None:
     main = override_main
   flags+= extra_jvm_flags
+  if not pre_17:
+    flags+= ' --enable-native-access=ALL-UNNAMED'
   
   if win:
     run = f"""@echo off
@@ -296,7 +299,7 @@ def build_ui(full_res_path): # cwd must be of the UI repo
   
   
   if not skip_ui:
-    jar(full_res_path, classpath, '8')
+    jar(full_res_path, classpath, '8' if pre_17 else None)
   return classpath
 
 
