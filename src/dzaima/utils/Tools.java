@@ -165,6 +165,13 @@ public class Tools {
       throw new RuntimeException(e);
     }
   }
+  public static void writeBin(Path p, byte[] bytes) {
+    try {
+      Files.write(p, bytes);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
   
   public static String readRes(String s) {
     return Tools.readFile(RES_DIR.resolve(s));
