@@ -8,4 +8,7 @@ public class Box<T> {
   public void set(T n) { this.v = n; }
   public T get() { return v; }
   public boolean has() { return v!=null; }
+  
+  public void init(T n) { assert !has(); set(n); }
+  public T expect() { assert has(); return get(); }
 }
