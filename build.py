@@ -8,6 +8,9 @@ def fail(msg):
 def shstr(s):
   return "'"+s.replace("'", "'\\''")+"'"
 
+separate_output = False
+output_dir = os.path.abspath('.')
+java_cmd = 'java'
 skip_ui = False
 incremental = False
 extra_jvm_flags = ''
@@ -27,6 +30,12 @@ for arg in sys.argv[1:]:
     incremental = True
   elif arg == 'keeplib':
     keep_lib = True
+  elif arg.startswith('output='):
+    output_dir = os.path.abspath(arg[7:])
+    separate_output = True
+    os.makedirs(output_dir, exist_ok=True)
+  elif arg.startswith('java-cmd='):
+    java_cmd = arg[9:]
   elif arg.startswith('jvm-args='):
     extra_jvm_flags += ' '+arg[9:]
   elif arg.startswith('jvm-arg='):
@@ -80,6 +89,12 @@ lwjgl_os = lib_os + ('' if lib_arch=='x64' else '-'+lib_arch)
 
 lwjgl_version = '3.3.6'
 
+pj = os.path.join
+def at_out(where):
+  return pj(output_dir, where)
+def copy_new(src, dst):
+  mkdirs(os.path.dirname(dst))
+  shutil.copyfile(src, dst)
 def mkdirs(path):
   os.makedirs(path, exist_ok=True)
 
@@ -89,7 +104,7 @@ def call(cmd):
     sys.exit(1)
   
 
-def maven_lib(base, name, version, dir, expected, post = '', repo = 'https://repo1.maven.org/maven2'):
+def maven_lib(base, name, version, dir, expected, post = '', repo = 'https://repo1.maven.org/maven2'): # downloads into CWD/{dir}/..., and copies to output if that's different
   jar_name = name+'-'+version+post+'.jar'
   fname = dir+'/'+jar_name
   fname_tmp = fname+'.download'
@@ -113,6 +128,9 @@ def maven_lib(base, name, version, dir, expected, post = '', repo = 'https://rep
       print(f'unexpected sha256: got "{sha256got}", expected "{sha256exp}"')
       sys.exit(1)
     shutil.move(fname_tmp, fname)
+  
+  if at_out(fname) != os.path.abspath(fname):
+    copy_new(fname, at_out(fname))
   return fname
 
 # note that this function is copied in many places
@@ -123,11 +141,11 @@ def git_lib(path):
   subprocess.check_call(['git', 'submodule', 'update', '--init', path2])
   return path2
 
-def jar(res, classpath, release=''):
+def jar(res, classpath, release=''): # cwd should be a folder with src/, and will make classes/ there
+  res = at_out(res)
   if not incremental and os.path.exists('classes/'):
     shutil.rmtree('classes/')
   mkdirs('classes/')
-  res = os.path.abspath(res)
   srcs = []
   prev_classes = []
 
@@ -184,49 +202,59 @@ def jar(res, classpath, release=''):
   call(['jar', 'cf', res, '-C', 'classes', '.'])
 
 def build_ui_lib(uiloc):
-  mkdirs('lib/')
-  uilib = 'lib/uilib'
   prev = os.getcwd()
   os.chdir(uiloc)
-  cp = build_ui(prev + '/lib/UI.jar')
+  ui_jar = 'lib/uilib/UI.jar'
+  cp = build_ui(at_out(ui_jar))
   os.chdir(prev)
-  res = 'res/base'
-  if not keep_lib:
-    if os.path.exists(uilib): shutil.rmtree(uilib)
-    shutil.copytree(uiloc+'/lib/', uilib)
-  if os.path.exists(res): shutil.rmtree(res)
-  shutil.copytree(f'{uiloc}/{res}', res)
-  return ['lib/ui'+x for x in cp]+['lib/UI.jar']
+  
+  copy_res(['base'])
+  
+  return cp+[ui_jar]
 
 def make_run(path, classpath, main, flags = ''):
+  path = at_out(path)
   if override_main is not None:
     main = override_main
   flags+= extra_jvm_flags
   run = f"""#!/usr/bin/env bash
 APPDIR=`readlink -f "$0"`
 APPDIR=`dirname "$APPDIR"`
-{cmd_prefix}java -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
+{cmd_prefix}{java_cmd} -DRES_DIR="$APPDIR/res/" {flags} -cp {':'.join(['"$APPDIR/"'+shstr(x) for x in classpath])} {main} "$@"
 """
 
   with open(path, 'w') as f:
     f.write(run)
-  os.chmod('run', 0o777)
+  os.chmod(path, 0o777)
 
+def copy_res(what = None): # reads $CWD/res
+  if not separate_output:
+    return
+  if what is None:
+    what = os.listdir('res')
+    what = filter(lambda c: c!='base', what)
+  for w in what:
+    file = pj('res', w)
+    if os.path.isdir(file):
+      shutil.copytree(file, at_out(file))
+    else:
+      copy_new(file, at_out(file))
 
-def build_ui(res = 'UI.jar'):
+def build_ui(full_res_path): # cwd must be of the UI repo
+  libdir = 'lib/uilib'
   classpath = [
-    maven_lib('io/github/humbleui', 'types', '0.2.0', 'lib', '38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8'),
-    maven_lib('io/github/humbleui', 'skija-shared', '0.123.0', 'lib', '0741b7eced77e5c7dc2d344605ec7adbc90b97259febe233e7782ce177fdf822'),
-    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.123.0', 'lib', ['linux-x64-151813afd72809b61b42cf4f7adbbe2fa0bcedf5561d65abf7d7a122f27e5ba7','macos-arm64-a40e3fcb7e1b1bfa896d37c07919645d84a9777fdbb987a85c1f7ae2963b8bc8','macos-x64-7ef46e61b1de45e626578c9e4be3143f6aafcc582e470901d3e865cc66e48827','windows-x64-fc750edcc477fd3c38143d90d3a69a90d8f9ad26b36584fa8808a62f1c3207ab']),
+    maven_lib('io/github/humbleui', 'types', '0.2.0', libdir, '38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8'),
+    maven_lib('io/github/humbleui', 'skija-shared', '0.123.0', libdir, '0741b7eced77e5c7dc2d344605ec7adbc90b97259febe233e7782ce177fdf822'),
+    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.123.0', libdir, ['linux-x64-151813afd72809b61b42cf4f7adbbe2fa0bcedf5561d65abf7d7a122f27e5ba7','macos-arm64-a40e3fcb7e1b1bfa896d37c07919645d84a9777fdbb987a85c1f7ae2963b8bc8','macos-x64-7ef46e61b1de45e626578c9e4be3143f6aafcc582e470901d3e865cc66e48827','windows-x64-fc750edcc477fd3c38143d90d3a69a90d8f9ad26b36584fa8808a62f1c3207ab']),
   ]
   
   if components['jwm']: classpath+= [
-    maven_lib('io/github/humbleui', 'jwm', '0.4.20', 'lib', '74b9786986ee43fc38f4d519bb1c490bd471474eb18decd9b88a43d7dbe87dd7'),
+    maven_lib('io/github/humbleui', 'jwm', '0.4.20', libdir, '74b9786986ee43fc38f4d519bb1c490bd471474eb18decd9b88a43d7dbe87dd7'),
   ]
   
   lwjgl_native = '-natives-'+lwjgl_os
   def lwjgl_lib(name, post, sha256):
-    return maven_lib('org/lwjgl', name, lwjgl_version, 'lib/lwjgl-'+lwjgl_version, sha256, post)
+    return maven_lib('org/lwjgl', name, lwjgl_version, pj(libdir, 'lwjgl-'+lwjgl_version), sha256, post)
   
   # nfd needed by both JWM and LWJGL
   classpath+= [
@@ -249,10 +277,10 @@ def build_ui(res = 'UI.jar'):
   
   
   if not skip_ui:
-    jar(res, classpath, '8')
+    jar(full_res_path, classpath, '8')
   return classpath
 
 
 if __name__ == '__main__':
-  cp = build_ui()
+  cp = build_ui(at_out('UI.jar'))
   make_run('run', cp+['UI.jar'], 'dzaima.ui.apps.ExMain', '-ea')
