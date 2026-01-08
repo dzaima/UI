@@ -33,6 +33,8 @@ public class OverlapNode extends WrapNode {
     return null;
   }
   
+  @Override protected boolean allowMoreChildren() { return true; }
+  
   public void resized() {
     super.resized();
     if (resized!=null) resized.accept(this);

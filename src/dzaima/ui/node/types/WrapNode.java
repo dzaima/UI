@@ -17,7 +17,11 @@ public class WrapNode extends Node {
   public int maxW() { return ch.get(0).maxW(); }
   public int minH(int w) { return ch.get(0).minH(w); }
   public int maxH(int w) { return ch.get(0).maxH(w); }
+  
+  protected boolean allowMoreChildren() { return false; }
+  
   protected void resized() {
+    assert ch.sz == 1 || allowMoreChildren();
     ch.get(0).resize(w, h, 0, 0);
   }
 }
