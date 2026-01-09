@@ -50,7 +50,7 @@ public abstract class VirtualWindow {
       g = new OffscreenGraphics(ps, ii);
     }
     
-    boolean req = requiresRedraw();
+    boolean req = requiresRedraw() || refresh;
     if (req) implDraw(g, refresh);
     if (DEBUG_REDRAW) g.rect(0, 0, g.w, g.h, 0x10000000);
     return req;
