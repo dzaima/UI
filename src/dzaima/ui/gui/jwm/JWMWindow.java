@@ -25,6 +25,7 @@ public class JWMWindow extends WindowImpl {
     D3D12, Metal, Raster, GL
   }
   public static Supplier<Backend> preferredBackend = () -> {
+    if (Platform.CURRENT == Platform.WINDOWS) return Backend.D3D12;
     return Backend.GL;
   };
   
