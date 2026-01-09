@@ -68,7 +68,7 @@ public class JWMEventHandler implements Consumer<Event> {
     } else if (ev instanceof EventWindowCloseRequest) {
       w.w.closeRequested();
       w.requestTick();
-    } else if (ev instanceof EventMouseMove) { // waiting on https://github.com/HumbleUI/JWM/issues/146
+    } else if (ev instanceof EventMouseMove) {
       EventMouseMove e = (EventMouseMove) ev;
       int mx = e.getX();
       int my = e.getY();
