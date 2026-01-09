@@ -225,7 +225,7 @@ def build_ui_lib(uiloc):
   cp = build_ui(at_out(ui_jar))
   os.chdir(prev)
   
-  copy_res(['base'], from_root = uiloc)
+  copy_res(['base'], from_root = uiloc, force = True)
   
   return cp+[ui_jar]
 
@@ -261,8 +261,8 @@ APPDIR=`dirname "$APPDIR"`
     f.write(run)
   os.chmod(path, 0o777)
 
-def copy_res(what = None, from_root = None): # copies <from_root || $CWD>/res/<what || (everything except base)/> to <output>/res
-  if not separate_output:
+def copy_res(what = None, from_root = None, force = False): # copies <from_root || $CWD>/res/<what || (everything except base)/> to <output>/res
+  if not separate_output and not force:
     return
   
   def from_file(path):
