@@ -13,6 +13,7 @@ import dzaima.ui.node.prop.*;
 import dzaima.ui.node.types.*;
 import dzaima.ui.node.types.editable.code.CodeAreaNode;
 import dzaima.utils.*;
+import dzaima.utils.options.AutoOptions;
 
 import java.nio.file.*;
 import java.util.Arrays;
@@ -92,12 +93,16 @@ public class ExMain extends NodeWindow {
   
   static boolean printKeys;
   public static void main(String[] args) {
-    if (args.length!=0 && args[0].equals("lwjgl")) {
-      Windows.setManager(Windows.Manager.LWJGL);
-      args = Arrays.copyOfRange(args, 1, args.length);
-    }
-    String mode = args.length==0? "" : args[0];
-    if (mode.equals("keys")) printKeys = true;
+    AutoOptions o = new AutoOptions();
+    o.argBool("--keys", "Print keys");
+    o.autoDebug(Log.Level.INFO);
+    o.autoHelp();
+    o.acceptLeft(1);
+    Vec<String> left = o.run(args);
+    
+    if (o.o.has("--keys")) printKeys = true;
+    
+    String mode = left.sz==0? "" : left.get(0);
     Windows.start(w -> ExMain.run(w, mode));
   }
   
