@@ -140,10 +140,10 @@ public class AutoOptions {
     });
     argStringRunOne("--jwm-backend", "Skija backend: GL, D3D, metal, or raster", s -> {
       switch (s.toLowerCase()) {
-        case "gl": JWMWindow.preferredLayer = w -> new LayerGLSkija(); break;
-        case "d3d": JWMWindow.preferredLayer = w -> new LayerD3D12Skija(); break;
-        case "metal": JWMWindow.preferredLayer = w -> new LayerMetalSkija(); break;
-        case "raster": JWMWindow.preferredLayer = w -> new LayerRasterSkija(); break;
+        case "gl": JWMWindow.preferredBackend = () -> JWMWindow.Backend.GL; break;
+        case "d3d": JWMWindow.preferredBackend = () -> JWMWindow.Backend.D3D12; break;
+        case "metal": JWMWindow.preferredBackend = () -> JWMWindow.Backend.Metal; break;
+        case "raster": JWMWindow.preferredBackend = () -> JWMWindow.Backend.Raster; break;
         default: Options.error("--jwm-backend: invalid value");
       }
     });

@@ -8,7 +8,7 @@ import dzaima.utils.Log;
 import dzaima.utils.*;
 import io.github.humbleui.jwm.Window;
 import io.github.humbleui.jwm.*;
-import io.github.humbleui.jwm.skija.LayerGLSkija;
+import io.github.humbleui.jwm.skija.*;
 import io.github.humbleui.skija.Surface;
 import io.github.humbleui.types.IRect;
 
@@ -21,7 +21,21 @@ import java.util.function.*;
 
 public class JWMWindow extends WindowImpl {
   public static final boolean DEBUG_UPDATES = false;
-  public static Function<JWMWindow, Layer> preferredLayer = (w) -> new LayerGLSkija();
+  public enum Backend {
+    D3D12, Metal, Raster, GL
+  }
+  public static Supplier<Backend> preferredBackend = () -> {
+    return Backend.GL;
+  };
+  
+  public static Function<JWMWindow, Layer> preferredLayer = (w) -> {
+    switch (preferredBackend.get()) { default: throw new IllegalStateException();
+      case D3D12: return new LayerD3D12Skija();
+      case Metal: return new LayerMetalSkija();
+      case Raster: return new LayerRasterSkija();
+      case GL: return new LayerGLSkija();
+    }
+  };
   
   public final int id; // roughly unique identifier of the current window (as long as your program hasn't made 4 billion windows)
   public Window jwmw;
