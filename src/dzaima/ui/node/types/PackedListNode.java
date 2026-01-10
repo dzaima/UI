@@ -29,33 +29,41 @@ public class PackedListNode extends FrameNode {
     return ListUtils.findNearest(ch, x, y, v);
   }
   
+  private int padsz() { return pad * Math.max(0, (ch.sz-1)); }
+  
+  
   public int fillW() {
     return v? ListUtils.vMinW(ch)
-            : ListUtils.hMinW(ch)+Math.max(0, pad*(ch.sz-1));
+            : ListUtils.hMinW(ch)+padsz();
   }
+  
   public int fillH(int w) {
-    if (!v) w-= Math.max(0, pad*(ch.sz-1));
-    return v? ListUtils.vMinH(ch, w)+Math.max(0, pad*(ch.sz-1))
-            : ListUtils.hMinH(ch, w);
+    return v? ListUtils.vMinH(ch, w)+padsz()
+            : ListUtils.hMinH(ch, w-padsz());
   }
+  protected int hStartX(int xal) { return xal==-1? 0 : align(xal, w, ListUtils.hMinW(ch)+padsz()); }
+  protected int vStartY(int yal) { return yal==-1? 0 : align(yal, h, ListUtils.vMinH(ch, w)+padsz()); }
+  
   protected void resized() {
     boolean r = pad!=0;
+    int xal = xalign();
+    int yal = yalign();
     if (v) {
-      int y = 0;
+      int y = vStartY(yal);
       for (Node c : ch) {
         int cw = Math.min(c.maxW(), w);
         int ch = c.minH(cw);
-        c.resize(cw, ch, 0, y);
+        c.resize(cw, ch, align(xal, w, cw), y);
         r|= cw!=w;
         y+= ch+pad;
       }
       r|= y!=h; // TODO can this (& below) even happen?
     } else {
-      int x = 0;
+      int x = hStartX(xal);
       for (Node c : ch) {
         int cw = c.minW();
         int ch = c.minH(cw);
-        c.resize(cw, ch, x, 0);
+        c.resize(cw, ch, x, align(yal, h, ch));
         r|= ch!=h;
         x+= cw+pad;
       }
