@@ -43,8 +43,11 @@ public abstract class Popup {
   protected XY pos(XY size, Rect bounds) {
     Rect r = fullRect();
     if (r!=null) return new XY(r.sx, r.sy);
-    return new XY(Math.max(0, Math.min(startX+1, bounds.ex-size.x)),
-                  Math.max(0, Math.min(startY+1, bounds.ey-size.y)));
+    return clampInbounds(size, bounds, startX+1, startY+1);
+  }
+  protected XY clampInbounds(XY size, Rect bounds, int x, int y) {
+    return new XY(Math.max(0, Math.min(x, bounds.ex-size.x)),
+                  Math.max(0, Math.min(y, bounds.ey-size.y)));
   }
   protected XY getSize() {
     Rect r = fullRect();
@@ -53,6 +56,7 @@ public abstract class Popup {
     int h = node.minH(w);
     return new XY(w, h);
   }
+  protected XY startMousePos() { return new XY(startX, startY); }
   
   protected boolean key(Key key, KeyAction a) { return false; }
   
