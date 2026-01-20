@@ -283,6 +283,16 @@ public final class Vec<T> implements Iterable<T> {
   public void sort(Comparator<T> c) {
     Arrays.sort(arr, 0, sz, c);
   }
+  public Vec<T> sorted() {
+    Vec<T> r = new Vec<>(this);
+    r.sort();
+    return r;
+  }
+  public Vec<T> sorted(Comparator<T> c) {
+    Vec<T> r = new Vec<>(this);
+    r.sort(c);
+    return r;
+  }
   
   public void swap(Vec<T> that) {
     T[] arrm = arr; int szm = sz;
