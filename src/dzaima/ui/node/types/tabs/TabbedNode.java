@@ -217,6 +217,9 @@ public class TabbedNode extends Node {
     if (tabCount()==1 && mode==Mode.WHEN_MULTIPLE) toTab(getTab(0).w);
     updated();
   }
+  public void removeAllTabs() {
+    for (int i = tabCount(); i > 0; i--) removeTab(i);
+  }
   public void addSelectedTab(Tab t) {
     toTab(addTab(t));
   }
