@@ -38,16 +38,14 @@ public abstract class VirtualWindow {
     }
   }
   
-  private Surface lastParentSurface;
   public final boolean renderSelf(Graphics parent) {
     Surface ps = parent.currSurface();
-    boolean refresh = ps!=lastParentSurface || g==null || g.w!=rect.w() || g.h!=rect.h();
+    boolean refresh = g==null || g.needsRecreationToDrawTo(parent) || g.w!=rect.w() || g.h!=rect.h();
     if (refresh) {
-      lastParentSurface = ps;
       if (g!=null) g.close();
       ImageInfo ii = ps.getImageInfo().withWidthHeight(Math.max(1, rect.w()), Math.max(1, rect.h()));
       if (fullyOpaque()) ii = ii.withColorAlphaType(ColorAlphaType.OPAQUE);
-      g = new OffscreenGraphics(ps, ii);
+      g = new OffscreenGraphics(parent, ii);
     }
     
     boolean req = requiresRedraw() || refresh;

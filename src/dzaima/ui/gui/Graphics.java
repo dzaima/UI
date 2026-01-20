@@ -20,10 +20,12 @@ public abstract class Graphics {
   
   
   
-  protected void init(Surface s) {
+  protected void init(Surface s, int win, int reconf) {
     canvas = s.getCanvas();
     w = s.getWidth();
     h = s.getHeight();
+    winID = win;
+    reconfigureRef = reconf;
   }
   public abstract Surface currSurface();
   public abstract void close();
@@ -189,6 +191,12 @@ public abstract class Graphics {
   
   public void image(Image i, int x, int y) {
     canvas.drawImage(i, x, y);
+  }
+  
+  
+  protected int winID=-1, reconfigureRef=-1;
+  public boolean needsRecreationToDrawTo(Graphics where) {
+    return winID!=where.winID || reconfigureRef!=where.reconfigureRef;
   }
   
   public enum Sampling {

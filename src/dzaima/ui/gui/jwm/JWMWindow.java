@@ -42,6 +42,7 @@ public class JWMWindow extends WindowImpl {
   public Window jwmw;
   public String title;
   public boolean visible;
+  public int reconfigureCounter;
   
   private static final AtomicInteger idCounter = new AtomicInteger();
   public JWMWindow(dzaima.ui.gui.Window w, WindowInit init) {
@@ -184,7 +185,7 @@ public class JWMWindow extends WindowImpl {
   public void draw(Runnable draw) {
     eh.skijaFrameDraw = (s) -> {
       if (lastSurface != s) {
-        winG.setSurface(s);
+        winG.setSurface(s, id, reconfigureCounter);
         lastSurface = s;
       }
       draw.run();

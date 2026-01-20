@@ -11,8 +11,8 @@ public class MainGraphics extends Graphics {
   
   public void close() { }
   
-  public void setSurface(Surface s) {
+  public void setSurface(Surface s, int winID, int reconf) {
     this.s = s;
-    init(s);
+    init(s, winID, reconf);
   }
 }

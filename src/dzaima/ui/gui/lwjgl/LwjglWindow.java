@@ -211,6 +211,7 @@ public class LwjglWindow extends WindowImpl {
   private DirectContext context;
   private BackendRenderTarget renderTarget;
   private Surface surface;
+  private int reconfigureCounter;
   
   private void newCanvas() {
     int[] wTmp = new int[1]; float[] xscTmp = new float[1];
@@ -225,7 +226,7 @@ public class LwjglWindow extends WindowImpl {
     
     renderTarget = BackendRenderTarget.makeGL(w.w, w.h, /*samples*/ 0, /*stencil*/ 8, GL11.glGetInteger(0x8CA6), FramebufferFormat.GR_GL_RGBA8); // magic
     surface = Surface.wrapBackendRenderTarget(context, renderTarget, SurfaceOrigin.BOTTOM_LEFT, ColorType.RGBA_8888, ColorSpace.getSRGB(), new SurfaceProps(PixelGeometry.RGB_H));
-    winG.setSurface(surface);
+    winG.setSurface(surface, 0, reconfigureCounter++);
   }
   
   

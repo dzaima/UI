@@ -51,6 +51,7 @@ public class JWMEventHandler implements Consumer<Event> {
     } else if (ev instanceof EventWindowScreenChange) {
       if (w.visible) {
         w.layer.reconfigure();
+        w.reconfigureCounter++;
         IRect r = jwmw.getContentRect();
         w.layer.resize(r.getWidth(), r.getHeight());
         w.w.updateSize.set(true);
