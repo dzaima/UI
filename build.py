@@ -293,7 +293,7 @@ def build_ui(full_res_path): # cwd must be of the UI repo
   ]
   
   if components['jwm']: classpath+= [
-    maven_lib('io/github/humbleui', 'jwm', '0.4.22', libdir, '7acc4904437ef16db7731f6f825134773f83b3f6bbadc995bc91ae16542abcf6'),
+    maven_lib('io/github/humbleui', 'jwm', '0.4.23', libdir, '7115f89f52e2832501d8197cec285151a680777e52e85dfcea620a60396a3283'),
   ]
   
   lwjgl_native = '-natives-'+lwjgl_os
