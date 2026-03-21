@@ -44,7 +44,7 @@ public abstract class Props {
   static class Props0 extends Props {
     public static final Props EMPTY = new Props0();
     
-    public Prop get(String name) { throw new RuntimeException("Getting "+name+" from empty props list"); }
+    public Prop get(String name) { throw new RuntimeException(badGet(name)); }
     public Prop getNullable(String name) { return null; }
     public boolean has(String name) { return false; }
     public Props with(String name, Prop val) { throw new RuntimeException("Mutating empty props list"); }
@@ -127,7 +127,7 @@ public abstract class Props {
   }
   
   protected String badGet(String name) {
-    return "Property "+name+" not found";
+    return "Property "+name+" not found"+(values().sz==0? " in empty property list" : "");
   }
   protected String badWith(String name) {
     return "Property "+name+" to replace not found";
