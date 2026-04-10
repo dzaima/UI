@@ -234,9 +234,14 @@ public class StringNode extends InlineNode {
   
   private int search(String s, int sp, float w) { // returns maximum length with width<w; TODO optimize somehow
     int bS = sp;
-    int bE = s.length()+1;
+    int len = s.length();
+    int bE = len+1;
     while (bS+1<bE) {
-      int c = (bS+bE)/2; // TODO do something about surrogate pairs
+      int c = (bS+bE)/2;
+      if (c < len && Character.isLowSurrogate(s.charAt(c))) {
+        if (bS+2 == bE) break;
+        c++;
+      }
       if (f.widthf(s.substring(sp, c)) < w) bS = c;
       else bE = c;
     }
