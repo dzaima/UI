@@ -288,8 +288,8 @@ def build_ui(full_res_path): # cwd must be of the UI repo
   libdir = 'lib/uilib'
   classpath = [
     maven_lib('io/github/humbleui', 'types', '0.2.0', libdir, '38d94d00770c4f261ffb50ee68d5da853c416c8fe7c57842f0e28049fc26cca8'),
-    maven_lib('io/github/humbleui', 'skija-shared', '0.143.5', libdir, '44214d56c560ac543d175c24777d909c6366d3f548b611f0346f96e17753d447'),
-    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.143.5', libdir, ['linux-x64-2abe075d40b6cf54879169f1cea7d4fa15fbd956ff24cea1f2e2b26b57a6f4b6','linux-arm64-975740d22a53be7d2dc607649bec01f7d36bba381ad82b1b7d695c52f54885eb','macos-arm64-4f3f6d59161b4fd6c1f76af6557acd6f433260989d4cd29132b3fdb7bd7e35fc','macos-x64-701d8a628d67f6b51a5e2f46d85023d4639594ce52fcaec40c2eecd61bdefd45','windows-x64-00243d40db34a4df114ef297b3f6d39f905d6feabb43f9340a672a953e3ef28e']),
+    maven_lib('io/github/humbleui', 'skija-shared', '0.143.12', libdir, 'f7e7794a02c6eeb6ecffefbd2303dfdbf19aa77fd6804b4d0149f9d9dd9d7db8'),
+    maven_lib('io/github/humbleui', 'skija-'+skija_os, '0.143.12', libdir, ['linux-x64-876a27a7f53283c4ef2e839b813f2ef988369704df13c51d62a3871617bbfba9','linux-arm64-8b4d172f61bcce2253e5e2a293117c0c3d77a926f5ea5cd6ef52fa5badb9389e','macos-arm64-a8651de687888d5492312a890a8f63b5f1a0543a0158787216b3ebe0426d7139','macos-x64-ca5768751b5bd6c1e4c246016591f174ecd31df2bc59e444273d2668e90fd7b4','windows-x64-6d45693bfb4388ab5e1982be42a590f059ed867bce4d63e93ab44f779a07f85a']),
   ]
   
   if components['jwm']: classpath+= [
