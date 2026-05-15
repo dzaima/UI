@@ -33,7 +33,7 @@ public class BQNLang extends Lang {
   }
   
   private static class BQNState extends LangState<BQNState> {
-    public Chars fns = new Chars("!+-×÷⋆*√⌊⌈∧∨¬|=≠≤<>≥≡≢⊣⊢⥊∾≍⋈↑↓↕⌽⍉/⍋⍒⊏⊑⊐⊒∊⍷⊔«»⍎⍕");
+    public Chars fns = new Chars("!+-×÷⋆*√⌊⌈∧∨¬|=≠≤<>≥≡≢⊣⊢⥊∾≍⋈↑↓↕⌽⍉/⍋⍒⊏⊑⊐⊒∊⍷⊔«»⍎⍕⍳");
     public Chars md1 = new Chars("`˜˘¨⁼⌜´˝˙");
     public Chars md2 = new Chars("∘⊸⟜○⌾⎉⚇⍟⊘◶⎊");
     public Chars block = new Chars("𝕨𝕩𝔽𝔾𝕎𝕏𝕗𝕘𝕣ℝ𝕤𝕊{}:");
