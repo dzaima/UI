@@ -1,6 +1,7 @@
 package dzaima.ui.node.types.inputs;
 
 import dzaima.ui.gui.*;
+import dzaima.ui.gui.Graphics;
 import dzaima.ui.gui.io.*;
 import dzaima.ui.node.Node;
 import dzaima.ui.node.ctx.Ctx;
