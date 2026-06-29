@@ -130,6 +130,7 @@ public abstract class Ctx {
           String k = g.ks[i];
           args.put(rmPrefix(k), new Var(vs[i], vars));
         }
+        args.put("$", new Var(new GrProp(new PNodeGroup(null, false, g.props, g.ch)), vars));
         makePropHere(p, args, resList, resProps);
       } else {
         NodeGen gen;
