@@ -31,6 +31,7 @@ public abstract class VirtualWindow {
     newRect(getLocation(w.w, w.h));
   }
   public final void newRect(Rect nr) {
+    assert nr.sx<=nr.ex && nr.sy<=nr.ey;
     Rect pr = rect;
     if (!nr.equals(pr)) {
       rect = nr;

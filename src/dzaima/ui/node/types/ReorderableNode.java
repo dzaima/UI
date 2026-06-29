@@ -78,8 +78,8 @@ public class ReorderableNode extends PackedListNode {
     
     if (reVW!=null) {
       XY pos = relPos(null);
-      int nw = takenNode.w;
-      int nh = takenNode.h;
+      int nw = Math.max(0, takenNode.w);
+      int nh = Math.max(0, takenNode.h);
       int nx =  v? 0 : Math.max(0, Math.min(x-takeX, w-nw));
       int ny = !v? 0 : Math.max(0, Math.min(y-takeY, h-nh));
       reVW.setPos(pos.x+nx, pos.y+ny, nw, nh);
