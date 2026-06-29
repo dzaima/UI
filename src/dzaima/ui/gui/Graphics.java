@@ -72,6 +72,7 @@ public abstract class Graphics {
     clip(new Rect(sx, sy, ex, ey));
   }
   public void clip(Rect r) {
+    if (r.sx>=r.ex || r.sy>=r.ey) r = new Rect(r.sx, r.sy, Math.max(r.sx,r.ex), Math.max(r.sy,r.ey));
     canvas.clipRect(r.skiaf());
     clip = clip==null? r : clip.and(r);
   }
