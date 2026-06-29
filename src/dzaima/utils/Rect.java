@@ -45,7 +45,10 @@ public class Rect {
   }
   
   public io.github.humbleui.types.Rect skiaf() {
-    return new io.github.humbleui.types.Rect(sx, sy, ex, ey);
+    return io.github.humbleui.types.Rect.makeLTRB(sx, sy, ex, ey);
+  }
+  public IRect skiai() {
+    return IRect.makeLTRB(sx, sy, ex, ey);
   }
   
   public Rect plus(int dx, int dy) {
