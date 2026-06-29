@@ -102,9 +102,9 @@ public class AutoOptions {
   
   public void argStringRunOne(String a, String helpText, Consumer<String> take) {
     limitArgOne(a);
-    stringRun(a, helpText, take);
+    argStringRun(a, helpText, take);
   }
-  public void stringRun(String a, String helpText, Consumer<String> take) {
+  public void argStringRun(String a, String helpText, Consumer<String> take) {
     addHelpText(a, helpText);
     longArgs.put(a, (arg, i, get) -> take.accept(get.get()));
   }
