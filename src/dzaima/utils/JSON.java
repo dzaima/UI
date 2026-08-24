@@ -491,6 +491,8 @@ public class JSON {
               }
               r.append((char)v);
             } else throw new JSONException("Unknown escape \\"+n);
+          } else if (c<=31) {
+            throw new JSONException("Codepoints below \\u001F must be escaped");
           } else r.append(c);
         }
         return new Str(r.toString());
