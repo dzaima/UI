@@ -139,18 +139,19 @@ public class JSON {
     public Obj obj() { throw new RuntimeException("This isn't an object!"); }
     public boolean bool() { throw new RuntimeException("This isn't a boolean!"); }
     
-    public double num(double def) { throw new RuntimeException("This isn't a number!"); }
-    public String str(String def) { throw new RuntimeException("This isn't a string!"); }
-    public Arr arr(Arr def) { throw new RuntimeException("This isn't an array!"); }
-    public Obj obj(Obj def) { throw new RuntimeException("This isn't an object!"); }
-    public boolean bool(boolean def) { throw new RuntimeException("This isn't a boolean!"); }
+    // these methods with a default arg never error, i.e. can be used on untrusted JSON
+    public double num(double def) { return def; }
+    public String str(String def) { return def; }
+    public Arr arr(Arr def) { return def; }
+    public Obj obj(Obj def) { return def; }
+    public boolean bool(boolean def) { return def; }
     
-    public boolean isNum() { return this instanceof Num; }
-    public boolean isStr() { return this instanceof Str; }
-    public boolean isArr() { return this instanceof Arr; }
-    public boolean isObj() { return this instanceof Obj; }
-    public boolean isBool(){ return this instanceof Bool; }
-    public boolean isNull() { return false; }
+    public final boolean isNum()  { return this instanceof Num; }
+    public final boolean isStr()  { return this instanceof Str; }
+    public final boolean isArr()  { return this instanceof Arr; }
+    public final boolean isObj()  { return this instanceof Obj; }
+    public final boolean isBool() { return this instanceof Bool; }
+    public final boolean isNull() { return this == NULL; }
     
     public int asInt() { return (int)num(); }
     public int asInt(int def) { return (int)num(def); }
@@ -171,7 +172,7 @@ public class JSON {
     public double num(double def) { return val; }
   }
   
-  public static class Str extends Val {
+  public static final class Str extends Val {
     public static final Str E = new Str("");
     public final String val;
     public Str(String val) { this.val = val; }
@@ -180,7 +181,7 @@ public class JSON {
     public String str(String def) { return val; }
   }
   
-  public static class Obj extends Val {
+  public static final class Obj extends Val {
     public static final Obj E = new Obj(new String[0], new Val[0]);
     private String[] ks;
     private Val[] vs;
@@ -318,7 +319,7 @@ public class JSON {
     public Iterator<Entry> iterator() { return this; }
   }
   
-  public static class Arr extends Val implements Iterable<Val> {
+  public static final class Arr extends Val implements Iterable<Val> {
     public static final Arr E = Arr.of();
     public final Val[] items;
     public Arr(Val[] items) { this.items = items; }
@@ -384,17 +385,11 @@ public class JSON {
   }
   
   private static final Null NOTFOUND = new Null();
-  public static class Null extends Val {
+  public static final class Null extends Val {
     private Null() { }
-    public double num(double def) { return def; }
-    public String str(String def) { return def; }
-    public Arr    arr(Arr    def) { return def; }
-    public Obj    obj(Obj    def) { return def; }
-    public boolean bool(boolean def) { return def; }
-    public boolean isNull() { return true; }
   }
   
-  public static class Bool extends Val {
+  public static final class Bool extends Val {
     boolean val;
     private Bool(boolean val) { this.val = val; }
     
